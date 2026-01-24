@@ -1,0 +1,732 @@
+---
+title: "D10025 yap1 dataset: Make Level 01 (all cells) object"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Making Level 01 object for yap1 dataset. 
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+})
+```
+
+### Load general info
+
+List of ribosomal and globin genes that we're going to remove
+
+```{r}
+ribo_genes <- read.table(here("data/genesets/DR_ribosomal_globin_genes.csv"), sep="\t", stringsAsFactors=FALSE)
+
+```
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+## Load data
+
+Read in 10X outputs.
+
+S20127 = yap1 mutant
+
+S20128 = wildtype
+
+```{r}
+yap1_object <- Read10X(here("data/input/S20127/filtered_feature_bc_matrix"))
+wt_object <- Read10X(here("data/input/S20128/filtered_feature_bc_matrix"))
+```
+
+Remove ribo and globin genes
+
+```{r}
+yap1_object <- yap1_object[!rownames(yap1_object) %in% ribo_genes$gene_name,]
+wt_object <- wt_object[!rownames(wt_object) %in% ribo_genes$gene_name,]
+```
+
+## Make Seurat object
+
+```{r}
+yap1_seurat <- CreateSeuratObject(counts=yap1_object,
+													project = "S20127",
+													min.cells = 5)
+
+#add genotype
+yap1_seurat$Genotype <- "yap1_mutant"
+
+wt_seurat <- CreateSeuratObject(counts=wt_object,
+													project = "S20128",
+													min.cells = 5)
+
+wt_seurat$Genotype <- "wildtype"
+
+```
+
+Combine them into list to use lapply later. 
+
+```{r}
+list_objects <- list(yap_mutant = yap1_seurat, 
+                     wt = wt_seurat)
+```
+
+Clean up
+
+```{r, message=FALSE, warning=FALSE}
+rm(yap1_object, yap1_seurat, wt_object, wt_seurat, ribo_genes); gc()
+```
+
+## % mitochondria
+
+```{r}
+list_objects <- lapply(list_objects, function(seurat){
+  seurat$`percent.mt` <- PercentageFeatureSet(seurat,
+												pattern = "^[mtMtMT-]")
+  return(seurat)
+})
+
+```
+
+
+## Pre-QC metrics
+
+Make function for density plots and correlation plots
+
+```{r}
+make_density_plots <- function(seurat){
+  plot_list <- list()
+
+  #ncount
+  plot_list[[1]] <- ggplot(seurat@meta.data, aes(x=log10(nCount_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(count)') +
+    plot_sizing + ggtitle(sprintf("Library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggplot(seurat@meta.data, aes(x=log10(nFeature_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(nfeature)') +
+    plot_sizing + ggtitle(sprintf("#features, %s",  seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggplot(seurat@meta.data, aes(x=percent.mt)) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('percent.mt') +
+    plot_sizing + ggtitle(sprintf("mito, %s",  seurat@project.name))
+  
+  return(plot_list)
+  
+}
+
+make_correlation_plots <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "log10ncount", y = "log10nfeat",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(#features)") + xlab("log10(nCount)") +
+    stat_cor(method = "pearson", label.x = 2.5, label.y = 4, size = 5) +
+    ggtitle(sprintf("Lib size vs #features, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "log10ncount", y = "percent.mt",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("%mito") + xlab("log10(nCount)") +
+    stat_cor(method = "pearson", label.x = 3.5, label.y = 80, size = 5) +
+    ggtitle(sprintf("Lib size vs mito, %s",  seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "log10nfeat", y = "percent.mt",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("%mito") + xlab("log10(#features)") +
+    stat_cor(method = "pearson", label.x = 3.5, label.y = 80, size = 5) +
+    ggtitle(sprintf("#features vs mito, %s",  seurat@project.name))
+  
+  return(plot_list)
+  
+}
+```
+
+
+### Library size, nFeatures, %mito
+
+Density plots
+
+```{r, fig.align='center', fig.height=8, fig.width=15}
+plot_list <- lapply(list_objects, make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect")
+```
+
+Small hump, still reasonably large library size there though.
+
+
+### Correlations
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) 
+```
+
+## Doublet calling
+
+Using scDblFinder. No QC before running this as recommended. 
+
+```{r}
+run_scDblFinder <- function(seurat){
+  sce <- as.SingleCellExperiment(seurat) #convert
+  
+  sce <- logNormCounts(sce) %>% #run steps
+  runPCA() %>%
+  runUMAP()
+  
+  set.seed(1997)#for reproducibility
+  sce <- scDblFinder(sce, clusters = T) #run scDblFinder with clusters
+  
+  #add to seurat
+  seurat$scDblFinder.class <- sce$scDblFinder.class #actual label
+  seurat$scDblFinder.cxds_score <- sce$scDblFinder.cxds_score #co-expression score
+  
+  return(seurat)
+}
+```
+
+Run
+
+```{r}
+list_objects <- lapply(list_objects, run_scDblFinder)
+```
+
+Around 20% doublets, predicted. 10X doublet rate is 0.008 per 10k. 
+
+```{r}
+#expected doublet rate
+(ncol(list_objects$yap_mutant)* 0.008)/1000
+(ncol(list_objects$wt)* 0.008)/1000
+```
+
+
+```{r}
+#observed
+table(list_objects$yap_mutant$scDblFinder.class)/ncol(list_objects$yap_mutant)
+table(list_objects$wt$scDblFinder.class)/ncol(list_objects$wt)
+```
+
+Slightly higher than expected for mutant. Importantly, this is a timepoint (2dpf) where cells are transitioning between celltypes and may be co-expressing genes which could through it off. 
+
+Library size and nFeature difference between doublets and singlet:
+
+```{r}
+run_metrics_dbl <- function(seurat){
+  plot_list <- list()
+  
+  plot_list[[1]] <- seurat@meta.data %>% 
+    ggplot(., aes(y = log10(nCount_RNA), x = scDblFinder.class)) +
+    geom_boxplot()+ plot_sizing + ylab("log10(count)") + xlab("") +
+    ggtitle(seurat$Genotype)
+  
+  plot_list[[2]] <- seurat@meta.data %>% 
+    ggplot(., aes(y = log10(nFeature_RNA), x = scDblFinder.class)) +
+    geom_boxplot()+ plot_sizing + ylab("log10(features)") + xlab("") +
+    ggtitle(seurat$Genotype)
+  
+  return(plot_list)
+}
+
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, run_metrics_dbl)
+
+wrap_plots(unlist(plot_list, recursive = F)) 
+```
+
+## Explore and remove outliers
+
+%mito: Fixed threshold 20%
+
+Library size: nmads 2, lower and higher
+
+nFeatures: nmads 2, lower and higher
+
+### Library size
+
+Get library size threshold for each sample - lower bound
+
+```{r}
+#yap mutant
+lib_size_outliers_low <- isOutlier(list_objects$yap_mutant$nCount_RNA, type = "lower", nmads = 2, log = T)  
+lib_size_outliers_low %>% sum()
+summary(list_objects$yap_mutant$nCount_RNA[lib_size_outliers_low]) 
+
+```
+
+```{r}
+#wildtype
+lib_size_outliers_low <- isOutlier(list_objects$wt$nCount_RNA, type = "lower", nmads = 2, log = T)  
+lib_size_outliers_low %>% sum()
+summary(list_objects$wt$nCount_RNA[lib_size_outliers_low]) 
+
+```
+
+Very similar
+
+Upper bound ncounts
+
+```{r}
+#yap mutant
+lib_size_outliers_upper <- isOutlier(list_objects$yap_mutant$nCount_RNA, type = "higher", nmads = 2, log = T)  
+lib_size_outliers_upper %>% sum()
+summary(list_objects$yap_mutant$nCount_RNA[lib_size_outliers_upper]) 
+
+list_objects$yap_mutant$scDblFinder.class[lib_size_outliers_upper] %>% table()
+```
+
+```{r}
+#wildtype
+lib_size_outliers_upper <- isOutlier(list_objects$wt$nCount_RNA, type = "higher", nmads = 2, log = T)  
+lib_size_outliers_upper %>% sum()
+summary(list_objects$wt$nCount_RNA[lib_size_outliers_upper]) 
+
+list_objects$wt$scDblFinder.class[lib_size_outliers_upper] %>% table()
+```
+
+Combined
+
+```{r}
+#yap mutant
+lib_size_outliers_combined <- isOutlier(list_objects$yap_mutant$nCount_RNA, type = "both", nmads = 2, log = T)  
+lib_size_outliers_combined %>% sum()
+```
+
+```{r}
+#wildtype
+lib_size_outliers_combined <- isOutlier(list_objects$wt$nCount_RNA, type = "both", nmads = 2, log = T)  
+lib_size_outliers_combined %>% sum()
+```
+
+### Features
+
+```{r}
+#yap mutant
+lib_size_outliers_low <- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = "lower", nmads = 2, log = T)  
+lib_size_outliers_low %>% sum()
+summary(list_objects$yap_mutant$nFeature_RNA[lib_size_outliers_low]) 
+
+```
+
+```{r}
+#wildtype
+lib_size_outliers_low <- isOutlier(list_objects$wt$nFeature_RNA, type = "lower", nmads = 2, log = T)  
+lib_size_outliers_low %>% sum()
+summary(list_objects$wt$nFeature_RNA[lib_size_outliers_low]) 
+
+```
+
+
+Upper bound ncounts
+
+```{r}
+#yap mutant
+lib_size_outliers_upper <- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = "higher", nmads = 2, log = T)  
+lib_size_outliers_upper %>% sum()
+summary(list_objects$yap_mutant$nFeature_RNA[lib_size_outliers_upper]) 
+
+list_objects$yap_mutant$scDblFinder.class[lib_size_outliers_upper] %>% table()
+```
+
+```{r}
+#wildtype
+lib_size_outliers_upper <- isOutlier(list_objects$wt$nFeature_RNA, type = "higher", nmads = 2, log = T)  
+lib_size_outliers_upper %>% sum()
+summary(list_objects$wt$nFeature_RNA[lib_size_outliers_upper]) 
+
+list_objects$wt$scDblFinder.class[lib_size_outliers_upper] %>% table()
+```
+
+Combined
+
+```{r}
+#yap mutant
+lib_size_outliers_combined <- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = "both", nmads = 2, log = T)  
+lib_size_outliers_combined %>% sum()
+```
+
+```{r}
+#wildtype
+lib_size_outliers_combined <- isOutlier(list_objects$wt$nFeature_RNA, type = "both", nmads = 2, log = T)  
+lib_size_outliers_combined %>% sum()
+```
+
+### Remove outliers
+
+```{r}
+remove_outliers <- function(seurat){
+  mito <- seurat$percent.mt > 20
+  features <-isOutlier(seurat$nFeature_RNA, type = "both", nmads = 2, log = T)
+  count <-isOutlier(seurat$nCount_RNA, type = "both", nmads = 2, log = T)
+  
+  remove_vec <- c(mito | features | count)
+  
+  seurat <- seurat[, !remove_vec]
+}
+```
+
+```{r}
+list_objects <- lapply(list_objects, remove_outliers)
+```
+
+How many doublets are left?
+
+```{r}
+list_objects$yap_mutant$scDblFinder.class %>% table()
+list_objects$wt$scDblFinder.class %>% table()
+```
+
+
+## Option: remove doublets
+
+I think we should at least try to see if removing doublets changes outcome, though I still think there is a real chance intermediate stages of endothelial cells will be marked as doublets. 
+
+Add removed doublets object to list. 
+
+```{r}
+list_objects$yap_mutant_nodoublets <- list_objects$yap_mutant[,list_objects$yap_mutant$scDblFinder.class == "singlet"]
+
+list_objects$wt_nodoublets <- list_objects$wt[,list_objects$wt$scDblFinder.class == "singlet"]
+
+```
+
+```{r}
+list_objects %>% length()
+```
+
+
+## Post-QC metrics
+
+
+### Library size, nFeatures, %mito
+
+Density plots
+
+With doublets
+
+```{r, fig.align='center', fig.height=8, fig.width=15}
+plot_list <- lapply(list_objects[1:2], make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") +plot_annotation(title = "with doublets")
+```
+
+Without doublets
+
+```{r, fig.align='center', fig.height=8, fig.width=15}
+plot_list <- lapply(list_objects[3:4], make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") +plot_annotation(title = "without doublets")
+```
+
+General distribution without doublets looks slightly better.
+
+### Correlations
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects[1:2], make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "with doublets")
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects[3:4], make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "without doublets")
+```
+
+No real differences here.
+
+## Run single-cell workflow
+
+```{r, include=FALSE}
+rm(plot_list);gc()
+```
+
+
+We're going to run the workflow on each sample separately (just in case we need it) and on combined objects. 
+
+Not using sctransform, regressing out %mito
+
+```{r}
+run_workflow <- function(seurat){
+  seurat <- NormalizeData(seurat) %>%   #should deal with basic library size differences
+    FindVariableFeatures() %>% 
+    ScaleData(., vars.to.regress = c("percent.mt")) %>% 
+    RunPCA() %>% 
+    RunUMAP(., dims = 1:30) %>% #defaults
+    FindNeighbors(., dims = 1:30) %>% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1))
+}
+```
+
+
+Combine the samples
+
+```{r}
+list_object_combined <- list()
+list_object_combined$merged <- merge(list_objects$yap_mutant,
+                                     y = list_objects$wt,
+                                     project = "Dataset_10025", merge.data = TRUE) 
+list_object_combined$merged <- JoinLayers(list_object_combined$merged) #seurat v5 things
+
+list_object_combined$merged_nodoublets <- merge(list_objects$yap_mutant_nodoublets,
+                                     y = list_objects$wt_nodoublets,
+                                     project = "Dataset_10025", merge.data = TRUE)
+list_object_combined$merged_nodoublets <- JoinLayers(list_object_combined$merged_nodoublets) #seurat v5 things
+
+  
+```
+
+### Each Sample
+
+
+```{r, message=FALSE}
+list_objects <- lapply(list_objects, run_workflow)
+```
+
+
+### Combined
+
+
+```{r, message=FALSE}
+list_object_combined <- lapply(list_object_combined, run_workflow)
+```
+
+## PCA correlations
+
+```{r}
+run_pca_correlations <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %>% 
+    select(., log10ncount, log10nfeat) %>% 
+    rownames_to_column("Barcode") %>% 
+    full_join(., seurat@reductions$pca@cell.embeddings %>% as.data.frame() %>% rownames_to_column("Barcode") %>% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "PC_1", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC1 vs library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "PC_2", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC2 vs library size, %s", seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "PC_3", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC3 vs library size, %s", seurat@project.name))
+  
+  return(plot_list)
+}
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects[1:2], run_pca_correlations)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "with doublets")
+```
+
+Combined (top with, bottom without doublets):
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_object_combined, run_pca_correlations)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "with doublets")
+
+```
+
+No bias.
+
+## UMAP overviews
+
+### Each Sample
+
+Not that much to see, only make UMAPs for nfeature, ncount and seurat_cluster.
+
+```{r}
+plot_umap_sample <- function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters")) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects[1:2], plot_umap_sample)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "with doublets")
+```
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects[3:4], plot_umap_sample)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "without doublets")
+```
+
+### Combined
+
+Not that much to see, only make UMAPs for nfeature, ncount and seurat_cluster.
+
+```{r}
+plot_umap_dataset <- function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters")) + ggtitle(seurat@project.name)
+  plot_list[[4]] <- DimPlot(seurat,  group.by = c("Genotype"), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+Top with, bottom without doublets. 
+
+```{r, fig.align='center', fig.height=10, fig.width=20}
+plot_list <- lapply(list_object_combined, plot_umap_dataset)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "without doublets") + plot_layout(nrow = 2)
+```
+
+### Endothelial cell genes
+
+Quick overview of endothelial cell genes.
+
+```{r}
+run_umap_genes <- function(seurat, genes = c("cdh5", "kdrl", "cdh6", "prox1a")){
+  p <- FeaturePlot(seurat, features = genes) 
+  p + plot_annotation(title = seurat@project.name)
+}
+```
+
+#### Each Sample
+
+With doublets
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+lapply(list_objects[1:2], run_umap_genes)
+```
+
+Without doublets
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+lapply(list_objects[3:4], run_umap_genes)
+```
+
+#### Combined
+
+With doublets:
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+run_umap_genes(list_object_combined$merged)
+```
+
+Without doublets:
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+run_umap_genes(list_object_combined$merged_nodoublets)
+```
+
+
+## Export 
+
+Export them all.
+
+```{r}
+#dataset
+file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01.qs2')
+qs_save(list_object_combined$merged_nodoublets, file_name)
+file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets.qs2')
+qs_save(list_object_combined$merged, file_name)
+
+#samples
+file_name <- here('output/data/Samples/S20127/S20127_yap1_mutant_Level_01.qs2')
+qs_save(list_objects$yap_mutant_nodoublets, file_name)
+file_name <- here('output/data/Samples/S20127/S20127_yap1_mutant_Level_01_kept_doublets.qs2')
+qs_save(list_objects$yap_mutant, file_name)
+
+file_name <- here('output/data/Samples/S20128/S20128_wildtype_Level_01.qs2')
+qs_save(list_objects$wt_nodoublets, file_name)
+file_name <- here('output/data/Samples/S20128/S20128_wildtype_Level_01_kept_doublets.qs2')
+qs_save(list_objects$wt, file_name)
+
+
+```
+
+
