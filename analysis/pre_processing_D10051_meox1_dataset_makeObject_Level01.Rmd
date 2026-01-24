@@ -654,7 +654,7 @@ Make additional boxplots with lib size and percent mito for each cluster
 plot_list <- lapply(list_objects[1:2], function(seurat){
   plot_list <- list()
   plot_list[[1]] <- seurat@meta.data %>% 
-  ggplot(., aes(y = percent.mt, x = seurat_clusters, fill=seurat_clusters)) +
+  ggplot(., aes(y = log10(nCount_RNA), x = seurat_clusters, fill=seurat_clusters)) +
   geom_boxplot() +
   plot_sizing
   
@@ -673,7 +673,7 @@ wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "with doub
 plot_list <- lapply(list_objects[3:4], function(seurat){
   plot_list <- list()
   plot_list[[1]] <- seurat@meta.data %>% 
-  ggplot(., aes(y = percent.mt, x = seurat_clusters, fill=seurat_clusters)) +
+  ggplot(., aes(y = log10(nCount_RNA), x = seurat_clusters, fill=seurat_clusters)) +
   geom_boxplot() +
   plot_sizing
   
