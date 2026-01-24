@@ -1,0 +1,2028 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michelle Meier" />
+
+
+<title>D10025 yap1 dataset: Make Level 01 (all cells) object</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">yap1_meox1_paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">D10025 yap1 dataset: Make Level 01 (all
+cells) object</h1>
+<h4 class="author">Michelle Meier</h4>
+<h4 class="date">24. January 2026</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-01-24
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>yap1_meox1_paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260119code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260119)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260119code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260119)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree152890c2bd59991b660c8ac779593ff79eb1df97targetblank152890ca">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/152890c2bd59991b660c8ac779593ff79eb1df97" target="_blank">152890c</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree152890c2bd59991b660c8ac779593ff79eb1df97targetblank152890ca"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/152890c2bd59991b660c8ac779593ff79eb1df97" target="_blank">152890c</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/pre_processing/
+    Ignored:    data/.DS_Store
+    Ignored:    data/genesets/
+    Ignored:    data/input/
+    Ignored:    output/data/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Unstaged changes:
+    Modified:   .gitignore
+    Modified:   renv.lock
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd</code>)
+and HTML
+(<code>docs/pre_processing_D10025_yap1_dataset_makeObject_Level01.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/152890c2bd59991b660c8ac779593ff79eb1df97/analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd" target="_blank">152890c</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-24
+</td>
+<td>
+wflow_publish(c("analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd"))
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Making Level 01 object for yap1 dataset.</p>
+<div id="set-up" class="section level3">
+<h3>Set-up</h3>
+<p>Load libraries</p>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+})</code></pre>
+</div>
+<div id="load-general-info" class="section level3">
+<h3>Load general info</h3>
+<p>List of ribosomal and globin genes that we’re going to remove</p>
+<pre class="r"><code>ribo_genes &lt;- read.table(here(&quot;data/genesets/DR_ribosomal_globin_genes.csv&quot;), sep=&quot;\t&quot;, stringsAsFactors=FALSE)</code></pre>
+</div>
+<div id="plotting-themes" class="section level3">
+<h3>Plotting themes</h3>
+<pre class="r"><code>plot_sizing &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+rotate_x &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;), 
+                   strip.text = element_text(size = 14))</code></pre>
+</div>
+</div>
+<div id="load-data" class="section level2">
+<h2>Load data</h2>
+<p>Read in 10X outputs.</p>
+<p>S20127 = yap1 mutant</p>
+<p>S20128 = wildtype</p>
+<pre class="r"><code>yap1_object &lt;- Read10X(here(&quot;data/input/S20127/filtered_feature_bc_matrix&quot;))
+wt_object &lt;- Read10X(here(&quot;data/input/S20128/filtered_feature_bc_matrix&quot;))</code></pre>
+<p>Remove ribo and globin genes</p>
+<pre class="r"><code>yap1_object &lt;- yap1_object[!rownames(yap1_object) %in% ribo_genes$gene_name,]
+wt_object &lt;- wt_object[!rownames(wt_object) %in% ribo_genes$gene_name,]</code></pre>
+</div>
+<div id="make-seurat-object" class="section level2">
+<h2>Make Seurat object</h2>
+<pre class="r"><code>yap1_seurat &lt;- CreateSeuratObject(counts=yap1_object,
+                                                    project = &quot;S20127&quot;,
+                                                    min.cells = 5)</code></pre>
+<pre><code>Warning: Feature names cannot have underscores (&#39;_&#39;), replacing with dashes
+(&#39;-&#39;)</code></pre>
+<pre class="r"><code>#add genotype
+yap1_seurat$Genotype &lt;- &quot;yap1_mutant&quot;
+
+wt_seurat &lt;- CreateSeuratObject(counts=wt_object,
+                                                    project = &quot;S20128&quot;,
+                                                    min.cells = 5)</code></pre>
+<pre><code>Warning: Feature names cannot have underscores (&#39;_&#39;), replacing with dashes
+(&#39;-&#39;)</code></pre>
+<pre class="r"><code>wt_seurat$Genotype &lt;- &quot;wildtype&quot;</code></pre>
+<p>Combine them into list to use lapply later.</p>
+<pre class="r"><code>list_objects &lt;- list(yap_mutant = yap1_seurat, 
+                     wt = wt_seurat)</code></pre>
+<p>Clean up</p>
+<pre class="r"><code>rm(yap1_object, yap1_seurat, wt_object, wt_seurat, ribo_genes); gc()</code></pre>
+<pre><code>            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells  11981902 640.0   20214541 1079.6         NA  16264587  868.7
+Vcells 125764289 959.6  391223134 2984.8      49152 382919376 2921.5</code></pre>
+</div>
+<div id="mitochondria" class="section level2">
+<h2>% mitochondria</h2>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, function(seurat){
+  seurat$`percent.mt` &lt;- PercentageFeatureSet(seurat,
+                                                pattern = &quot;^[mtMtMT-]&quot;)
+  return(seurat)
+})</code></pre>
+</div>
+<div id="pre-qc-metrics" class="section level2">
+<h2>Pre-QC metrics</h2>
+<p>Make function for density plots and correlation plots</p>
+<pre class="r"><code>make_density_plots &lt;- function(seurat){
+  plot_list &lt;- list()
+
+  #ncount
+  plot_list[[1]] &lt;- ggplot(seurat@meta.data, aes(x=log10(nCount_RNA))) + 
+    geom_histogram(aes(y=..density..), colour=&quot;black&quot;, fill=&quot;white&quot;)+
+    geom_density(alpha=.2, fill=&quot;#FF6666&quot;)+ xlab(&#39;log10(count)&#39;) +
+    plot_sizing + ggtitle(sprintf(&quot;Library size, %s&quot;, seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] &lt;- ggplot(seurat@meta.data, aes(x=log10(nFeature_RNA))) + 
+    geom_histogram(aes(y=..density..), colour=&quot;black&quot;, fill=&quot;white&quot;)+
+    geom_density(alpha=.2, fill=&quot;#FF6666&quot;)+ xlab(&#39;log10(nfeature)&#39;) +
+    plot_sizing + ggtitle(sprintf(&quot;#features, %s&quot;,  seurat@project.name))
+  
+  #mito
+  plot_list[[3]] &lt;- ggplot(seurat@meta.data, aes(x=percent.mt)) + 
+    geom_histogram(aes(y=..density..), colour=&quot;black&quot;, fill=&quot;white&quot;)+
+    geom_density(alpha=.2, fill=&quot;#FF6666&quot;)+ xlab(&#39;percent.mt&#39;) +
+    plot_sizing + ggtitle(sprintf(&quot;mito, %s&quot;,  seurat@project.name))
+  
+  return(plot_list)
+  
+}
+
+make_correlation_plots &lt;- function(seurat){
+  plot_list &lt;- list()
+
+  meta &lt;- seurat@meta.data %&gt;% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA))
+  
+  #ncount
+  plot_list[[1]] &lt;- ggscatter(meta, x = &quot;log10ncount&quot;, y = &quot;log10nfeat&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(#features)&quot;) + xlab(&quot;log10(nCount)&quot;) +
+    stat_cor(method = &quot;pearson&quot;, label.x = 2.5, label.y = 4, size = 5) +
+    ggtitle(sprintf(&quot;Lib size vs #features, %s&quot;, seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] &lt;- ggscatter(meta, x = &quot;log10ncount&quot;, y = &quot;percent.mt&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;%mito&quot;) + xlab(&quot;log10(nCount)&quot;) +
+    stat_cor(method = &quot;pearson&quot;, label.x = 3.5, label.y = 80, size = 5) +
+    ggtitle(sprintf(&quot;Lib size vs mito, %s&quot;,  seurat@project.name))
+  
+  #mito
+  plot_list[[3]] &lt;- ggscatter(meta, x = &quot;log10nfeat&quot;, y = &quot;percent.mt&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;%mito&quot;) + xlab(&quot;log10(#features)&quot;) +
+    stat_cor(method = &quot;pearson&quot;, label.x = 3.5, label.y = 80, size = 5) +
+    ggtitle(sprintf(&quot;#features vs mito, %s&quot;,  seurat@project.name))
+  
+  return(plot_list)
+  
+}</code></pre>
+<div id="library-size-nfeatures-mito" class="section level3">
+<h3>Library size, nFeatures, %mito</h3>
+<p>Density plots</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;)</code></pre>
+<pre><code>Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0.
+ℹ Please use `after_stat(density)` instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-11-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Small hump, still reasonably large library size there though.</p>
+</div>
+<div id="correlations" class="section level3">
+<h3>Correlations</h3>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) </code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-12-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="doublet-calling" class="section level2">
+<h2>Doublet calling</h2>
+<p>Using scDblFinder. No QC before running this as recommended.</p>
+<pre class="r"><code>run_scDblFinder &lt;- function(seurat){
+  sce &lt;- as.SingleCellExperiment(seurat) #convert
+  
+  sce &lt;- logNormCounts(sce) %&gt;% #run steps
+  runPCA() %&gt;%
+  runUMAP()
+  
+  set.seed(1997)#for reproducibility
+  sce &lt;- scDblFinder(sce, clusters = T) #run scDblFinder with clusters
+  
+  #add to seurat
+  seurat$scDblFinder.class &lt;- sce$scDblFinder.class #actual label
+  seurat$scDblFinder.cxds_score &lt;- sce$scDblFinder.cxds_score #co-expression score
+  
+  return(seurat)
+}</code></pre>
+<p>Run</p>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, run_scDblFinder)</code></pre>
+<pre><code>Warning: Layer &#39;data&#39; is empty</code></pre>
+<pre><code>Warning: Layer &#39;scale.data&#39; is empty</code></pre>
+<pre><code>Warning in .checkSCE(sce, coerce = is.null(samples)): Some cells in `sce` have
+an extremely low read counts; note that these could trigger errors and might
+best be filtered out</code></pre>
+<pre><code>Clustering cells...</code></pre>
+<pre><code>13 clusters</code></pre>
+<pre><code>Creating ~15348 artificial doublets...</code></pre>
+<pre><code>Dimensional reduction</code></pre>
+<pre><code>Evaluating kNN...</code></pre>
+<pre><code>Training model...</code></pre>
+<pre><code>iter=0, 3051 cells excluded from training.</code></pre>
+<pre><code>iter=1, 3048 cells excluded from training.</code></pre>
+<pre><code>iter=2, 3048 cells excluded from training.</code></pre>
+<pre><code>Threshold found:0.245</code></pre>
+<pre><code>3967 (20.7%) doublets called</code></pre>
+<pre><code>Warning: Layer &#39;data&#39; is empty</code></pre>
+<pre><code>Warning: Layer &#39;scale.data&#39; is empty</code></pre>
+<pre><code>Warning in .checkSCE(sce, coerce = is.null(samples)): Some cells in `sce` have
+an extremely low read counts; note that these could trigger errors and might
+best be filtered out</code></pre>
+<pre><code>Warning in scDblFinder(sce, clusters = T): You are trying to run scDblFinder on
+a very large number of cells. If these are from different captures, please
+specify this using the `samples` argument.TRUE</code></pre>
+<pre><code>Clustering cells...</code></pre>
+<pre><code>12 clusters</code></pre>
+<pre><code>Creating ~22336 artificial doublets...</code></pre>
+<pre><code>Dimensional reduction</code></pre>
+<pre><code>Evaluating kNN...</code></pre>
+<pre><code>Training model...</code></pre>
+<pre><code>iter=0, 3897 cells excluded from training.</code></pre>
+<pre><code>iter=1, 3865 cells excluded from training.</code></pre>
+<pre><code>iter=2, 3865 cells excluded from training.</code></pre>
+<pre><code>Threshold found:0.382</code></pre>
+<pre><code>6072 (21.7%) doublets called</code></pre>
+<p>Around 20% doublets, predicted. 10X doublet rate is 0.008 per
+10k.</p>
+<pre class="r"><code>#expected doublet rate
+(ncol(list_objects$yap_mutant)* 0.008)/1000</code></pre>
+<pre><code>[1] 0.15348</code></pre>
+<pre class="r"><code>(ncol(list_objects$wt)* 0.008)/1000</code></pre>
+<pre><code>[1] 0.22336</code></pre>
+<pre class="r"><code>#observed
+table(list_objects$yap_mutant$scDblFinder.class)/ncol(list_objects$yap_mutant)</code></pre>
+<pre><code>
+  singlet   doublet 
+0.7932239 0.2067761 </code></pre>
+<pre class="r"><code>table(list_objects$wt$scDblFinder.class)/ncol(list_objects$wt)</code></pre>
+<pre><code>
+  singlet   doublet 
+0.7825215 0.2174785 </code></pre>
+<p>Slightly higher than expected for mutant. Importantly, this is a
+timepoint (2dpf) where cells are transitioning between celltypes and may
+be co-expressing genes which could through it off.</p>
+<p>Library size and nFeature difference between doublets and
+singlet:</p>
+<pre class="r"><code>run_metrics_dbl &lt;- function(seurat){
+  plot_list &lt;- list()
+  
+  plot_list[[1]] &lt;- seurat@meta.data %&gt;% 
+    ggplot(., aes(y = log10(nCount_RNA), x = scDblFinder.class)) +
+    geom_boxplot()+ plot_sizing + ylab(&quot;log10(count)&quot;) + xlab(&quot;&quot;) +
+    ggtitle(seurat$Genotype)
+  
+  plot_list[[2]] &lt;- seurat@meta.data %&gt;% 
+    ggplot(., aes(y = log10(nFeature_RNA), x = scDblFinder.class)) +
+    geom_boxplot()+ plot_sizing + ylab(&quot;log10(features)&quot;) + xlab(&quot;&quot;) +
+    ggtitle(seurat$Genotype)
+  
+  return(plot_list)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_metrics_dbl)
+
+wrap_plots(unlist(plot_list, recursive = F)) </code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-18-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="explore-and-remove-outliers" class="section level2">
+<h2>Explore and remove outliers</h2>
+<p>%mito: Fixed threshold 20%</p>
+<p>Library size: nmads 2, lower and higher</p>
+<p>nFeatures: nmads 2, lower and higher</p>
+<div id="library-size" class="section level3">
+<h3>Library size</h3>
+<p>Get library size threshold for each sample - lower bound</p>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_low &lt;- isOutlier(list_objects$yap_mutant$nCount_RNA, type = &quot;lower&quot;, nmads = 2, log = T)  
+lib_size_outliers_low %&gt;% sum()</code></pre>
+<pre><code>[1] 1848</code></pre>
+<pre class="r"><code>summary(list_objects$yap_mutant$nCount_RNA[lib_size_outliers_low]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  193.0   420.0   483.5   492.8   561.0   675.0 </code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_low &lt;- isOutlier(list_objects$wt$nCount_RNA, type = &quot;lower&quot;, nmads = 2, log = T)  
+lib_size_outliers_low %&gt;% sum()</code></pre>
+<pre><code>[1] 1796</code></pre>
+<pre class="r"><code>summary(list_objects$wt$nCount_RNA[lib_size_outliers_low]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  178.0   424.0   476.0   478.9   536.0   602.0 </code></pre>
+<p>Very similar</p>
+<p>Upper bound ncounts</p>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_upper &lt;- isOutlier(list_objects$yap_mutant$nCount_RNA, type = &quot;higher&quot;, nmads = 2, log = T)  
+lib_size_outliers_upper %&gt;% sum()</code></pre>
+<pre><code>[1] 582</code></pre>
+<pre class="r"><code>summary(list_objects$yap_mutant$nCount_RNA[lib_size_outliers_upper]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  16866   19410   22680   27725   29804  122576 </code></pre>
+<pre class="r"><code>list_objects$yap_mutant$scDblFinder.class[lib_size_outliers_upper] %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+    166     416 </code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_upper &lt;- isOutlier(list_objects$wt$nCount_RNA, type = &quot;higher&quot;, nmads = 2, log = T)  
+lib_size_outliers_upper %&gt;% sum()</code></pre>
+<pre><code>[1] 863</code></pre>
+<pre class="r"><code>summary(list_objects$wt$nCount_RNA[lib_size_outliers_upper]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  10069   11100   12831   14368   15336   56951 </code></pre>
+<pre class="r"><code>list_objects$wt$scDblFinder.class[lib_size_outliers_upper] %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+    327     536 </code></pre>
+<p>Combined</p>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_combined &lt;- isOutlier(list_objects$yap_mutant$nCount_RNA, type = &quot;both&quot;, nmads = 2, log = T)  
+lib_size_outliers_combined %&gt;% sum()</code></pre>
+<pre><code>[1] 2430</code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_combined &lt;- isOutlier(list_objects$wt$nCount_RNA, type = &quot;both&quot;, nmads = 2, log = T)  
+lib_size_outliers_combined %&gt;% sum()</code></pre>
+<pre><code>[1] 2659</code></pre>
+</div>
+<div id="features" class="section level3">
+<h3>Features</h3>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_low &lt;- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = &quot;lower&quot;, nmads = 2, log = T)  
+lib_size_outliers_low %&gt;% sum()</code></pre>
+<pre><code>[1] 2268</code></pre>
+<pre class="r"><code>summary(list_objects$yap_mutant$nFeature_RNA[lib_size_outliers_low]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  124.0   284.0   328.0   331.3   382.0   460.0 </code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_low &lt;- isOutlier(list_objects$wt$nFeature_RNA, type = &quot;lower&quot;, nmads = 2, log = T)  
+lib_size_outliers_low %&gt;% sum()</code></pre>
+<pre><code>[1] 2175</code></pre>
+<pre class="r"><code>summary(list_objects$wt$nFeature_RNA[lib_size_outliers_low]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  122.0   285.0   319.0   318.4   358.0   407.0 </code></pre>
+<p>Upper bound ncounts</p>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_upper &lt;- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = &quot;higher&quot;, nmads = 2, log = T)  
+lib_size_outliers_upper %&gt;% sum()</code></pre>
+<pre><code>[1] 305</code></pre>
+<pre class="r"><code>summary(list_objects$yap_mutant$nFeature_RNA[lib_size_outliers_upper]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   4888    5161    5512    5867    6215    9713 </code></pre>
+<pre class="r"><code>list_objects$yap_mutant$scDblFinder.class[lib_size_outliers_upper] %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+     82     223 </code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_upper &lt;- isOutlier(list_objects$wt$nFeature_RNA, type = &quot;higher&quot;, nmads = 2, log = T)  
+lib_size_outliers_upper %&gt;% sum()</code></pre>
+<pre><code>[1] 486</code></pre>
+<pre class="r"><code>summary(list_objects$wt$nFeature_RNA[lib_size_outliers_upper]) </code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   3466    3676    3923    4123    4354    7313 </code></pre>
+<pre class="r"><code>list_objects$wt$scDblFinder.class[lib_size_outliers_upper] %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+    125     361 </code></pre>
+<p>Combined</p>
+<pre class="r"><code>#yap mutant
+lib_size_outliers_combined &lt;- isOutlier(list_objects$yap_mutant$nFeature_RNA, type = &quot;both&quot;, nmads = 2, log = T)  
+lib_size_outliers_combined %&gt;% sum()</code></pre>
+<pre><code>[1] 2573</code></pre>
+<pre class="r"><code>#wildtype
+lib_size_outliers_combined &lt;- isOutlier(list_objects$wt$nFeature_RNA, type = &quot;both&quot;, nmads = 2, log = T)  
+lib_size_outliers_combined %&gt;% sum()</code></pre>
+<pre><code>[1] 2661</code></pre>
+</div>
+<div id="remove-outliers" class="section level3">
+<h3>Remove outliers</h3>
+<pre class="r"><code>remove_outliers &lt;- function(seurat){
+  mito &lt;- seurat$percent.mt &gt; 20
+  features &lt;-isOutlier(seurat$nFeature_RNA, type = &quot;both&quot;, nmads = 2, log = T)
+  count &lt;-isOutlier(seurat$nCount_RNA, type = &quot;both&quot;, nmads = 2, log = T)
+  
+  remove_vec &lt;- c(mito | features | count)
+  
+  seurat &lt;- seurat[, !remove_vec]
+}</code></pre>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, remove_outliers)</code></pre>
+<p>How many doublets are left?</p>
+<pre class="r"><code>list_objects$yap_mutant$scDblFinder.class %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+  12430    3537 </code></pre>
+<pre class="r"><code>list_objects$wt$scDblFinder.class %&gt;% table()</code></pre>
+<pre><code>.
+singlet doublet 
+  18985    5529 </code></pre>
+</div>
+</div>
+<div id="option-remove-doublets" class="section level2">
+<h2>Option: remove doublets</h2>
+<p>I think we should at least try to see if removing doublets changes
+outcome, though I still think there is a real chance intermediate stages
+of endothelial cells will be marked as doublets.</p>
+<p>Add removed doublets object to list.</p>
+<pre class="r"><code>list_objects$yap_mutant_nodoublets &lt;- list_objects$yap_mutant[,list_objects$yap_mutant$scDblFinder.class == &quot;singlet&quot;]
+
+list_objects$wt_nodoublets &lt;- list_objects$wt[,list_objects$wt$scDblFinder.class == &quot;singlet&quot;]</code></pre>
+<pre class="r"><code>list_objects %&gt;% length()</code></pre>
+<pre><code>[1] 4</code></pre>
+</div>
+<div id="post-qc-metrics" class="section level2">
+<h2>Post-QC metrics</h2>
+<div id="library-size-nfeatures-mito-1" class="section level3">
+<h3>Library size, nFeatures, %mito</h3>
+<p>Density plots</p>
+<p>With doublets</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[1:2], make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;) +plot_annotation(title = &quot;with doublets&quot;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-36-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Without doublets</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[3:4], make_density_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;) +plot_annotation(title = &quot;without doublets&quot;)</code></pre>
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.
+`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-37-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>General distribution without doublets looks slightly better.</p>
+</div>
+<div id="correlations-1" class="section level3">
+<h3>Correlations</h3>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[1:2], make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;with doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-38-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[3:4], make_correlation_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;without doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-39-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>No real differences here.</p>
+</div>
+</div>
+<div id="run-single-cell-workflow" class="section level2">
+<h2>Run single-cell workflow</h2>
+<p>We’re going to run the workflow on each sample separately (just in
+case we need it) and on combined objects.</p>
+<p>Not using sctransform, regressing out %mito</p>
+<pre class="r"><code>run_workflow &lt;- function(seurat){
+  seurat &lt;- NormalizeData(seurat) %&gt;%   #should deal with basic library size differences
+    FindVariableFeatures() %&gt;% 
+    ScaleData(., vars.to.regress = c(&quot;percent.mt&quot;)) %&gt;% 
+    RunPCA() %&gt;% 
+    RunUMAP(., dims = 1:30) %&gt;% #defaults
+    FindNeighbors(., dims = 1:30) %&gt;% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1))
+}</code></pre>
+<p>Combine the samples</p>
+<pre class="r"><code>list_object_combined &lt;- list()
+list_object_combined$merged &lt;- merge(list_objects$yap_mutant,
+                                     y = list_objects$wt,
+                                     project = &quot;Dataset_10025&quot;, merge.data = TRUE) </code></pre>
+<pre><code>Warning: Some cell names are duplicated across objects provided. Renaming to
+enforce unique cell names.</code></pre>
+<pre class="r"><code>list_object_combined$merged &lt;- JoinLayers(list_object_combined$merged) #seurat v5 things
+
+list_object_combined$merged_nodoublets &lt;- merge(list_objects$yap_mutant_nodoublets,
+                                     y = list_objects$wt_nodoublets,
+                                     project = &quot;Dataset_10025&quot;, merge.data = TRUE)</code></pre>
+<pre><code>Warning: Some cell names are duplicated across objects provided. Renaming to
+enforce unique cell names.</code></pre>
+<pre class="r"><code>list_object_combined$merged_nodoublets &lt;- JoinLayers(list_object_combined$merged_nodoublets) #seurat v5 things</code></pre>
+<div id="each-sample" class="section level3">
+<h3>Each Sample</h3>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, run_workflow)</code></pre>
+<pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+This message will be shown once per session</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9589
+Number of communities: 9
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9426
+Number of communities: 15
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9320
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9213
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9130
+Number of communities: 20
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9052
+Number of communities: 23
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8979
+Number of communities: 25
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8923
+Number of communities: 27
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8869
+Number of communities: 28
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15967
+Number of edges: 591575
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8814
+Number of communities: 28
+Elapsed time: 1 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9639
+Number of communities: 10
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9468
+Number of communities: 14
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9353
+Number of communities: 16
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9249
+Number of communities: 18
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9170
+Number of communities: 22
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9086
+Number of communities: 23
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9021
+Number of communities: 28
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8965
+Number of communities: 28
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8914
+Number of communities: 29
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 24514
+Number of edges: 915039
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8860
+Number of communities: 29
+Elapsed time: 2 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9636
+Number of communities: 10
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9481
+Number of communities: 14
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9374
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9269
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9184
+Number of communities: 21
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9104
+Number of communities: 23
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9043
+Number of communities: 26
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8991
+Number of communities: 28
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8933
+Number of communities: 28
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 12430
+Number of edges: 469411
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8872
+Number of communities: 28
+Elapsed time: 1 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9667
+Number of communities: 11
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9502
+Number of communities: 15
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9381
+Number of communities: 18
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9286
+Number of communities: 20
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9206
+Number of communities: 23
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9137
+Number of communities: 25
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9071
+Number of communities: 26
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9011
+Number of communities: 28
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8951
+Number of communities: 28
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 18985
+Number of edges: 728234
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8894
+Number of communities: 28
+Elapsed time: 1 seconds</code></pre>
+</div>
+<div id="combined" class="section level3">
+<h3>Combined</h3>
+<pre class="r"><code>list_object_combined &lt;- lapply(list_object_combined, run_workflow)</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9646
+Number of communities: 12
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9498
+Number of communities: 15
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9393
+Number of communities: 19
+Elapsed time: 7 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9299
+Number of communities: 22
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9217
+Number of communities: 23
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9153
+Number of communities: 28
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9096
+Number of communities: 30
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9043
+Number of communities: 31
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8991
+Number of communities: 32
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 40481
+Number of edges: 1498673
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8944
+Number of communities: 33
+Elapsed time: 6 seconds</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9677
+Number of communities: 12
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9538
+Number of communities: 14
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9434
+Number of communities: 18
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9338
+Number of communities: 21
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9255
+Number of communities: 23
+Elapsed time: 4 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9183
+Number of communities: 24
+Elapsed time: 4 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9129
+Number of communities: 29
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9071
+Number of communities: 30
+Elapsed time: 4 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9024
+Number of communities: 29
+Elapsed time: 5 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31415
+Number of edges: 1197928
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8972
+Number of communities: 30
+Elapsed time: 5 seconds</code></pre>
+</div>
+</div>
+<div id="pca-correlations" class="section level2">
+<h2>PCA correlations</h2>
+<pre class="r"><code>run_pca_correlations &lt;- function(seurat){
+  plot_list &lt;- list()
+
+  meta &lt;- seurat@meta.data %&gt;% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %&gt;% 
+    select(., log10ncount, log10nfeat) %&gt;% 
+    rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+    full_join(., seurat@reductions$pca@cell.embeddings %&gt;% as.data.frame() %&gt;% rownames_to_column(&quot;Barcode&quot;) %&gt;% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] &lt;- ggscatter(meta, x = &quot;PC_1&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC1 vs library size, %s&quot;, seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] &lt;- ggscatter(meta, x = &quot;PC_2&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC2 vs library size, %s&quot;, seurat@project.name))
+  
+  #mito
+  plot_list[[3]] &lt;- ggscatter(meta, x = &quot;PC_3&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC3 vs library size, %s&quot;, seurat@project.name))
+  
+  return(plot_list)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[1:2], run_pca_correlations)</code></pre>
+<pre><code>Joining with `by = join_by(Barcode)`
+Joining with `by = join_by(Barcode)`</code></pre>
+<pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;with doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-46-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Combined (top with, bottom without doublets):</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_object_combined, run_pca_correlations)</code></pre>
+<pre><code>Joining with `by = join_by(Barcode)`
+Joining with `by = join_by(Barcode)`</code></pre>
+<pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;with doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-47-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>No bias.</p>
+</div>
+<div id="umap-overviews" class="section level2">
+<h2>UMAP overviews</h2>
+<div id="each-sample-1" class="section level3">
+<h3>Each Sample</h3>
+<p>Not that much to see, only make UMAPs for nfeature, ncount and
+seurat_cluster.</p>
+<pre class="r"><code>plot_umap_sample &lt;- function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- FeaturePlot(seurat,  features = c(&quot;nCount_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[2]] &lt;- FeaturePlot(seurat, features = c(&quot;nFeature_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[3]] &lt;- DimPlot(seurat,  group.by = c(&quot;seurat_clusters&quot;)) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[1:2], plot_umap_sample)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;with doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-49-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects[3:4], plot_umap_sample)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;without doublets&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-50-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="combined-1" class="section level3">
+<h3>Combined</h3>
+<p>Not that much to see, only make UMAPs for nfeature, ncount and
+seurat_cluster.</p>
+<pre class="r"><code>plot_umap_dataset &lt;- function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- FeaturePlot(seurat,  features = c(&quot;nCount_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[2]] &lt;- FeaturePlot(seurat, features = c(&quot;nFeature_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[3]] &lt;- DimPlot(seurat,  group.by = c(&quot;seurat_clusters&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[4]] &lt;- DimPlot(seurat,  group.by = c(&quot;Genotype&quot;), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}</code></pre>
+<p>Top with, bottom without doublets.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_object_combined, plot_umap_dataset)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;without doublets&quot;) + plot_layout(nrow = 2)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-52-1.png" width="1920" style="display: block; margin: auto;" /></p>
+</div>
+<div id="endothelial-cell-genes" class="section level3">
+<h3>Endothelial cell genes</h3>
+<p>Quick overview of endothelial cell genes.</p>
+<pre class="r"><code>run_umap_genes &lt;- function(seurat, genes = c(&quot;cdh5&quot;, &quot;kdrl&quot;, &quot;cdh6&quot;, &quot;prox1a&quot;)){
+  p &lt;- FeaturePlot(seurat, features = genes) 
+  p + plot_annotation(title = seurat@project.name)
+}</code></pre>
+<div id="each-sample-2" class="section level4">
+<h4>Each Sample</h4>
+<p>With doublets</p>
+<pre class="r"><code>lapply(list_objects[1:2], run_umap_genes)</code></pre>
+<pre><code>$yap_mutant</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-54-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre><code>
+$wt</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-54-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Without doublets</p>
+<pre class="r"><code>lapply(list_objects[3:4], run_umap_genes)</code></pre>
+<pre><code>$yap_mutant_nodoublets</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-55-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre><code>
+$wt_nodoublets</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-55-2.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="combined-2" class="section level4">
+<h4>Combined</h4>
+<p>With doublets:</p>
+<pre class="r"><code>run_umap_genes(list_object_combined$merged)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-56-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Without doublets:</p>
+<pre class="r"><code>run_umap_genes(list_object_combined$merged_nodoublets)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd/unnamed-chunk-57-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+</div>
+<div id="export" class="section level2">
+<h2>Export</h2>
+<p>Export them all.</p>
+<pre class="r"><code>#dataset
+file_name &lt;- here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01.qs2&#39;)
+qs_save(list_object_combined$merged_nodoublets, file_name)
+file_name &lt;- here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets.qs2&#39;)
+qs_save(list_object_combined$merged, file_name)
+
+#samples
+file_name &lt;- here(&#39;output/data/Samples/S20127/S20127_yap1_mutant_Level_01.qs2&#39;)
+qs_save(list_objects$yap_mutant_nodoublets, file_name)
+file_name &lt;- here(&#39;output/data/Samples/S20127/S20127_yap1_mutant_Level_01_kept_doublets.qs2&#39;)
+qs_save(list_objects$yap_mutant, file_name)
+
+file_name &lt;- here(&#39;output/data/Samples/S20128/S20128_wildtype_Level_01.qs2&#39;)
+qs_save(list_objects$wt_nodoublets, file_name)
+file_name &lt;- here(&#39;output/data/Samples/S20128/S20128_wildtype_Level_01_kept_doublets.qs2&#39;)
+qs_save(list_objects$wt, file_name)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.0 (2025-04-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.7.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] future_1.69.0               qs2_0.1.7                  
+ [3] scran_1.38.0                scater_1.38.0              
+ [5] scuttle_1.20.0              patchwork_1.3.2            
+ [7] clustree_0.5.1              ggraph_2.2.2               
+ [9] ggpubr_0.6.2                scDblFinder_1.24.0         
+[11] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0
+[13] Biobase_2.70.0              GenomicRanges_1.62.1       
+[15] Seqinfo_1.0.0               IRanges_2.44.0             
+[17] S4Vectors_0.48.0            BiocGenerics_0.56.0        
+[19] generics_0.1.4              MatrixGenerics_1.22.0      
+[21] matrixStats_1.5.0           Seurat_5.4.0               
+[23] SeuratObject_5.3.0          sp_2.2-0                   
+[25] here_1.0.2                  lubridate_1.9.4            
+[27] forcats_1.0.1               stringr_1.5.1              
+[29] dplyr_1.1.4                 purrr_1.2.1                
+[31] readr_2.1.6                 tidyr_1.3.2                
+[33] tibble_3.3.1                ggplot2_4.0.1              
+[35] tidyverse_2.0.0             workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
+  [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
+  [7] sctransform_0.4.3        backports_1.5.0          R6_2.6.1                
+ [10] mgcv_1.9-1               lazyeval_0.2.2           uwot_0.2.4              
+ [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
+ [16] cli_3.6.5                spatstat.explore_3.7-0   fastDummies_1.7.5       
+ [19] labeling_0.4.3           sass_0.4.10              S7_0.2.1                
+ [22] spatstat.data_3.1-9      ggridges_0.5.7           pbapply_1.7-4           
+ [25] Rsamtools_2.26.0         parallelly_1.46.1        limma_3.66.0            
+ [28] rstudioapi_0.17.1        BiocIO_1.20.0            ica_1.0-3               
+ [31] spatstat.random_3.4-4    car_3.1-3                Matrix_1.7-3            
+ [34] ggbeeswarm_0.7.3         abind_1.4-8              lifecycle_1.0.4         
+ [37] whisker_0.4.1            yaml_2.3.10              edgeR_4.8.2             
+ [40] carData_3.0-5            SparseArray_1.10.8       Rtsne_0.17              
+ [43] grid_4.5.0               promises_1.5.0           dqrng_0.4.1             
+ [46] crayon_1.5.3             miniUI_0.1.2             lattice_0.22-6          
+ [49] beachmat_2.26.0          cowplot_1.2.0            cigarillo_1.0.0         
+ [52] pillar_1.11.1            knitr_1.50               metapod_1.18.0          
+ [55] rjson_0.2.23             xgboost_3.1.3.1          future.apply_1.20.1     
+ [58] codetools_0.2-20         glue_1.8.0               getPass_0.2-4           
+ [61] spatstat.univar_3.1-6    data.table_1.18.0        vctrs_0.6.5             
+ [64] png_0.1-8                spam_2.11-3              gtable_0.3.6            
+ [67] cachem_1.1.0             xfun_0.52                S4Arrays_1.10.1         
+ [70] mime_0.13                tidygraph_1.3.1          survival_3.8-3          
+ [73] statmod_1.5.1            bluster_1.20.0           fitdistrplus_1.2-5      
+ [76] ROCR_1.0-11              nlme_3.1-168             RcppAnnoy_0.0.23        
+ [79] GenomeInfoDb_1.46.2      rprojroot_2.1.1          bslib_0.9.0             
+ [82] irlba_2.3.5.1            vipor_0.4.7              KernSmooth_2.23-26      
+ [85] otel_0.2.0               tidyselect_1.2.1         processx_3.8.6          
+ [88] compiler_4.5.0           curl_6.2.2               git2r_0.36.2            
+ [91] BiocNeighbors_2.4.0      DelayedArray_0.36.0      plotly_4.11.0           
+ [94] stringfish_0.18.0        rtracklayer_1.70.1       scales_1.4.0            
+ [97] lmtest_0.9-40            callr_3.7.6              digest_0.6.37           
+[100] goftest_1.2-3            spatstat.utils_3.2-1     rmarkdown_2.29          
+[103] XVector_0.50.0           htmltools_0.5.8.1        pkgconfig_2.0.3         
+[106] fastmap_1.2.0            rlang_1.1.6              htmlwidgets_1.6.4       
+[109] UCSC.utils_1.6.1         shiny_1.12.1             farver_2.1.2            
+[112] jquerylib_0.1.4          zoo_1.8-15               jsonlite_2.0.0          
+[115] BiocParallel_1.44.0      BiocSingular_1.26.1      RCurl_1.98-1.17         
+[118] magrittr_2.0.3           Formula_1.2-5            dotCall64_1.2           
+[121] Rcpp_1.0.14              viridis_0.6.5            reticulate_1.44.1       
+[124] stringi_1.8.7            MASS_7.3-65              plyr_1.8.9              
+[127] parallel_4.5.0           listenv_0.10.0           ggrepel_0.9.6           
+[130] deldir_2.0-4             graphlayouts_1.2.2       Biostrings_2.78.0       
+[133] splines_4.5.0            tensor_1.5.1             hms_1.1.4               
+[136] locfit_1.5-9.12          ps_1.9.1                 igraph_2.2.1            
+[139] spatstat.geom_3.7-0      ggsignif_0.6.4           RcppHNSW_0.6.0          
+[142] reshape2_1.4.5           ScaledMatrix_1.18.0      XML_3.99-0.20           
+[145] evaluate_1.0.3           RcppParallel_5.1.11-1    renv_1.1.4              
+[148] BiocManager_1.30.27      tweenr_2.0.3             tzdb_0.5.0              
+[151] httpuv_1.6.16            RANN_2.6.2               polyclip_1.10-7         
+[154] scattermore_1.2          ggforce_0.5.0            rsvd_1.0.5              
+[157] broom_1.0.11             xtable_1.8-4             restfulr_0.0.16         
+[160] RSpectra_0.16-2          rstatix_0.7.3            later_1.4.2             
+[163] viridisLite_0.4.2        memoise_2.0.1            beeswarm_0.4.0          
+[166] GenomicAlignments_1.46.0 cluster_2.1.8.1          timechange_0.3.0        
+[169] globals_0.18.0          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
