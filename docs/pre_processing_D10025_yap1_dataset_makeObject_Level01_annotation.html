@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree92395addb420a35bc9f281071e615d16d3310f08targetblank92395ada">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee48836bf53175315da01bfac45bbd153d3eb0712targetblanke48836ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/92395addb420a35bc9f281071e615d16d3310f08" target="_blank">92395ad</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e48836bf53175315da01bfac45bbd153d3eb0712" target="_blank">e48836b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree92395addb420a35bc9f281071e615d16d3310f08targetblank92395ada"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee48836bf53175315da01bfac45bbd153d3eb0712targetblanke48836ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/92395addb420a35bc9f281071e615d16d3310f08" target="_blank">92395ad</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e48836bf53175315da01bfac45bbd153d3eb0712" target="_blank">e48836b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -610,6 +610,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/e48836bf53175315da01bfac45bbd153d3eb0712/analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd" target="_blank">e48836b</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+<td>
+wflow_publish("analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.html" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/92395addb420a35bc9f281071e615d16d3310f08/analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd" target="_blank">92395ad</a>
 </td>
 <td>
@@ -655,11 +689,11 @@ wflow_publish("analysis/pre_processing_D10025_yap1_dataset_makeObject_Level01_an
 <p>Objects made here:
 ./pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd</p>
 <p>Only loading merged ones for now.</p>
-<pre class="r"><code>list_objects &lt;- lapply(list.files(path = here(&#39;output/data/Datsets/D10025_yap1_dataset/&#39;), 
-           pattern = &quot;D10025_yap1_dataset_Level_01&quot;, full.names = T), qs_read)
+<pre class="r"><code>input_paths &lt;- c(here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets.qs2&#39;),
+                 here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01.qs2&#39;))
+list_objects &lt;- lapply(input_paths, qs_read)
 
-names(list_objects) &lt;- gsub(&quot;\\.qs2&quot;, &quot;&quot;, list.files(path = here(&#39;output/data/Datsets/D10025_yap1_dataset/&#39;), 
-           pattern = &quot;D10025_yap1_dataset_Level_01&quot;))</code></pre>
+names(list_objects) &lt;- gsub(&quot;\\.qs2&quot;, &quot;&quot;, basename(input_paths))</code></pre>
 <p>Give them names in the object</p>
 <pre class="r"><code>list_objects$D10025_yap1_dataset_Level_01_kept_doublets@misc[[&quot;name&quot;]] &lt;- &quot;Level_01_kept_doublets&quot;
 list_objects$D10025_yap1_dataset_Level_01@misc[[&quot;name&quot;]] &lt;- &quot;Level_01&quot;</code></pre>
@@ -822,6 +856,43 @@ Warning in data.frame(theta = theta.v, y = y): row names were found from a
 short variable and have been discarded</code></pre>
 <pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = &quot;top = with doublets, bottom = without&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-9-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-9-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="umaps-for-cell-cycle-stages" class="section level3">
 <h3>UMAPs for cell cycle stages</h3>
@@ -836,6 +907,43 @@ short variable and have been discarded</code></pre>
 
 wrap_plots(plot_list, ncol = 2) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-11-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="clustree" class="section level2">
@@ -846,12 +954,69 @@ wrap_plots(plot_list, ncol = 2) + plot_layout(guides = &quot;collect&quot;, axis
 
 wrap_plots(plot_list, ncol = 2)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-12-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-12-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Resolution 0.5 looks pretty solid for both of them. This doesn’t have
 to be very detailed yet, it is most important for us to isolate the
 endothlial cells.</p>
 </div>
 <div id="low-quality-clusters" class="section level2">
 <h2>Low quality clusters</h2>
+<p>Do any clusters have high mt and/or low count? Being mindful that
+some celltypes do have naturally higher %mt and counts.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- seurat@meta.data %&gt;% 
+  ggplot(., aes(y = log10(nCount_RNA), x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = &quot;none&quot;)
+  
+  plot_list[[2]] &lt;- seurat@meta.data %&gt;% 
+  ggplot(., aes(y = percent.mt, x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = &quot;none&quot;)
+  
+  return(plot_list) 
+})
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;) </code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-13-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Nothing very obvious.</p>
 </div>
 <div id="scgate-find-endothelial-subset" class="section level2">
 <h2>scGate: Find endothelial subset</h2>
@@ -929,8 +1094,45 @@ the `.groups` argument.</code></pre>
 <pre class="r"><code>plot_list &lt;- lapply(list_objects, run_umap_scgate_results)
 
 wrap_plots(unlist(plot_list, recursive = F), ncol = 2) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
-<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" />
-Make barplots for endo purity</p>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-17-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Make barplots for endo purity</p>
 <pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
   seurat@meta.data %&gt;% 
     group_by(., RNA_snn_res.0.5) %&gt;% 
@@ -963,6 +1165,43 @@ the `.groups` argument.</code></pre>
 <pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
 (`geom_bar()`).</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-18-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-18-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="dotplot-for-genes" class="section level2">
 <h2>Dotplot for genes</h2>
@@ -1013,6 +1252,43 @@ annotation.</p>
 
 wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-21-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Make dotplot for clusters that have mid-range purity.</p>
 <pre class="r"><code>run_dotplot_mid_purity &lt;- function(seurat, genes, limits){
   clusters &lt;- seurat@meta.data %&gt;% 
@@ -1029,6 +1305,43 @@ Warning: Scaling data with a low number of groups may produce misleading
 results</code></pre>
 <pre class="r"><code>wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-23-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/d537a9feb2554e6d97e0e636ac480d435928a2e6/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-23-1.png" target="_blank">d537a9f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The clusters with mid-range endothelial cell compositions clearly
 express genes for other cell types, so we will remove them.</p>
 </div>
