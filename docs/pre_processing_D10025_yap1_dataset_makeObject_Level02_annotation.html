@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michelle Meier" />
+
+
+<title>D10025 yap1 dataset: Make Level 02 (all endothelial cells) object</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">yap1_meox1_paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">D10025 yap1 dataset: Make Level 02 (all
+endothelial cells) object</h1>
+<h4 class="author">Michelle Meier</h4>
+<h4 class="date">26. January 2026</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-01-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>yap1_meox1_paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260119code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260119)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260119code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260119)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree571328d9ad9639db564a0495808032ec9132c71ctargetblank571328da">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/571328d9ad9639db564a0495808032ec9132c71c" target="_blank">571328d</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree571328d9ad9639db564a0495808032ec9132c71ctargetblank571328da"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/571328d9ad9639db564a0495808032ec9132c71c" target="_blank">571328d</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/pre_processing/
+    Ignored:    data/.DS_Store
+    Ignored:    data/genesets/
+    Ignored:    data/input/
+    Ignored:    output/data/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/pre_processing_D10025_yap1_dataset_makeObject_Level03_annotation.Rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   renv.lock
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd</code>)
+and HTML
+(<code>docs/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/571328d9ad9639db564a0495808032ec9132c71c/analysis/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd" target="_blank">571328d</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+wflow_publish("analysis/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Making Level 02 object for yap1 dataset.</p>
+<div id="set-up" class="section level3">
+<h3>Set-up</h3>
+<p>Load libraries</p>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+})</code></pre>
+</div>
+<div id="load-data" class="section level3">
+<h3>Load data</h3>
+<p>Made here:
+./pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd</p>
+<pre class="r"><code>input_paths &lt;- c(here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets_annotated.qs2&#39;),
+                 here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_annotated.qs2&#39;))
+list_objects &lt;- lapply(input_paths, qs_read)
+
+names(list_objects) &lt;- gsub(&quot;\\.qs2&quot;, &quot;&quot;, basename(input_paths))</code></pre>
+</div>
+<div id="plotting-themes" class="section level3">
+<h3>Plotting themes</h3>
+<pre class="r"><code>plot_sizing &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat &lt;- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;), 
+                   strip.text = element_text(size = 14))</code></pre>
+</div>
+</div>
+<div id="subset-datasets-endothelial-clusters-only"
+class="section level2">
+<h2>Subset datasets: Endothelial clusters only</h2>
+<p>Subset Level 01 to only include endothelial subsets. By going through
+.pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd,
+we can see that:</p>
+<ul>
+<li><p>there are no low quality clusters that stand out</p></li>
+<li><p>we can find endothelial subsets using a mix of marker genes and
+scGate endothelial purity (95%) for clusters</p></li>
+</ul>
+<pre class="r"><code>#for each setting separately
+
+#with doublets
+cells_to_keep &lt;- list_objects$D10025_yap1_dataset_Level_01_kept_doublets_annotated@meta.data %&gt;% 
+  filter(., RNA_snn_res.0.5_cluster_purity &gt; 0.95) %&gt;% 
+  rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+  pull(Barcode) 
+
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets &lt;- subset(list_objects$D10025_yap1_dataset_Level_01_kept_doublets, cells = cells_to_keep)
+
+#without doublets
+cells_to_keep &lt;- list_objects$D10025_yap1_dataset_Level_01_annotated@meta.data %&gt;% 
+  filter(., RNA_snn_res.0.5_cluster_purity &gt; 0.95) %&gt;% 
+  rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+  pull(Barcode) 
+
+list_objects$D10025_yap1_dataset_Level_02 &lt;- subset(list_objects$D10025_yap1_dataset_Level_01_annotated, cells = cells_to_keep)</code></pre>
+<p>Clean up list, remove Level 01</p>
+<pre class="r"><code>list_objects$D10025_yap1_dataset_Level_01_kept_doublets_annotated &lt;- list_objects$D10025_yap1_dataset_Level_01_annotated &lt;- NULL
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
+Ncells  12038265  643.0   21608504 1154.1         NA  19154378 1023.0
+Vcells 305069503 2327.5  872673593 6658.0      49152 872663400 6657.9</code></pre>
+<p>Clean up some metadata</p>
+<pre class="r"><code>list_objects$D10025_yap1_dataset_Level_02_kept_doublets$endothelial_UCell &lt;- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$scGate_multi &lt;- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$is_endothlial &lt;- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.5_cluster_purity &lt;- NULL
+
+list_objects$D10025_yap1_dataset_Level_02$endothelial_UCell &lt;- list_objects$D10025_yap1_dataset_Level_02$scGate_multi &lt;- list_objects$D10025_yap1_dataset_Level_02$is_endothlial &lt;- list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.5_cluster_purity &lt;- NULL</code></pre>
+<p>Replace name in object</p>
+<pre class="r"><code>list_objects$D10025_yap1_dataset_Level_02_kept_doublets@misc$name &lt;- &quot;Level_02_kept_doublets&quot;
+list_objects$D10025_yap1_dataset_Level_02@misc$name &lt;- &quot;Level_02&quot;</code></pre>
+</div>
+<div id="re-run-single-cell-workflow" class="section level2">
+<h2>Re-run single-cell workflow</h2>
+<p>Not using sctransform, regressing out %mito. Same function we used
+for Level 01</p>
+<pre class="r"><code>run_workflow &lt;- function(seurat){
+  seurat &lt;- NormalizeData(seurat) %&gt;%   #this is technically unneccessary, but also won&#39;t hurt
+    FindVariableFeatures() %&gt;% 
+    ScaleData(., vars.to.regress = c(&quot;percent.mt&quot;)) %&gt;% 
+    RunPCA() %&gt;% 
+    RunUMAP(., dims = 1:30) %&gt;% #defaults
+    FindNeighbors(., dims = 1:30) %&gt;% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1)) #this will overwrite old clustering (that&#39;s okay)
+}</code></pre>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, run_workflow)</code></pre>
+<pre><code>Normalizing layer: counts</code></pre>
+<pre><code>Finding variable features for layer counts</code></pre>
+<pre><code>Regressing out percent.mt</code></pre>
+<pre><code>Centering and scaling data matrix</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>PC_ 1 
+Positive:  mki67, top2a, si:dkey-108k21.10, hmgb2a, CABZ01058261.1, stmn1a, tubb2b, h3f3b.1, hist1h4l.11, smc2 
+       hist1h4l.6, dut, hmga1a, cdk1, mibp, lbr, tpx2, ccna2, hmgb2b, aurkb 
+       mad2l1, pcna, cks1b, zgc:110425, nusap1, cenpf, aspm, rrm1, tuba8l4, fbxo5 
+Negative:  krt18a.1, cxcr4b, cavin1b, aqp1a.1, cav1, limch1b, fabp11a, cxcr4a, thy1, sox7 
+       bsg, vegfc, rbpms2b, fxyd1, csrp2, cd99, eppk1, igfbp1a, tcima, sema7a 
+       hapln3, sult2st1, id1, mcamb, adrb3a, ehd2b, hopx, pcdh19, cfd, efnb2a 
+PC_ 2 
+Positive:  stab2, dab2, lyve1b, lgmn, si:dkey-28n18.9, postnb, il13ra2, mrc1a, cxcl12a, glula 
+       sele, prcp, rab11bb, zgc:110239, selenop, timp2b, pxk, gnpda1, lamp2, apoeb 
+       ctsba, hexb, aplnra, mafbb, stab1, mafba, slco2b1, npl, ctsla, ifi30 
+Negative:  dll4, CABZ01030107.1, flt1, crip2, mcamb, esm1, icn, f8, igfbp1a, si:ch211-160j14.3 
+       cxcr4a, efnb2a, hand2, cxcr4b, rbpms2b, gata5, aqp1a.1, mpped2a, hopx, csrp2 
+       agrn, col4a1, si:ch211-222l21.1, col4a2, fxyd1, bambia, spry4, hey2, cavin1b, s100a10b 
+PC_ 3 
+Positive:  f8, id2b, hand2, si:ch211-160j14.3, gata5, rpz5, krt94, errfi1a, s100a10b, icn 
+       sall1a, plcd1a, alcama, hapln1b, anxa2a, kctd12.2, FP102018.1, mb, chl1a, zgc:64106 
+       adarb1a, irx5a, angptl2b, col5a2a, fn1a, igf2b, meis1b, si:ch211-119e14.1, adora2aa, sh3d21 
+Negative:  cldn5b, plvapb, hlx1, esm1, rbpms2b, csrp2, cd81b, scarb2a, zgc:112332, igfbp1a 
+       fxyd1, podxl, hopx, zgc:158423, gapdhs, cxcr4a, apln, foxf2a, sox7, tcima 
+       mcamb, pdgfbb, bsg, zic2a, cd99, sox13, cxcr4b, tagln2, dlc, dcbld1 
+PC_ 4 
+Positive:  nasp, pcna, mcm2, hells, mcm5, npm1a, mcm6, fen1, mcm4, mcm3 
+       lig1, chaf1a, rbbp4, dkc1, cdca7a, slbp, ncl, msh6, fbl, dnajc9 
+       nop58, sumo3b, si:ch211-156b7.4, snu13b, dnmt1, gins2, uhrf1, hirip3, nop10, pa2g4a 
+Negative:  aspm, cenpf, si:ch211-69g19.2, prc1b, cdc20, nusap1, ube2c, kpna2, top2a, tpx2 
+       plk1, ccnb1, prc1a, histh1l, kif11, hmmr, kifc1, tacc3, ccnb3, kmt5ab 
+       krt18a.1, numa1, edn1, cdc14b, kif20a, cdk1, cdca8, g2e3, birc5a, cks2 
+PC_ 5 
+Positive:  zgc:110540, cav1, eppk1, cavin1b, limch1b, col4a1, efnb2a, socs3a, slbp, aqp1a.1 
+       pcna, asf1ba, fbln2, krt18a.1, col4a2, edn1, CABZ01005379.1, sult2st1, cxcr4b, mcamb 
+       mibp, fen1, rrm2.1, rrm2, esco2, vegfc, ehd2b, dnajc9, gpm6ab, e2f8 
+Negative:  hmgn2, ube2c, cdc20, si:ch211-69g19.2, tp53inp2, aspm, cenpf, kmt5ab, ccnb1, kif11 
+       zgc:194627, kpna2, ccnb3, tuba1b, prc1b, cdc14b, nusap1, h2az2b, hmga1a, hmgb2b 
+       si:ch211-156j22.4, kif20a, tacc3, birc5a, prc1a, cdca8, hmmr, dlgap5, hmgb2a, kifc1 </code></pre>
+<pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+This message will be shown once per session</code></pre>
+<pre><code>10:29:15 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>10:29:15 Read 25830 rows and found 30 numeric columns</code></pre>
+<pre><code>10:29:15 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>10:29:15 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
+<pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
+<pre><code>**************************************************|
+10:29:16 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp1IC60O/file46740fac898
+10:29:16 Searching Annoy index using 1 thread, search_k = 3000
+10:29:20 Annoy recall = 100%
+10:29:21 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+10:29:22 Initializing from normalized Laplacian + noise (using RSpectra)
+10:29:22 Commencing optimization for 200 epochs, with 1137734 positive edges
+10:29:22 Using rng type: pcg
+10:29:29 Optimization finished
+Computing nearest neighbor graph
+Computing SNN</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9424
+Number of communities: 6
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9240
+Number of communities: 11
+Elapsed time: 3 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9122
+Number of communities: 13
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9020
+Number of communities: 16
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8929
+Number of communities: 17
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8857
+Number of communities: 19
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8784
+Number of communities: 20
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8721
+Number of communities: 22
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8660
+Number of communities: 24
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 25830
+Number of edges: 892007
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8608
+Number of communities: 25
+Elapsed time: 2 seconds</code></pre>
+<pre><code>Normalizing layer: counts
+Finding variable features for layer counts
+Regressing out percent.mt
+Centering and scaling data matrix</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>PC_ 1 
+Positive:  mki67, hmgb2a, stmn1a, si:dkey-108k21.10, hmga1a, tubb2b, dut, h3f3b.1, top2a, CABZ01058261.1 
+       smc2, pcna, hist1h4l.11, mibp, hmgb2b, hist1h4l.6, lbr, cdk1, ccna2, aurkb 
+       tpx2, rrm1, tuba8l4, seta, mad2l1, hmgn2, cks1b, fbxo5, dek, chaf1a 
+Negative:  krt18a.1, krt8, cxcr4b, aqp1a.1, cavin1b, limch1b, cav1, fabp11a, cxcr4a, sox7 
+       thy1, eppk1, bsg, vegfc, igfbp1a, id1, rbpms2b, tcima, hapln3, sult2st1 
+       ehd2b, fxyd1, cd99, csrp2, efnb2a, mcamb, sema7a, pcdh19, hopx, oaz2a 
+PC_ 2 
+Positive:  dab2, stab2, lyve1b, lgmn, si:dkey-28n18.9, postnb, il13ra2, mrc1a, glula, cxcl12a 
+       sele, prcp, rab11bb, selenop, pxk, zgc:110239, gpr182, timp2b, gnpda1, lamp2 
+       apoeb, aplnra, hexb, ctsba, mafbb, stab1, mafba, slco2b1, clta, npl 
+Negative:  dll4, CABZ01030107.1, flt1, esm1, crip2, igfbp1a, mcamb, rbpms2b, cxcr4a, cxcr4b 
+       aqp1a.1, efnb2a, csrp2, hopx, fxyd1, agrn, mpped2a, icn, col4a1, spry4 
+       col4a2, f8, zgc:112332, si:ch211-160j14.3, cavin1b, hand2, si:ch211-222l21.1, zgc:158423, bambia, cd81b 
+PC_ 3 
+Positive:  f8, si:ch211-160j14.3, id2b, hand2, gata5, rpz5, krt94, errfi1a, s100a10b, icn 
+       sall1a, plcd1a, alcama, hapln1b, kctd12.2, anxa2a, FP102018.1, irx5a, zgc:64106, mb 
+       angptl2b, chl1a, adarb1a, col5a2a, adora2aa, si:ch211-119e14.1, meis1b, fn1a, sh3d21, fhl1b 
+Negative:  plvapb, cldn5b, hlx1, esm1, rbpms2b, cd81b, zgc:112332, scarb2a, csrp2, gapdhs 
+       igfbp1a, podxl, fxyd1, zgc:158423, tcima, hopx, foxf2a, apln, tagln2, slc29a1a 
+       cd99, cx43, cxcr4a, pdgfbb, sox7, zic2a, sox13, nusap1, dlc, bsg 
+PC_ 4 
+Positive:  cenpf, aspm, si:ch211-69g19.2, nusap1, top2a, ube2c, prc1b, kpna2, plk1, cdc20 
+       tpx2, ccnb1, prc1a, kifc1, hmmr, kif11, cdk1, histh1l, ccnb3, cks2 
+       tacc3, kmt5ab, numa1, cdca8, mki67, kif20a, g2e3, cenpe, birc5a, cdc14b 
+Negative:  nasp, hells, mcm2, npm1a, mcm5, mcm6, pcna, fen1, mcm3, mcm4 
+       cdca7a, dkc1, lig1, msh6, ncl, rbbp4, fbl, chaf1a, slbp, nop58 
+       ppm1g, snu13b, dnajc9, gins2, ubr7, nop10, ssrp1a, dnmt1, c1qbp, uhrf1 
+PC_ 5 
+Positive:  zgc:110540, fbln2, mibp, edn1, asf1ba, cavin1b, cav1, sult2st1, eppk1, CABZ01005379.1 
+       rrm2.1, esco2, pcna, slbp, cxcr4b, rrm2, e2f8, efnb2a, vegfc, krt18a.1 
+       limch1b, ehd2b, fen1, col4a1, pclaf, slc29a2, si:dkey-108k21.10, lig1, ccne2, hist1h4l.11 
+Negative:  hmgn2, si:ch73-1a9.3, tp53inp2, cdc20, ube2c, si:ch211-69g19.2, h2az2b, aspm, hmga1a, cenpf 
+       tuba1b, kmt5ab, zgc:194627, kif11, hmgb2b, cdc14b, ccnb1, kpna2, ccnb3, prc1b 
+       prox1a, si:ch211-156j22.4, CABZ01066694.1, hmgb2a, nusap1, tmem88b, TUBB4B, ebf3a.1, kif20a, six2a 
+10:30:28 UMAP embedding parameters a = 0.9922 b = 1.112
+10:30:28 Read 19834 rows and found 30 numeric columns
+10:30:28 Using Annoy for neighbor search, n_neighbors = 30
+10:30:28 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+10:30:29 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp1IC60O/file4671087947c
+10:30:29 Searching Annoy index using 1 thread, search_k = 3000
+10:30:32 Annoy recall = 100%
+10:30:32 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+10:30:33 Initializing from normalized Laplacian + noise (using RSpectra)
+10:30:33 Commencing optimization for 200 epochs, with 862530 positive edges
+10:30:33 Using rng type: pcg
+10:30:39 Optimization finished
+Computing nearest neighbor graph
+Computing SNN</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9485
+Number of communities: 8
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9322
+Number of communities: 9
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9194
+Number of communities: 11
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9079
+Number of communities: 14
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9000
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8928
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8852
+Number of communities: 17
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8785
+Number of communities: 21
+Elapsed time: 2 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8720
+Number of communities: 21
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 19834
+Number of edges: 714968
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8661
+Number of communities: 23
+Elapsed time: 2 seconds</code></pre>
+</div>
+<div id="pca-correlations" class="section level2">
+<h2>PCA correlations</h2>
+<pre class="r"><code>run_pca_correlations &lt;- function(seurat){
+  plot_list &lt;- list()
+
+  meta &lt;- seurat@meta.data %&gt;% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %&gt;% 
+    select(., log10ncount, log10nfeat) %&gt;% 
+    rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+    full_join(., seurat@reductions$pca@cell.embeddings %&gt;% as.data.frame() %&gt;% rownames_to_column(&quot;Barcode&quot;) %&gt;% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] &lt;- ggscatter(meta, x = &quot;PC_1&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC1 vs library size, %s&quot;, seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] &lt;- ggscatter(meta, x = &quot;PC_2&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC2 vs library size, %s&quot;, seurat@project.name))
+  
+  #mito
+  plot_list[[3]] &lt;- ggscatter(meta, x = &quot;PC_3&quot;, y = &quot;log10ncount&quot;,
+          add = &quot;reg.line&quot;,                                 
+          conf.int = TRUE,                                
+          add.params = list(color = &quot;red4&quot;,
+                            fill = &quot;lightgray&quot;)) +
+    plot_sizing + ylab(&quot;log10(nCount)&quot;) + xlab(&quot;PC1&quot;) +
+    stat_cor(method = &quot;pearson&quot;, size = 5, colour = &quot;red4&quot;) +
+    ggtitle(sprintf(&quot;PC3 vs library size, %s&quot;, seurat@project.name))
+  
+  return(plot_list)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_pca_correlations)</code></pre>
+<pre><code>Joining with `by = join_by(Barcode)`
+Joining with `by = join_by(Barcode)`</code></pre>
+<pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = &quot;top with doublets, bottom without&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-11-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Slight correlation lib size with PC1.</p>
+</div>
+<div id="umap-overviews" class="section level2">
+<h2>UMAP overviews</h2>
+<p>Make UMAPs for features, ncounts, clusters, genotype and cell
+cycle.</p>
+<pre class="r"><code>plot_umap_dataset &lt;- function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- FeaturePlot(seurat,  features = c(&quot;nCount_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[2]] &lt;- FeaturePlot(seurat, features = c(&quot;nFeature_RNA&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[3]] &lt;- DimPlot(seurat,  group.by = c(&quot;seurat_clusters&quot;)) + ggtitle(seurat@project.name)
+  plot_list[[4]] &lt;- DimPlot(seurat,  group.by = c(&quot;Genotype&quot;), shuffle = T) + ggtitle(seurat@project.name)
+  plot_list[[5]] &lt;- DimPlot(seurat,  group.by = c(&quot;tricycle_stage&quot;), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}</code></pre>
+<p>Top with, bottom without doublets.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, plot_umap_dataset)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = &quot;top with doublets, bottom without&quot;) + plot_layout(nrow = 2)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-13-1.png" width="2400" style="display: block; margin: auto;" /></p>
+</div>
+<div id="clustree-composition" class="section level2">
+<h2>Clustree + Composition</h2>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  clustree(seurat) + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol = 2)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-14-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>Reassignments get more chaotic after res 0.5, though it looks like
+0.6 may capture another split? Generally assignments a lot less chaotic
+in no doublets.</p>
+<p>Stacked barplot for different resolutions capturing genotype
+split.</p>
+<pre class="r"><code>run_barplot_genotype &lt;- function(seurat){
+  seurat@meta.data %&gt;% 
+    select(., Genotype, starts_with(&quot;RNA&quot;)) %&gt;% 
+    pivot_longer(., cols = starts_with(&quot;RNA&quot;), values_to = &quot;cluster&quot;, names_to = &quot;resolution&quot;) %&gt;% 
+    mutate(., resolution = gsub(&quot;RNA_snn_&quot;, &quot;&quot;, resolution)) %&gt;% 
+    group_by(resolution, cluster, Genotype) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    ggplot(., aes(x= cluster, y = count, fill= Genotype)) +
+    geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) +
+    plot_sizing +
+    facet_wrap(~resolution, scales = &quot;free_x&quot;, nrow =2) + 
+    strip_fix +
+    ggtitle(seurat@misc$name)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_barplot_genotype)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;resolution&#39;, &#39;cluster&#39;. You can override
+using the `.groups` argument.
+`summarise()` has grouped output by &#39;resolution&#39;, &#39;cluster&#39;. You can override
+using the `.groups` argument.</code></pre>
+<pre class="r"><code>wrap_plots(plot_list, ncol = 1)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-16-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>Mutant specific cluster jumps out from ~resolution 0.5</p>
+<p>Make UMAPs for res 0.5 and res 0.6</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- DimPlot(seurat, group.by = &quot;RNA_snn_res.0.5&quot;, shuffle = T, label = T) + ggtitle(sprintf(&quot;res 0.5, %s&quot;, seurat@misc$name)) 
+  plot_list[[2]] &lt;- DimPlot(seurat, group.by = &quot;RNA_snn_res.0.6&quot;, shuffle = T, label = T) + ggtitle(sprintf(&quot;res 0.6, %s&quot;, seurat@misc$name)) 
+  return(plot_list)
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 2)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We’re primarily interested in getting the resolution high enough to
+select LEC and VEC, and remove AEC and cycling cells. This seems like a
+very high resolution. Try 0.3 and 0.4.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- DimPlot(seurat, group.by = &quot;RNA_snn_res.0.3&quot;, shuffle = T, label = T) + ggtitle(sprintf(&quot;res 0.3, %s&quot;, seurat@misc$name)) 
+  plot_list[[2]] &lt;- DimPlot(seurat, group.by = &quot;RNA_snn_res.0.4&quot;, shuffle = T, label = T) + ggtitle(sprintf(&quot;res 0.4, %s&quot;, seurat@misc$name)) 
+  return(plot_list)
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 2)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>I think 0.3 may be sufficient. Definitively does not need to be
+higher than 0.5.</p>
+</div>
+<div id="scgate-find-major-subpopulations" class="section level2">
+<h2>scGate: Find major subpopulations</h2>
+<p>This will be a bit tricky as I expect there will be some
+cross-expression at 2dpf.</p>
+<p>Make gating models:</p>
+<pre class="r"><code>aec_gating_model &lt;- gating_model(name = c(&quot;AEC&quot;), signature = c(&quot;flt1+&quot;,
+                                                                  &quot;dll4+&quot;,
+                                                                  &quot;prox1a-&quot;,
+                                                                  &quot;hand2-&quot;,
+                                                                  &quot;lyve1b-&quot;))
+
+vec_gating_model &lt;- gating_model( name = c(&quot;VEC&quot;), signature = c(&quot;lyve1b+&quot;,
+                                                                  &quot;stab2+&quot;,
+                                                                  &quot;mrc1a+&quot;,
+                                                                  &quot;flt1-&quot;,
+                                                                  &quot;dll4-&quot;,
+                                                                  &quot;prox1a-&quot;,
+                                                                  &quot;hand2-&quot;
+                                                                  ))
+
+lec_gating_model &lt;- gating_model(name = c(&quot;LEC&quot;), signature = c(&quot;cdh6+&quot;,
+                                                                  &quot;prox1a+&quot;,
+                                                                  &quot;lyve1b+&quot;,
+                                                                  &quot;stab2+&quot;,
+                                                                  &quot;mrc1a+&quot;,
+                                                                  &quot;flt1-&quot;,
+                                                                  &quot;dll4-&quot;,
+                                                                  &quot;hand2-&quot;
+                                                                  ))
+
+endo_gating_model &lt;- gating_model(name = c(&quot;Endocardium&quot;), signature = c(&quot;prox1a-&quot;,
+                                                                  &quot;lyve1b-&quot;,
+                                                                  &quot;stab2-&quot;,
+                                                                  &quot;mrc1a-&quot;,
+                                                                  &quot;flt1-&quot;,
+                                                                  &quot;dll4-&quot;,
+                                                                  &quot;hand2+&quot;,
+                                                                  &quot;fn1a+&quot;
+                                                                  ))
+
+subset_gating_model &lt;- list(AEC = aec_gating_model, VEC = vec_gating_model, LEC = lec_gating_model, Endocardium = endo_gating_model)
+
+#write function
+run_scgate_endosubset &lt;- function(seurat){
+  seurat &lt;- scGate(data = seurat,
+                   model = subset_gating_model)
+
+  return(seurat)
+}                           </code></pre>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, run_scgate_endosubset)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 8062 pure &#39;AEC&#39; cells (31.21% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 11837 pure &#39;VEC&#39; cells (45.83% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 10282 pure &#39;LEC&#39; cells (39.81% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 2467 pure &#39;Endocardium&#39; cells (9.55% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 6426 pure &#39;AEC&#39; cells (32.40% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 8405 pure &#39;VEC&#39; cells (42.38% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 7638 pure &#39;LEC&#39; cells (38.51% of total)</code></pre>
+<pre><code>Warning: Different features in new layer data than already exists for
+scale.data</code></pre>
+<pre><code>
+### Detected a total of 1904 pure &#39;Endocardium&#39; cells (9.60% of total)</code></pre>
+<pre><code>
+Using local version of repo scGate_models-master for cell ontology dictionary</code></pre>
+<p>Show UMAPs:</p>
+<pre class="r"><code>run_umaps_scgate &lt;- function(seurat){
+  plot_list &lt;- list()
+  plot_list[[1]] &lt;- DimPlot(seurat, group.by = &quot;scGate_multi&quot;, label = T)
+  plot_list[[2]] &lt;- FeaturePlot(seurat, features = &quot;AEC_UCell&quot;)
+  plot_list[[3]] &lt;- FeaturePlot(seurat, features = &quot;VEC_UCell&quot;)
+  plot_list[[4]] &lt;- FeaturePlot(seurat, features = &quot;LEC_UCell&quot;)
+  plot_list[[5]] &lt;- FeaturePlot(seurat, features = &quot;Endocardium_UCell&quot;)
+  return(plot_list)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_umaps_scgate)
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 5)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-22-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>scGate clearly does not work well for this, need to rely on manual
+annotation using known genes.</p>
+<p>Remove some info</p>
+<pre class="r"><code>list_objects$D10025_yap1_dataset_Level_02_kept_doublets$CellOntology_name &lt;- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$CellOntology_ID &lt;- NULL
+
+list_objects$D10025_yap1_dataset_Level_02$CellOntology_name &lt;- list_objects$D10025_yap1_dataset_Level_02$CellOntology_ID &lt;- NULL</code></pre>
+</div>
+<div id="dotplot-for-genes" class="section level2">
+<h2>Dotplot for genes</h2>
+<pre class="r"><code>level_02_dotplot &lt;- c(
+  &quot;prox1a&quot;, #LEC
+  &quot;cdh6&quot;, #LEC
+  &quot;stab2&quot;, #LEC, VEC
+  &quot;mrc1a&quot;,#LEC, VEC
+  &quot;lyve1b&quot;, #LEC, VEC
+  # &quot;cdh5&quot;, #AEC, VEC -&gt; almost everything expresses this
+  &quot;flt1&quot;, #AEC
+  &quot;dll4&quot;, #AEC
+  &quot;hlx1&quot;, #migrAEC
+  &quot;esm1&quot;, #migrAEC
+  &quot;mki67&quot;, #cycling
+  &quot;pcna&quot;, #cycling
+  &quot;hand2&quot;, #endocardium
+  &quot;fn1a&quot; #endocardium
+)</code></pre>
+<p>Make dotplot function:</p>
+<pre class="r"><code>run_dotplot &lt;- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf(&quot;%s, %s&quot;,group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}</code></pre>
+<p>Make for res 0.3.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat) run_dotplot(seurat, level_02_dotplot, group = &quot;RNA_snn_res.0.3&quot;))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="feature-umaps" class="section level2">
+<h2>Feature UMAPs</h2>
+<p>This can sometimes be helpful.</p>
+<pre class="r"><code>run_feature_umap &lt;- function(seurat, genes){
+  FeaturePlot(seurat, features = genes, ncol = 4) 
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat) run_feature_umap(seurat, level_02_dotplot))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-28-1.png" width="2880" style="display: block; margin: auto;" /></p>
+</div>
+<div id="add-annotations" class="section level2">
+<h2>Add annotations</h2>
+<div id="cell-type-level" class="section level3">
+<h3>Cell type level</h3>
+<pre class="r"><code>#For with doublets
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets$L2_celltype &lt;- case_when(
+  list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.3 %in% c(0,4,9) ~ &quot;VEC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.3 %in% c(1,5,6,7,8) ~ &quot;AEC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.3 %in% c(2,11) ~ &quot;cycling_EC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.3 %in% c(3,12) ~ &quot;Endocardium&quot;,
+  list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.3 == 10 ~ &quot;LEC&quot;
+)
+
+#for without doublets
+list_objects$D10025_yap1_dataset_Level_02$L2_celltype &lt;- case_when(
+  list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.3 %in% c(1, 6, 8) ~ &quot;VEC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.3 %in% c(0,4,5,7) ~ &quot;AEC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.3 %in% c(2, 10) ~ &quot;cycling_EC&quot;,
+  list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.3 ==3 ~ &quot;Endocardium&quot;,
+  list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.3 == 9 ~ &quot;LEC&quot;
+)</code></pre>
+</div>
+<div id="for-each-cluster" class="section level3">
+<h3>For each cluster</h3>
+<pre class="r"><code>add_seurat_names &lt;- function(seurat, group, names){
+  seurat        &lt;- SetIdent(seurat, value=group)
+names(names)        &lt;- levels(seurat)
+seurat      &lt;- RenameIdents(seurat, names)
+seurat      &lt;- AddMetaData(
+  object=seurat,
+  metadata=seurat@active.ident,
+  col.name=&quot;L2_seurat_celltype&quot;)
+return(seurat)
+  
+}</code></pre>
+<pre class="r"><code>#for with doublets
+L2_seurat_names &lt;- c(
+&#39;VEC_01&#39;, #0
+&#39;AEC_01&#39;,#1
+&#39;cycling_EC_01&#39;, #2
+&#39;Endocardium_01&#39;,#3
+&#39;VEC_02&#39;,#4
+&#39;AEC_02&#39;,#5
+&#39;AEC_03&#39;, #6
+&#39;AEC_04&#39;, #7
+&#39;AEC_05&#39;, #8
+&#39;VEC_03&#39;,#9
+&#39;LEC_01&#39;, #10
+&#39;cycling_EC_02&#39;, #11
+&#39;Endocardium_02&#39;#12
+)
+
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets &lt;- add_seurat_names(
+  seurat = list_objects$D10025_yap1_dataset_Level_02_kept_doublets,
+  group = &quot;RNA_snn_res.0.3&quot;,
+  names = L2_seurat_names)
+
+#for without doublets
+L2_seurat_names &lt;- c(
+&#39;AEC_01&#39;, #0
+&#39;VEC_01&#39;,#1
+&#39;cycling_EC_01&#39;, #2
+&#39;Endocardium_01&#39;,#3
+&#39;AEC_02&#39;,#4
+&#39;AEC_03&#39;,#5
+&#39;VEC_02&#39;, #6
+&#39;AEC_04&#39;, #7
+&#39;VEC_03&#39;, #8
+&#39;LEC_01&#39;, #9
+&#39;cycling_EC_02&#39; #10
+)
+
+list_objects$D10025_yap1_dataset_Level_02 &lt;- add_seurat_names(
+  seurat = list_objects$D10025_yap1_dataset_Level_02,
+  group = &quot;RNA_snn_res.0.3&quot;,
+  names = L2_seurat_names)</code></pre>
+<p>Show on UMAPs</p>
+<pre class="r"><code>run_celltype_umaps &lt;-function(seurat){
+  colours &lt;- Polychrome::dark.colors(5); names(colours) &lt;- c(&quot;AEC&quot;, &quot;VEC&quot;, &quot;LEC&quot;, 
+                                                             &quot;cycling_EC&quot;, &quot;Endocardium&quot;)
+  DimPlot(seurat, group.by = &quot;L2_celltype&quot;, cols = colours) + ggtitle(seurat@misc$name)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_celltype_umaps)
+
+wrap_plots(plot_list, ncol =2) + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-33-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="export" class="section level2">
+<h2>Export</h2>
+<p>Export Level 02.</p>
+<pre class="r"><code>file_name &lt;- here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_02_annotated.qs2&#39;)
+qs_save(list_objects$D10025_yap1_dataset_Level_02, file_name)
+
+file_name &lt;- here(&#39;output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_02_kept_doublets_annotated.qs2&#39;)
+qs_save(list_objects$D10025_yap1_dataset_Level_02_kept_doublets , file_name)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.0 (2025-04-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.7.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] future_1.69.0               scGate_1.7.2               
+ [3] qs2_0.1.7                   scran_1.38.0               
+ [5] scater_1.38.0               scuttle_1.20.0             
+ [7] patchwork_1.3.2             clustree_0.5.1             
+ [9] ggraph_2.2.2                ggpubr_0.6.2               
+[11] scDblFinder_1.24.0          SingleCellExperiment_1.32.0
+[13] SummarizedExperiment_1.40.0 Biobase_2.70.0             
+[15] GenomicRanges_1.62.1        Seqinfo_1.0.0              
+[17] IRanges_2.44.0              S4Vectors_0.48.0           
+[19] BiocGenerics_0.56.0         generics_0.1.4             
+[21] MatrixGenerics_1.22.0       matrixStats_1.5.0          
+[23] Seurat_5.4.0                SeuratObject_5.3.0         
+[25] sp_2.2-0                    here_1.0.2                 
+[27] lubridate_1.9.4             forcats_1.0.1              
+[29] stringr_1.5.1               dplyr_1.1.4                
+[31] purrr_1.2.1                 readr_2.1.6                
+[33] tidyr_1.3.2                 tibble_3.3.1               
+[35] ggplot2_4.0.1               tidyverse_2.0.0            
+[37] workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
+  [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
+  [7] sctransform_0.4.3        backports_1.5.0          R6_2.6.1                
+ [10] mgcv_1.9-1               lazyeval_0.2.2           uwot_0.2.4              
+ [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
+ [16] cli_3.6.5                spatstat.explore_3.7-0   fastDummies_1.7.5       
+ [19] labeling_0.4.3           sass_0.4.10              S7_0.2.1                
+ [22] spatstat.data_3.1-9      ggridges_0.5.7           pbapply_1.7-4           
+ [25] Rsamtools_2.26.0         parallelly_1.46.1        limma_3.66.0            
+ [28] rstudioapi_0.17.1        BiocIO_1.20.0            ica_1.0-3               
+ [31] spatstat.random_3.4-4    car_3.1-3                Matrix_1.7-3            
+ [34] ggbeeswarm_0.7.3         abind_1.4-8              lifecycle_1.0.4         
+ [37] scatterplot3d_0.3-44     whisker_0.4.1            yaml_2.3.10             
+ [40] edgeR_4.8.2              carData_3.0-5            SparseArray_1.10.8      
+ [43] Rtsne_0.17               grid_4.5.0               promises_1.5.0          
+ [46] dqrng_0.4.1              crayon_1.5.3             miniUI_0.1.2            
+ [49] lattice_0.22-6           beachmat_2.26.0          cowplot_1.2.0           
+ [52] cigarillo_1.0.0          pillar_1.11.1            knitr_1.50              
+ [55] metapod_1.18.0           rjson_0.2.23             xgboost_3.1.3.1         
+ [58] future.apply_1.20.1      codetools_0.2-20         glue_1.8.0              
+ [61] getPass_0.2-4            spatstat.univar_3.1-6    data.table_1.18.0       
+ [64] vctrs_0.6.5              png_0.1-8                spam_2.11-3             
+ [67] gtable_0.3.6             cachem_1.1.0             xfun_0.52               
+ [70] S4Arrays_1.10.1          mime_0.13                tidygraph_1.3.1         
+ [73] survival_3.8-3           statmod_1.5.1            bluster_1.20.0          
+ [76] fitdistrplus_1.2-5       ROCR_1.0-11              nlme_3.1-168            
+ [79] RcppAnnoy_0.0.23         GenomeInfoDb_1.46.2      rprojroot_2.1.1         
+ [82] bslib_0.9.0              irlba_2.3.5.1            vipor_0.4.7             
+ [85] KernSmooth_2.23-26       otel_0.2.0               colorspace_2.1-2        
+ [88] UCell_2.14.0             tidyselect_1.2.1         processx_3.8.6          
+ [91] compiler_4.5.0           curl_6.2.2               git2r_0.36.2            
+ [94] BiocNeighbors_2.4.0      DelayedArray_0.36.0      plotly_4.11.0           
+ [97] stringfish_0.18.0        rtracklayer_1.70.1       checkmate_2.3.3         
+[100] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
+[103] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
+[106] rmarkdown_2.29           XVector_0.50.0           htmltools_0.5.8.1       
+[109] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
+[112] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
+[115] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
+[118] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
+[121] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
+[124] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
+[127] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
+[130] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
+[133] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
+[136] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
+[139] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
+[142] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
+[145] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
+[148] XML_3.99-0.20            evaluate_1.0.3           RcppParallel_5.1.11-1   
+[151] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
+[154] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
+[157] polyclip_1.10-7          scattermore_1.2          ggforce_0.5.0           
+[160] rsvd_1.0.5               broom_1.0.11             xtable_1.8-4            
+[163] restfulr_0.0.16          RSpectra_0.16-2          rstatix_0.7.3           
+[166] later_1.4.2              viridisLite_0.4.2        Polychrome_1.5.4        
+[169] memoise_2.0.1            beeswarm_0.4.0           GenomicAlignments_1.46.0
+[172] cluster_2.1.8.1          timechange_0.3.0         globals_0.18.0          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
