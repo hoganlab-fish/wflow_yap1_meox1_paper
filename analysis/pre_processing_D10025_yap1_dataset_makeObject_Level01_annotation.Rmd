@@ -40,11 +40,11 @@ Objects made here: ./pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd
 Only loading merged ones for now.
 
 ```{r}
-list_objects <- lapply(list.files(path = here('output/data/Datsets/D10025_yap1_dataset/'), 
-           pattern = "D10025_yap1_dataset_Level_01", full.names = T), qs_read)
+input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets.qs2'),
+                 here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01.qs2'))
+list_objects <- lapply(input_paths, qs_read)
 
-names(list_objects) <- gsub("\\.qs2", "", list.files(path = here('output/data/Datsets/D10025_yap1_dataset/'), 
-           pattern = "D10025_yap1_dataset_Level_01"))
+names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
 ```
 
 Give them names in the object
@@ -245,10 +245,28 @@ Resolution 0.5 looks pretty solid for both of them. This doesn't have to be very
 
 ## Low quality clusters
 
-```{r}
+Do any clusters have high mt and/or low count? Being mindful that some celltypes do have naturally higher %mt and counts.
 
+```{r, fig.align='center', fig.height=8, fig.width=15}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = log10(nCount_RNA), x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  plot_list[[2]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = percent.mt, x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  return(plot_list) 
+})
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") 
 ```
 
+Nothing very obvious.
 
 
 ## scGate: Find endothelial subset
