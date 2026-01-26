@@ -320,7 +320,7 @@ run_dotplot <- function(seurat, genes, group){
 
 Make for res 0.2-0.5
 
-```{r, fig.align='center', fig.height=8, fig.width=10}
+```{r, fig.align='center', fig.height=8, fig.width=10, results='asis'}
 lapply(c("RNA_snn_res.0.2", "RNA_snn_res.0.3","RNA_snn_res.0.4", "RNA_snn_res.0.5"), function(res){
   
   cat(paste0("#### ",res, "\n"))  #make tabs

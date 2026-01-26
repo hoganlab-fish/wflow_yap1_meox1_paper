@@ -71,6 +71,13 @@ strip_fix <- theme(strip.background = element_rect(fill = "white"),
                    strip.text = element_text(size = 14))
 ```
 
+## Downsample yap1 batch
+
+yap1 batch is much larger, let's randomly downsample to match meox1 numbers
+
+```{r}
+yap1_wildtype <- yap1_wildtype[, sample(colnames(yap1_wildtype), size = ncol(meox1_wildtype), replace=F)]
+```
 
 
 ## Combine 
@@ -101,7 +108,6 @@ run_workflow_batch <- function(seurat){
     FindNeighbors(., dims = 1:30) %>% 
     FindClusters(., resolution = 0.8)
   return(seurat)
-    # FindClusters(., resolution = seq(0.1, 1, 0.1))
 }
 
 ```
@@ -126,7 +132,7 @@ merged <- merge(yap1_wildtype,
 #run basic workflow to get PCA
 merged <- NormalizeData(merged) %>% 
   FindVariableFeatures() %>% 
-  ScaleData() %>% 
+  ScaleData(., split.by = "batch") %>% #scale for each batch separately
   RunPCA()
 
 ```
@@ -216,16 +222,6 @@ plot_umap_dataset <- function(seurat){
 wrap_plots(plot_umap_dataset(merged), ncol = 2)
 ```
 
-#### Barplot for batch per cluster
-
-```{r, fig.align='center', fig.height=5, fig.width=10}
-merged@meta.data %>% 
-  group_by(batch, seurat_clusters) %>% 
-  summarise(., count = n()) %>% 
-  ggplot(., aes(y = count, x= seurat_clusters, fill= batch))+
-  geom_bar(stat = "identity", position = 'fill')+
-  plot_sizing
-```
 
 ## Low quality clusters
 
@@ -247,6 +243,25 @@ wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collec
 
 ## Clustree
 
+```{r, fig.align='center', fig.height=10, fig.width=10}
+clustree(merged)
+```
+
+Stacked barplot for different resolutions capturing genotype split.
+
+```{r, fig.align='center', fig.height=8, fig.width=25}
+merged@meta.data %>% 
+    select(., batch, starts_with("RNA")) %>% 
+    pivot_longer(., cols = starts_with("RNA"), values_to = "cluster", names_to = "resolution") %>% 
+    mutate(., resolution = gsub("RNA_snn_", "", resolution)) %>% 
+    group_by(resolution, cluster, batch) %>% 
+    summarise(., count = n()) %>% 
+    ggplot(., aes(x= cluster, y = count, fill= batch)) +
+    geom_bar(position = "fill", stat = "identity") +
+    plot_sizing +
+    facet_wrap(~resolution, scales = "free_x", nrow =2) + 
+    strip_fix 
+```
 ## scGate: Find endothelial subset
 
 ```{r}
@@ -273,7 +288,8 @@ Make purity plots for res 0.2:
 
 ```{r, fig.align='center', fig.height=5, fig.width=8}
 merged@meta.data %>% 
-  group_by(., RNA_snn_res.0.2, is_endothlial) %>% 
+  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %>% 
+  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
     group_by(RNA_snn_res.0.2) %>%
     mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
@@ -351,7 +367,8 @@ Make dotplot for clusters that have mid-range purity.
 ```{r}
 run_dotplot_mid_purity <- function(seurat, genes, limits){
   clusters <- seurat@meta.data %>% 
-    group_by(., RNA_snn_res.0.2, is_endothlial) %>% 
+  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %>% 
+  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
     group_by(RNA_snn_res.0.2) %>%
     mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
