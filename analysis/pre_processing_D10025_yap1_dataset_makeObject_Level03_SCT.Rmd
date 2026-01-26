@@ -338,17 +338,17 @@ run_dotplot <- function(seurat, genes, group){
 Make for res 0.4, 0.5, 0.6
 
 ```{r, fig.align='center', fig.height=8, fig.width=10, results='asis'}
-lapply(c("SCT_snn_res.0.4", "SCT_snn_res.0.5","SCT_snn_res.0.5"), function(res){
+for(res in c("SCT_snn_res.0.4", "SCT_snn_res.0.5","SCT_snn_res.0.6")){
   
   cat(paste0("#### ",res, "\n"))  #make tabs
   
   plot_list <- lapply(list_objects, function(seurat) run_dotplot(seurat, level_03_dotplot, group = res))
   
-  plot <-wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
-  return(plot)
-  
+  wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+
   cat("\n\n") #make tabs
-})
+  
+}
 
 
 ```
