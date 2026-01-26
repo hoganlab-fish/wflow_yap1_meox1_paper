@@ -1,0 +1,386 @@
+---
+title: "Combined WT only dataset: Make Level 01 (all cells) object"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Combine wildtype from yap1 and meox1 experiments. 
+
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+ })
+```
+
+### Load data
+
+From here ./pre_processing_D10025_yap1_dataset_makeObject_Level01.Rmd and here pre_processing_D10051_meox1_dataset_makeObject_Level01.Rmd. Note that each sample was processed there, e.g. QC was done on each sample separately.
+
+Running with doublets removed: 
+
+```{r}
+yap1_wildtype <- qs_read(here("output/data/Samples/S20128/S20128_wildtype_Level_01.qs2"))
+meox1_wildtype <- qs_read(here("output/data/Samples/S20201/S20201_wildtype_Level_01.qs2"))
+```
+
+Add batch information. 
+
+```{r}
+yap1_wildtype$batch <- "yap1_experiment"
+meox1_wildtype$batch <- "meox1_experiment"
+```
+
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+
+## Combine 
+
+Try to just combine
+
+```{r}
+merged <- merge(yap1_wildtype,
+                y = meox1_wildtype,
+                project = "wildtype_only", merge.data = TRUE) 
+
+merged<- JoinLayers(merged) #seurat v5 things
+
+```
+
+
+Single-cell workflow:
+
+Regress out %mito and batch
+
+```{r}
+run_workflow_batch <- function(seurat){
+  seurat <- NormalizeData(seurat) %>%   #should deal with basic library size differences
+    FindVariableFeatures() %>% 
+    ScaleData(., vars.to.regress = c("percent.mt", "batch")) %>% 
+    RunPCA() %>% 
+    RunUMAP(., dims = 1:30) %>% #defaults
+    FindNeighbors(., dims = 1:30) %>% 
+    FindClusters(., resolution = 0.8)
+  return(seurat)
+    # FindClusters(., resolution = seq(0.1, 1, 0.1))
+}
+
+```
+
+```{r}
+merged <- run_workflow_batch(merged)
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+DimPlot(merged,  group.by = c("batch"), shuffle = T)
+```
+
+Clear batch effect. 
+
+## Integration: Harmony
+
+```{r}
+merged <- merge(yap1_wildtype,
+                y = meox1_wildtype,
+                project = "wildtype_only", merge.data = TRUE) #don't join layers, leave then in there
+
+#run basic workflow to get PCA
+merged <- NormalizeData(merged) %>% 
+  FindVariableFeatures() %>% 
+  ScaleData() %>% 
+  RunPCA()
+
+```
+
+```{r}
+merged <- IntegrateLayers(object = merged, method = HarmonyIntegration, orig.reduction = "pca",
+  new.reduction = 'harmony', verbose = FALSE)
+
+```
+
+Run workflow:
+
+```{r}
+merged <- RunUMAP(merged, dims = 1:30, reduction = "harmony") %>% #defaults
+    FindNeighbors(., dims = 1:30, reduction = "harmony") %>% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1), reduction = "harmony")
+```
+
+## PCA correlations
+
+```{r}
+run_harmony_correlations <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %>% 
+    select(., log10ncount, log10nfeat) %>% 
+    rownames_to_column("Barcode") %>% 
+    full_join(., seurat@reductions$harmony@cell.embeddings %>% as.data.frame() %>% rownames_to_column("Barcode") %>% select(., Barcode, harmony_1, harmony_2, harmony_3))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "harmony_1", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("harmony_1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("Harmony1 vs library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "harmony_2", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("harmony_2") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("Harmony2 vs library size, %s", seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "harmony_3", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("harmony_3") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("Harmony3 vs library size, %s", seurat@project.name))
+  
+  return(plot_list)
+}
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=15}
+wrap_plots(run_harmony_correlations(merged), ncol = 3)
+```
+
+
+## UMAP overview
+
+```{r}
+plot_umap_dataset <- function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters")) + ggtitle(seurat@project.name)
+  plot_list[[4]] <- DimPlot(seurat,  group.by = c("batch"), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=12}
+wrap_plots(plot_umap_dataset(merged), ncol = 2)
+```
+
+#### Barplot for batch per cluster
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+merged@meta.data %>% 
+  group_by(batch, seurat_clusters) %>% 
+  summarise(., count = n()) %>% 
+  ggplot(., aes(y = count, x= seurat_clusters, fill= batch))+
+  geom_bar(stat = "identity", position = 'fill')+
+  plot_sizing
+```
+
+## Low quality clusters
+
+```{r, fig.align='center', fig.height=5, fig.width=15}
+plot_list <- list()
+plot_list[[1]] <- merged@meta.data %>% 
+  ggplot(., aes(y = log10(nCount_RNA), x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+plot_list[[2]] <- merged@meta.data %>% 
+  ggplot(., aes(y = percent.mt, x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") 
+```
+
+## Clustree
+
+## scGate: Find endothelial subset
+
+```{r}
+endothelial_gating_model <- gating_model(name = "endothelial", signature = c("kdrl+", 
+                                                                    "col1a1a-",
+                                                                    "epcam-",
+                                                                    "gata2b-", 
+                                                                    "myod1-", 
+                                                                    "gch2-",
+                                                                    "aox5-"))
+
+merged <- scGate(data = merged,
+                   model = endothelial_gating_model,
+                   output.col.name = "is_endothlial")
+
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+pure_colours <- c("grey", "green3"); names(pure_colours) <- c("Impure", "Pure")
+DimPlot(merged, group.by = "is_endothlial", cols = pure_colours)
+```
+
+Make purity plots for res 0.2:
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+merged@meta.data %>% 
+  group_by(., RNA_snn_res.0.2, is_endothlial) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.2) %>%
+    mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.2_cluster_purity) %>% distinct() %>% 
+    ggplot(., aes(x= reorder(RNA_snn_res.0.2, -RNA_snn_res.0.2_cluster_purity),  y = RNA_snn_res.0.2_cluster_purity))+
+    geom_bar(stat = "identity") + plot_sizing +
+    ylab("Endo Purity per cluster") + xlab("cluster") 
+```
+
+## DotPlot
+
+Use some known marker genes for celltypes to double check scGate annotation.
+
+```{r}
+dotplot.level.01 <- c(
+  "cdh6",
+  "prox1a",
+  "stab2",
+  "lyve1b",
+  "mrc1a",
+  "flt1",
+  "dll4",
+  "esm1",
+  "hlx1",
+  "hand2",
+  "fn1a",
+  "gata2b",
+  "runx1",
+  "alas2",
+  "blvrb",
+  "spi1b",
+  "mpx",
+  "neurod4",
+  "nova2",
+  "cdh1",
+  "epcam",
+  "myod1",
+  "myog",
+  "pmela",
+  "dct",
+  "lum",
+  "col1a1a",
+  "krt4",
+  "cyt1",
+  "cryba1b",
+  "crybb1",
+  "ednrba",
+  "pnp4a",
+  "gch2",
+  "aox5")
+```
+
+Make dotplot function:
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(group)  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+Make dotplots for all clusters
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+
+DimPlot(merged, group.by = "RNA_snn_res.0.2", label = T)
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+run_dotplot(merged, dotplot.level.01, group = "RNA_snn_res.0.2")
+
+```
+Make dotplot for clusters that have mid-range purity.
+
+```{r}
+run_dotplot_mid_purity <- function(seurat, genes, limits){
+  clusters <- seurat@meta.data %>% 
+    group_by(., RNA_snn_res.0.2, is_endothlial) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.2) %>%
+    mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.2_cluster_purity) %>% distinct() %>% 
+    filter(., RNA_snn_res.0.2_cluster_purity > limits[1] & RNA_snn_res.0.2_cluster_purity < limits[2]) %>% 
+    pull(RNA_snn_res.0.2) %>% unique()
+  
+  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.2")
+  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.2", idents = clusters)  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+```{r, fig.align='center', fig.height=4, fig.width=10}
+run_dotplot_mid_purity(merged, limits = c(0.2, 0.8), genes = dotplot.level.01)
+```
+
+They all express other markers as well. 
+
+
+## Export
+
+```{r}
+
+file_name <- here('output/data/Datsets/merged_wildtypes/merged_wildtypes_Level_01_annotated.qs2')
+qs_save(merged, file_name)
+
+```
+
+
+
+
