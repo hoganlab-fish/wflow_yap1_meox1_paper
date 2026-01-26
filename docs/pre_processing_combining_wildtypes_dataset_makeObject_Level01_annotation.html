@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree65cb0b0cd7d778fd48eea55bb983709041e94a00targetblank65cb0b0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree516694aab77d66662d0476a94b45681d61642da9targetblank516694aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/65cb0b0cd7d778fd48eea55bb983709041e94a00" target="_blank">65cb0b0</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/516694aab77d66662d0476a94b45681d61642da9" target="_blank">516694a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree65cb0b0cd7d778fd48eea55bb983709041e94a00targetblank65cb0b0a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree516694aab77d66662d0476a94b45681d61642da9targetblank516694aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/65cb0b0cd7d778fd48eea55bb983709041e94a00" target="_blank">65cb0b0</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/516694aab77d66662d0476a94b45681d61642da9" target="_blank">516694a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,11 +561,11 @@ Ignored files:
     Ignored:    renv/staging/
 
 Untracked files:
+    Untracked:  analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd
     Untracked:  code/analysis/
 
 Unstaged changes:
     Modified:   analysis/index.Rmd
-    Modified:   analysis/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd
     Modified:   renv.lock
 
 </code></pre>
@@ -613,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/516694aab77d66662d0476a94b45681d61642da9/analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd" target="_blank">516694a</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+wflow_publish(c("analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/8a28dd2f86f48ed63a1ea2c0c411b81f53113d18/docs/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html" target="_blank">8a28dd2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -689,6 +723,12 @@ strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;),
                    strip.text = element_text(size = 14))</code></pre>
 </div>
 </div>
+<div id="downsample-yap1-batch" class="section level2">
+<h2>Downsample yap1 batch</h2>
+<p>yap1 batch is much larger, let’s randomly downsample to match meox1
+numbers</p>
+<pre class="r"><code>yap1_wildtype &lt;- yap1_wildtype[, sample(colnames(yap1_wildtype), size = ncol(meox1_wildtype), replace=F)]</code></pre>
+</div>
 <div id="combine" class="section level2">
 <h2>Combine</h2>
 <p>Try to just combine</p>
@@ -709,7 +749,6 @@ enforce unique cell names.</code></pre>
     FindNeighbors(., dims = 1:30) %&gt;% 
     FindClusters(., resolution = 0.8)
   return(seurat)
-    # FindClusters(., resolution = seq(0.1, 1, 0.1))
 }</code></pre>
 <pre class="r"><code>merged &lt;- run_workflow_batch(merged)</code></pre>
 <pre><code>Normalizing layer: counts</code></pre>
@@ -719,71 +758,71 @@ enforce unique cell names.</code></pre>
 <pre><code>Warning: Different features in new layer data than already exists for
 scale.data</code></pre>
 <pre><code>PC_ 1 
-Positive:  kdrl, mcamb, esama, spns2, srgn, mef2cb, fmnl3, ldb2a, npr1a, grb10a 
-       tmem108, prcp, limch1b, flt4, stab1, si:dkey-49n23.1, adgra2, foxo1a, aqp1a.1, adcy2b 
-       mef2aa, elk3, loxl3b, adam12, ENSDARG00000100606, CABZ01044099.1, gab2, stab2, fam102aa, sema4c 
-Negative:  ctnna2, elavl3, ncam1a, aplp1, cadm4, gpm6aa, brsk2b, ank2b, nrxn1a, celf5a 
-       mapk10, nbeaa, ank3a, tuba1c, epb41a, adam22, si:dkey-178k16.1, nrxn2a, pbx3b, tox 
-       kcnma1a, thsd7aa, nkain2, stmn1b, plxna3, celf3a, myt1b, zfhx4, cspg5a, grip1 
+Positive:  cd9b, epcam, ppl, anxa1b, s100v1, cldnb, si:dkey-87o1.2, capn9, evpla, cldne 
+       anxa3a, si:dkey-19b23.12, si:ch211-125o16.4, zgc:153284, si:ch211-157c3.4, tmsb1, spint2, pkp3a, anxa1c, f11r.1 
+       anxa1d, spaca4l, evplb, krt4, hrc, agr1, zgc:153665, si:ch211-195b11.3, gsnb, si:ch73-347e22.8 
+Negative:  mcamb, ldb2a, spns2, srgn, npr1a, tmem108, flt4, prcp, stab1, adgra2 
+       si:dkey-49n23.1, grb10a, sema4c, fam102aa, loxl3b, aqp1a.1, adam12, gab2, CABZ01044099.1, nrp2b 
+       itga9, stab2, mrc1a, si:ch211-250c4.4, prdx1, iqsec1b, igfbp1a, galnt1, prex1, plpp2a 
 PC_ 2 
-Positive:  cd9b, epcam, s100v1, cldnb, ppl, anxa1b, tmsb1, si:dkey-19b23.12, si:dkey-87o1.2, cdh1 
-       capn9, cldne, spint2, anxa3a, spaca4l, evpla, cfl1l, f11r.1, zgc:153284, anxa1c 
-       anxa1d, si:ch211-125o16.4, krt4, krt92, si:ch211-157c3.4, zgc:153665, pkp3a, si:ch211-195b11.3, mid1ip1a, agr1 
-Negative:  gpm6aa, elavl3, ctnna2, tuba1c, tuba1a, aplp1, ncam1a, ank2b, stmn1b, brsk2b 
-       myt1b, nbeaa, adam22, celf3a, mapk10, thsd7aa, ckbb, myt1a, BX465834.1, epb41a 
-       nrxn1a, CU467822.2, cspg5a, si:dkey-178k16.1, stx1b, celf5a, mdkb, tmsb, tox, gnao1a 
+Positive:  ctnna2, elavl3, aplp1, ncam1a, brsk2b, gpm6aa, ank2b, celf5a, mapk10, nrxn1a 
+       nbeaa, si:dkey-178k16.1, adam22, kcnma1a, tuba1c, nrxn2a, nkain2, epb41a, stx1b, enox1 
+       pbx3b, thsd7aa, celf3a, dscamb, nrxn3a, celf4, stmn1b, fgf13a, camta1b, DOCK4 
+Negative:  anxa1b, cldne, ppl, capn9, si:ch211-157c3.4, anxa1d, evpla, si:ch211-125o16.4, anxa1c, anxa3a 
+       agr1, zgc:153665, si:dkey-87o1.2, hrc, evplb, si:ch211-195b11.3, si:cabz01007794.1, si:ch73-347e22.8, stard14, spaca4l 
+       si:dkey-19b23.12, capn2l, zgc:193505, elovl7a, mid1ip1a, tmem176l.4, zgc:100868, scel, s100w, icn2 
 PC_ 3 
-Positive:  ptprga, iqsec1b, npr1a, CABZ01044099.1, ZNF423, diaph2, afdna, adgra2, macf1a, dock1 
-       si:dkey-49n23.1, foxp1b, ENSDARG00000100606, ldb2a, rxraa, tox2, adam12, ebf3a, grb10a, erfl3 
-       SEMA4F, spns2, elk3, vav2, gab2, fmnl3, rbms3, agap1, foxo1b, plecb 
-Negative:  slc2a11b, slc22a7a, bscl2l, si:dkey-251i10.2, tmem130, aox5, akr1b1.1, zgc:153031, pts, syngr1a 
-       uraha, plin6, slc2a15a, CABZ01058222.1, gch2, slc2a15b, cax1, rbp4l, CABZ01021592.1, xdh 
-       oacyl, gpd1b, pah, pax7b, si:ch211-251b21.1, paics, si:dkey-106n21.1, atic, cx30.3, txn 
+Positive:  cldne, anxa1b, agr1, si:ch211-157c3.4, evpla, anxa1d, si:cabz01007794.1, si:ch211-125o16.4, evplb, capn9 
+       zgc:153665, hrc, elovl7a, hsd17b12a, zgc:100868, si:ch73-347e22.8, stard14, scel, zgc:193505, anxa1c 
+       tmem176l.4, stx11b.1, eps8l1a, dbnla, si:ch73-78o10.1, si:ch211-195b11.3, s100w, si:dkey-87o1.2, tmem45b, si:ch211-98n17.5 
+Negative:  cldni, col4a6, col4a5, tp63, ecrg4b, col11a1a, col1a2, zgc:92380, lama5, egfl6 
+       col1a1b, col1a1a, cldn1, ptprfa, fermt1, zgc:171775, itgb1b.1, zgc:101810, padi2, bcam 
+       ptgs2a, col2a1b, myh9a, igfbp5b, postnb, fat2, ociad2, frem2a, epcam, zgc:86896 
 PC_ 4 
-Positive:  cldni, col4a5, col4a6, col1a2, tp63, col11a1a, col1a1a, col1a1b, ecrg4b, egfl6 
-       zgc:92380, col2a1b, sparc, fermt1, lama5, zgc:101810, ptprfa, zgc:171775, cldn1, igfbp5b 
-       postnb, ptgs2a, ociad2, padi2, bcam, myh9a, ca6, dcn, itgb4, zgc:86896 
-Negative:  cldne, anxa1b, evpla, capn9, agr1, si:ch211-157c3.4, anxa1d, zgc:153665, si:ch211-125o16.4, evplb 
-       si:ch73-347e22.8, hrc, hsd17b12a, si:cabz01007794.1, elovl7a, anxa1c, tmem176l.4, zgc:193505, zgc:100868, stard14 
-       si:dkey-87o1.2, si:ch211-195b11.3, stx11b.1, dbnla, s100w, ppl, cldn23a, scel, eps8l1a, zgc:110333 
+Positive:  slc2a11b, slc22a7a, bscl2l, tmem130, aox5, si:dkey-251i10.2, akr1b1.1, syngr1a, zgc:153031, uraha 
+       pts, slc2a15a, plin6, slc2a15b, cax1, gch2, CABZ01021592.1, xdh, CABZ01058222.1, oacyl 
+       rbp4l, si:ch211-251b21.1, pax7b, paics, gpd1b, si:dkey-106n21.1, pah, aqp3a, atic, txn 
+Negative:  iqsec1b, ldb2a, ptprga, npr1a, spns2, macf1a, grb10a, adgra2, si:dkey-49n23.1, CABZ01044099.1 
+       ebf3a, tmem108, diaph2, adam12, foxp1b, erfl3, mcamb, pcdh1b, plecb, gab2 
+       itga9, rxraa, ralgapa2, flt4, plpp2a, stab1, prcp, loxl3b, foxo1b, CR848683.2 
 PC_ 5 
-Positive:  slc2a11b, slc22a7a, bscl2l, aox5, si:dkey-251i10.2, tmem130, akr1b1.1, zgc:153031, uraha, syngr1a 
-       slc2a15a, pts, gch2, CABZ01021592.1, plin6, slc2a15b, cax1, xdh, oacyl, CABZ01058222.1 
-       rbp4l, pax7b, gpd1b, si:dkey-106n21.1, cx30.3, pah, si:ch211-251b21.1, gstp1, zgc:110339, asip2b 
-Negative:  laptm5, coro1a, plek, lcp1, wasb, cd7al, ptpn6, ptprc, spi1b, si:dkey-185m8.2 
-       fmnl1a, ncf1, ch25hl2, mpx, CU499336.2, si:dkey-262k9.4, npsn, si:ch1073-429i10.1, fcer1gl, fermt3b 
-       si:dkey-102g19.3, lect2l, cebpa, alox5ap, dub, syk, si:dkey-27h10.2, abcb9, cox6a2, cpa5 </code></pre>
+Positive:  slc2a11b, slc22a7a, bscl2l, aox5, si:dkey-251i10.2, tmem130, CABZ01021592.1, akr1b1.1, uraha, gch2 
+       zgc:153031, syngr1a, slc2a15a, pts, plin6, slc2a15b, cax1, xdh, CABZ01058222.1, oacyl 
+       rbp4l, pax7b, gpd1b, si:dkey-106n21.1, si:ch211-251b21.1, pah, cx30.3, gstp1, zgc:110339, paics 
+Negative:  laptm5, spi1b, lcp1, mpx, npsn, plek, ch25hl2, ptpn6, si:ch1073-429i10.1, coro1a 
+       ptprc, lect2l, fcer1gl, CU499336.2, ncf1, cd7al, si:dkey-102g19.3, cpa5, wasb, si:dkey-27h10.2 
+       plxnc1, alox5ap, abcc13, abcb9, si:dkey-185m8.2, ponzr6, fmnl1a, dhrs9, ctss2.1, aldh8a1 </code></pre>
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>16:17:44 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>16:17:44 Read 26860 rows and found 30 numeric columns</code></pre>
-<pre><code>16:17:44 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>16:17:44 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>16:54:28 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>16:54:28 Read 15750 rows and found 30 numeric columns</code></pre>
+<pre><code>16:54:28 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>16:54:28 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-16:17:45 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp8juDfj/fileda8423b0dd65
-16:17:45 Searching Annoy index using 1 thread, search_k = 3000
-16:17:49 Annoy recall = 100%
-16:17:49 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-16:17:50 Initializing from normalized Laplacian + noise (using RSpectra)
-16:17:51 Commencing optimization for 200 epochs, with 1192322 positive edges
-16:17:51 Using rng type: pcg
-16:17:58 Optimization finished
+16:54:28 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpmpcIbh/file10f0e6da2f7d0
+16:54:28 Searching Annoy index using 1 thread, search_k = 3000
+16:54:31 Annoy recall = 100%
+16:54:31 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+16:54:32 Initializing from normalized Laplacian + noise (using RSpectra)
+16:54:32 Commencing optimization for 200 epochs, with 673596 positive edges
+16:54:32 Using rng type: pcg
+16:54:36 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1017837
+Number of nodes: 15750
+Number of edges: 581042
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9175
-Number of communities: 33
-Elapsed time: 3 seconds</code></pre>
+Maximum modularity in 10 random starts: 0.9112
+Number of communities: 32
+Elapsed time: 1 seconds</code></pre>
 <pre class="r"><code>DimPlot(merged,  group.by = c(&quot;batch&quot;), shuffle = T)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Clear batch effect.</p>
 </div>
 <div id="integration-harmony" class="section level2">
@@ -796,48 +835,50 @@ enforce unique cell names.</code></pre>
 <pre class="r"><code>#run basic workflow to get PCA
 merged &lt;- NormalizeData(merged) %&gt;% 
   FindVariableFeatures() %&gt;% 
-  ScaleData() %&gt;% 
+  ScaleData(., split.by = &quot;batch&quot;) %&gt;% #scale for each batch separately
   RunPCA()</code></pre>
 <pre><code>Normalizing layer: counts.S20128</code></pre>
 <pre><code>Normalizing layer: counts.S20201</code></pre>
 <pre><code>Finding variable features for layer counts.S20128</code></pre>
 <pre><code>Finding variable features for layer counts.S20201</code></pre>
 <pre><code>Centering and scaling data matrix</code></pre>
+<pre><code>Centering and scaling data from split meox1_experiment</code></pre>
+<pre><code>Centering and scaling data from split yap1_experiment</code></pre>
 <pre><code>PC_ 1 
-Positive:  epcam, cd9b, s100v1, cdh1, tmsb1, krt92, cfl1l, cldnb, f11r.1, gpa33a 
-       spint1a, oclna, cldni, spint2, pkp3a, si:dkey-19b23.12, cldn7b, zgc:153284, krt4, ppl 
-       tp63, si:dkey-87o1.2, zgc:92380, gsnb, anxa3a, tuba8l2, egfl6, ecrg4b, spaca4l, col4a5 
-Negative:  srgn, aqp1a.1, gpm6ab, si:ch211-248e11.2, lyve1b, sele, stab2, lgmn, igfbp1a, bcl6b 
-       mrc1a, spock3, clic2, esm1, fabp11a, il13ra2, glula, zgc:112332, rtn1a, pcdh17 
-       f13a1b, CABZ01030107.1, adgrl3.1, krt94, cxcr4a, lyve1a, selenop, cyp26b1, cyp1a, atp1b1a 
+Positive:  cd9b, s100v1, epcam, cldnb, tmsb1, spint2, anxa1c, f11r.1, ppl, anxa3a 
+       cfl1l, si:dkey-19b23.12, krt4, anxa1b, cldne, cdh1, capn9, si:dkey-87o1.2, si:ch211-195b11.3, krt92 
+       zgc:153284, tuba8l2, spaca4l, gpa33a, si:ch211-157c3.4, evpla, gsnb, anxa1d, zgc:153665, si:ch211-125o16.4 
+Negative:  plvapb, srgn, gpm6ab, aqp1a.1, si:ch211-248e11.2, sele, lyve1b, stab2, dll4, igfbp1a 
+       bcl6b, lgmn, mrc1a, spock3, rbpms2b, clic2, esm1, fabp11a, pcdh17, rtn1a 
+       il13ra2, glula, adgrl3.1, zgc:112332, CABZ01076275.1, selenop, cxcr4a, CABZ01030107.1, lyve1a, cyp26b1 
 PC_ 2 
-Positive:  srgn, atp1b1a, aqp1a.1, lyve1b, sele, tcima, si:ch211-248e11.2, ifi30, stab2, thy1 
-       arhgdig, hbegfa, selenop, capns1a, nccrp1, eppk1, clic2, socs3a, cotl1, arpc1b 
-       pfn1, igfbp1a, mrc1a, glula, il13ra2, sult2st1, rgcc, lgmn, f13a1b, bcl6b 
-Negative:  elavl3, ctnna2, gpm6aa, aplp1, ank2b, ncam1a, tuba1c, epb41a, brsk2b, nrxn1a 
-       adam22, myt1b, stmn1b, nbeaa, celf3a, mapk10, thsd7aa, tuba1a, tox, pbx3b 
-       celf5a, si:dkey-178k16.1, stx1b, myt1a, ckbb, cspg5a, tmsb, cadm4, BX465834.1, mdkb 
+Positive:  elavl3, gpm6aa, tuba1c, stmn1b, ctnna2, tuba1a, epb41a, aplp1, tox, myt1b 
+       ank2b, ncam1a, stx1b, tmsb, mdkb, myt1a, BX465834.1, celf3a, ckbb, CU467822.2 
+       adam22, gng3, thsd7aa, fez1, cspg5a, zfhx4, brsk2b, elavl4, pbx3b, tubb5 
+Negative:  srgn, plvapb, sele, si:ch211-248e11.2, aqp1a.1, atp1b1a, lyve1b, tcima, stab2, eppk1 
+       nccrp1, ifi30, arhgdig, selenop, arpc1b, mrc1a, igfbp1a, rgcc, bcl6b, clic2 
+       zgc:162730, thy1, hbegfa, sult2st1, coro1a, lcp1, lgmn, si:ch73-335l21.4, pfn1, il13ra2 
 PC_ 3 
-Positive:  col1a2, col1a1a, col1a1b, col2a1b, col4a5, sparc, col4a6, col11a1a, cldni, col5a1 
-       dcn, postnb, tp63, ecrg4b, egfl6, mdka, igfbp5b, ca6, zgc:92380, lum 
-       fermt1, zgc:101810, ociad2, lama5, zgc:171775, col11a1b, itgb1b.1, col12a1b, ptgs2a, cnmd 
-Negative:  cldne, anxa1b, evpla, capn9, si:ch211-157c3.4, agr1, anxa1d, zgc:153665, si:ch211-125o16.4, evplb 
-       si:ch73-347e22.8, hrc, hsd17b12a, si:cabz01007794.1, tmem176l.4, si:dkey-87o1.2, elovl7a, anxa1c, stard14, zgc:100868 
-       ppl, mgst1.2, zgc:193505, dbnla, si:ch211-195b11.3, stx11b.1, s100w, tmem45b, zgc:110333, cldn23a 
+Positive:  laptm5, coro1a, lcp1, plek, cd7al, ptpn6, spi1b, ptprc, cebpa, wasb 
+       mpx, CU499336.2, ch25hl2, ncf1, npsn, si:ch1073-429i10.1, mgst1.2, fmnl1a, si:dkey-185m8.2, plxnc1 
+       fcer1gl, SMIM22, lect2l, zgc:64051, ccdc88b, fermt3a, si:dkey-102g19.3, grap2b, abcc13, cpa5 
+Negative:  col1a2, col1a1a, col4a5, col4a6, col1a1b, cldni, col11a1a, sparc, col2a1b, postnb 
+       tp63, ecrg4b, lama5, zgc:92380, egfl6, dcn, cldn1, col5a1, zgc:171775, fermt1 
+       ptprfa, igfbp5b, zgc:101810, itgb1b.1, ociad2, padi2, ptgs2a, bcam, lum, col12a1b 
 PC_ 4 
-Positive:  anxa1c, cldne, anxa1b, zgc:153665, capn9, aqp1a.1, si:ch211-195b11.3, icn2, si:ch211-157c3.4, zgc:193505 
-       anxa1d, agr1, si:ch211-125o16.4, lyve1b, evpla, hrc, evplb, si:ch73-347e22.8, sele, tmem176l.4 
-       si:ch211-248e11.2, ppl, elovl7a, selenop, eppk1, si:cabz01007794.1, si:dkey-87o1.2, fabp11a, stard14, lgmn 
-Negative:  laptm5, coro1a, plek, lcp1, wasb, cd7al, ptpn6, ptprc, si:dkey-185m8.2, spi1b 
-       fmnl1a, zgc:64051, si:dkey-262k9.4, si:dkeyp-68b7.12, grap2b, ncf1, CU499336.2, ch25hl2, fermt3a, plxnc1 
-       mpx, fcer1gl, si:ch1073-429i10.1, fermt3b, npsn, si:dkey-102g19.3, syk, lect2l, cebpa, dub 
+Positive:  laptm5, fam49ba, coro1a, ptpn6, plek, lcp1, cd7al, spi1b, hcls1, ptprc 
+       mpx, wasb, ch25hl2, prkcda, si:ch1073-429i10.1, CU499336.2, rac2, crip1, npsn, ncf1 
+       pfn1, fcer1gl, si:dkey-185m8.2, plxnc1, lect2l, zgc:64051, si:dkey-102g19.3, fmnl1a, ccdc88b, cpa5 
+Negative:  cldne, anxa1c, si:ch211-157c3.4, anxa1b, capn9, zgc:153665, anxa1d, agr1, si:ch211-125o16.4, evplb 
+       evpla, si:ch211-195b11.3, zgc:193505, hrc, si:ch73-347e22.8, icn2, tmem176l.4, stard14, si:cabz01007794.1, elovl7a 
+       zgc:100868, scel, hsd17b12a, si:dkey-87o1.2, stx11b.1, dbnla, ppl, anxa3a, eps8l1a, plvapb 
 PC_ 5 
-Positive:  slc2a11b, slc22a7a, bscl2l, si:dkey-251i10.2, aox5, tmem130, akr1b1.1, zgc:153031, syngr1a, pts 
-       uraha, slc2a15a, plin6, gch2, slc2a15b, CABZ01021592.1, oacyl, rbp4l, pax7b, gpd1b 
-       si:dkey-106n21.1, pah, si:ch211-251b21.1, paics, cx30.3, gstp1, zgc:110339, si:dkey-21a6.5, gpr143, atic 
-Negative:  si:ch211-222l21.1, si:ch73-281n10.2, tuba1c, tuba1a, sox11b, sox11a, hes6, atp1b1a, rtn1a, pou3f1 
-       gadd45gb.1, gpm6aa, pcna, tubb5, stmn1b, insm1a, elavl3, dla, srgn, dlb 
-       abhd6a, BX465834.1, mki67, si:ch73-21g5.7, myt1a, rrm2.1, CU467822.2, ncl, fgfbp3, lrrn1 </code></pre>
+Positive:  slc22a7a, akr1b1.1, si:dkey-251i10.2, slc2a11b, tmem130, uraha, bscl2l, gch2, CABZ01021592.1, aox5 
+       zgc:153031, paics, gpd1b, rbp4l, pts, gstp1, si:ch211-251b21.1, oacyl, slc2a15a, atic 
+       syngr1a, plin6, qdpra, pah, zgc:110339, impdh1b, slc2a15b, gpr143, pax7b, aqp3a 
+Negative:  si:ch211-222l21.1, plvapb, zgc:153409, mki67, hist1h4l.11, atp1b1a, top2a, hist1h4l.6, pcna, zgc:110425 
+       stmn1a, si:ch73-281n10.2, fosab, hist1h4l.16, si:dkey-108k21.10, cenpf, cdk1, tpx2, srgn, arhgdig 
+       dll4, nusap1, ube2c, pcdh17, bcl6b, si:ch73-335l21.4, aspm, si:ch211-248e11.2, tcima, dnmt3bb.1 </code></pre>
 <pre class="r"><code>merged &lt;- IntegrateLayers(object = merged, method = HarmonyIntegration, orig.reduction = &quot;pca&quot;,
   new.reduction = &#39;harmony&#39;, verbose = FALSE)</code></pre>
 <pre><code>The `features` argument is ignored by `HarmonyIntegration`.
@@ -846,115 +887,115 @@ This message is displayed once per session.</code></pre>
 <pre class="r"><code>merged &lt;- RunUMAP(merged, dims = 1:30, reduction = &quot;harmony&quot;) %&gt;% #defaults
     FindNeighbors(., dims = 1:30, reduction = &quot;harmony&quot;) %&gt;% 
     FindClusters(., resolution = seq(0.1, 1, 0.1), reduction = &quot;harmony&quot;)</code></pre>
-<pre><code>16:18:35 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>16:18:35 Read 26860 rows and found 30 numeric columns</code></pre>
-<pre><code>16:18:35 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>16:18:35 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>16:54:58 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>16:54:58 Read 15750 rows and found 30 numeric columns</code></pre>
+<pre><code>16:54:58 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>16:54:58 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-16:18:37 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp8juDfj/fileda847d0d2020
-16:18:37 Searching Annoy index using 1 thread, search_k = 3000
-16:18:41 Annoy recall = 100%
-16:18:41 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-16:18:42 Initializing from normalized Laplacian + noise (using RSpectra)
-16:18:42 Commencing optimization for 200 epochs, with 1231896 positive edges
-16:18:42 Using rng type: pcg
-16:18:50 Optimization finished
+16:54:59 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpmpcIbh/file10f0e20fd5ce
+16:54:59 Searching Annoy index using 1 thread, search_k = 3000
+16:55:01 Annoy recall = 100%
+16:55:02 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+16:55:02 Initializing from normalized Laplacian + noise (using RSpectra)
+16:55:03 Commencing optimization for 200 epochs, with 695896 positive edges
+16:55:03 Using rng type: pcg
+16:55:07 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Warning: The following arguments are not used: reduction
 Warning: The following arguments are not used: reduction</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9700
+Maximum modularity in 10 random starts: 0.9673
 Number of communities: 11
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9551
-Number of communities: 15
-Elapsed time: 3 seconds
+Maximum modularity in 10 random starts: 0.9522
+Number of communities: 16
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9440
+Maximum modularity in 10 random starts: 0.9419
 Number of communities: 17
-Elapsed time: 2 seconds
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9356
-Number of communities: 21
-Elapsed time: 3 seconds
+Maximum modularity in 10 random starts: 0.9321
+Number of communities: 18
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9271
-Number of communities: 23
-Elapsed time: 3 seconds
+Maximum modularity in 10 random starts: 0.9224
+Number of communities: 19
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9214
+Maximum modularity in 10 random starts: 0.9152
 Number of communities: 24
-Elapsed time: 3 seconds
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9151
+Maximum modularity in 10 random starts: 0.9089
 Number of communities: 25
-Elapsed time: 3 seconds
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9102
+Maximum modularity in 10 random starts: 0.9020
+Number of communities: 27
+Elapsed time: 1 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 15750
+Number of edges: 616107
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8958
 Number of communities: 28
-Elapsed time: 3 seconds
+Elapsed time: 1 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 26860
-Number of edges: 1039935
+Number of nodes: 15750
+Number of edges: 616107
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9046
-Number of communities: 30
-Elapsed time: 3 seconds
-Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-
-Number of nodes: 26860
-Number of edges: 1039935
-
-Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8990
-Number of communities: 30
-Elapsed time: 3 seconds</code></pre>
+Maximum modularity in 10 random starts: 0.8903
+Number of communities: 29
+Elapsed time: 1 seconds</code></pre>
 </div>
 <div id="pca-correlations" class="section level2">
 <h2>PCA correlations</h2>
@@ -1002,7 +1043,7 @@ Elapsed time: 3 seconds</code></pre>
 }</code></pre>
 <pre class="r"><code>wrap_plots(run_harmony_correlations(merged), ncol = 3)</code></pre>
 <pre><code>Joining with `by = join_by(Barcode)`</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-13-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-14-1.png" width="1440" style="display: block; margin: auto;" /></p>
 </div>
 <div id="umap-overview" class="section level2">
 <h2>UMAP overview</h2>
@@ -1016,18 +1057,43 @@ Elapsed time: 3 seconds</code></pre>
   
 }</code></pre>
 <pre class="r"><code>wrap_plots(plot_umap_dataset(merged), ncol = 2)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-15-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<div id="barplot-for-batch-per-cluster" class="section level4">
-<h4>Barplot for batch per cluster</h4>
-<pre class="r"><code>merged@meta.data %&gt;% 
-  group_by(batch, seurat_clusters) %&gt;% 
-  summarise(., count = n()) %&gt;% 
-  ggplot(., aes(y = count, x= seurat_clusters, fill= batch))+
-  geom_bar(stat = &quot;identity&quot;, position = &#39;fill&#39;)+
-  plot_sizing</code></pre>
-<pre><code>`summarise()` has grouped output by &#39;batch&#39;. You can override using the
-`.groups` argument.</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-16-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-16-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/8a28dd2f86f48ed63a1ea2c0c411b81f53113d18/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-16-1.png" target="_blank">8a28dd2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div id="low-quality-clusters" class="section level2">
@@ -1046,9 +1112,101 @@ plot_list[[2]] &lt;- merged@meta.data %&gt;%
 
 wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;) </code></pre>
 <p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-17-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/8a28dd2f86f48ed63a1ea2c0c411b81f53113d18/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-17-1.png" target="_blank">8a28dd2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="clustree" class="section level2">
 <h2>Clustree</h2>
+<pre class="r"><code>clustree(merged)</code></pre>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Stacked barplot for different resolutions capturing genotype
+split.</p>
+<pre class="r"><code>merged@meta.data %&gt;% 
+    select(., batch, starts_with(&quot;RNA&quot;)) %&gt;% 
+    pivot_longer(., cols = starts_with(&quot;RNA&quot;), values_to = &quot;cluster&quot;, names_to = &quot;resolution&quot;) %&gt;% 
+    mutate(., resolution = gsub(&quot;RNA_snn_&quot;, &quot;&quot;, resolution)) %&gt;% 
+    group_by(resolution, cluster, batch) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    ggplot(., aes(x= cluster, y = count, fill= batch)) +
+    geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) +
+    plot_sizing +
+    facet_wrap(~resolution, scales = &quot;free_x&quot;, nrow =2) + 
+    strip_fix </code></pre>
+<pre><code>`summarise()` has grouped output by &#39;resolution&#39;, &#39;cluster&#39;. You can override
+using the `.groups` argument.</code></pre>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-19-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/8a28dd2f86f48ed63a1ea2c0c411b81f53113d18/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-19-1.png" target="_blank">8a28dd2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="scgate-find-endothelial-subset" class="section level2">
 <h2>scGate: Find endothelial subset</h2>
@@ -1063,16 +1221,15 @@ wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;c
 merged &lt;- scGate(data = merged,
                    model = endothelial_gating_model,
                    output.col.name = &quot;is_endothlial&quot;)</code></pre>
-<pre><code>Warning: Different features in new layer data than already exists for
-scale.data</code></pre>
 <pre><code>
-### Detected a total of 18105 pure &#39;Target&#39; cells (67.41% of total)</code></pre>
+### Detected a total of 11088 pure &#39;Target&#39; cells (70.40% of total)</code></pre>
 <pre class="r"><code>pure_colours &lt;- c(&quot;grey&quot;, &quot;green3&quot;); names(pure_colours) &lt;- c(&quot;Impure&quot;, &quot;Pure&quot;)
 DimPlot(merged, group.by = &quot;is_endothlial&quot;, cols = pure_colours)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Make purity plots for res 0.2:</p>
 <pre class="r"><code>merged@meta.data %&gt;% 
-  group_by(., RNA_snn_res.0.2, is_endothlial) %&gt;% 
+  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %&gt;% 
+  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %&gt;% 
   summarise(., count = n()) %&gt;%
     group_by(RNA_snn_res.0.2) %&gt;%
     mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == &quot;Pure&quot;]/sum(count)) %&gt;% 
@@ -1091,7 +1248,7 @@ Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
 generated.</code></pre>
 <pre><code>`summarise()` has grouped output by &#39;RNA_snn_res.0.2&#39;. You can override using
 the `.groups` argument.</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-20-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 <div id="dotplot" class="section level2">
 <h2>DotPlot</h2>
@@ -1139,13 +1296,51 @@ annotation.</p>
 }</code></pre>
 <p>Make dotplots for all clusters</p>
 <pre class="r"><code>DimPlot(merged, group.by = &quot;RNA_snn_res.0.2&quot;, label = T)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>run_dotplot(merged, dotplot.level.01, group = &quot;RNA_snn_res.0.2&quot;)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-24-1.png" width="960" style="display: block; margin: auto;" />
-Make dotplot for clusters that have mid-range purity.</p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/8a28dd2f86f48ed63a1ea2c0c411b81f53113d18/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-26-1.png" target="_blank">8a28dd2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Make dotplot for clusters that have mid-range purity.</p>
 <pre class="r"><code>run_dotplot_mid_purity &lt;- function(seurat, genes, limits){
   clusters &lt;- seurat@meta.data %&gt;% 
-    group_by(., RNA_snn_res.0.2, is_endothlial) %&gt;% 
+  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %&gt;% 
+  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %&gt;% 
   summarise(., count = n()) %&gt;%
     group_by(RNA_snn_res.0.2) %&gt;%
     mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == &quot;Pure&quot;]/sum(count)) %&gt;% 
@@ -1170,7 +1365,7 @@ generated.</code></pre>
 the `.groups` argument.</code></pre>
 <pre><code>Warning: Scaling data with a low number of groups may produce misleading
 results</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd/unnamed-chunk-28-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>They all express other markers as well.</p>
 </div>
 <div id="export" class="section level2">
@@ -1258,32 +1453,32 @@ loaded via a namespace (and not attached):
  [88] UCell_2.14.0             tidyselect_1.2.1         processx_3.8.6          
  [91] compiler_4.5.0           curl_6.2.2               git2r_0.36.2            
  [94] BiocNeighbors_2.4.0      DelayedArray_0.36.0      plotly_4.11.0           
- [97] stringfish_0.18.0        rtracklayer_1.70.1       scales_1.4.0            
-[100] lmtest_0.9-40            callr_3.7.6              digest_0.6.37           
-[103] goftest_1.2-3            spatstat.utils_3.2-1     rmarkdown_2.29          
-[106] RhpcBLASctl_0.23-42      XVector_0.50.0           htmltools_0.5.8.1       
-[109] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
-[112] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
-[115] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
-[118] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
-[121] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
-[124] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
-[127] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
-[130] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
-[133] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
-[136] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
-[139] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
-[142] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
-[145] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
-[148] XML_3.99-0.20            evaluate_1.0.3           RcppParallel_5.1.11-1   
-[151] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
-[154] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
-[157] polyclip_1.10-7          scattermore_1.2          ggforce_0.5.0           
-[160] rsvd_1.0.5               broom_1.0.11             xtable_1.8-4            
-[163] restfulr_0.0.16          RSpectra_0.16-2          rstatix_0.7.3           
-[166] later_1.4.2              viridisLite_0.4.2        memoise_2.0.1           
-[169] beeswarm_0.4.0           GenomicAlignments_1.46.0 cluster_2.1.8.1         
-[172] timechange_0.3.0         globals_0.18.0          </code></pre>
+ [97] stringfish_0.18.0        rtracklayer_1.70.1       checkmate_2.3.3         
+[100] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
+[103] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
+[106] rmarkdown_2.29           RhpcBLASctl_0.23-42      XVector_0.50.0          
+[109] htmltools_0.5.8.1        pkgconfig_2.0.3          fastmap_1.2.0           
+[112] rlang_1.1.6              htmlwidgets_1.6.4        UCSC.utils_1.6.1        
+[115] shiny_1.12.1             farver_2.1.2             jquerylib_0.1.4         
+[118] zoo_1.8-15               jsonlite_2.0.0           BiocParallel_1.44.0     
+[121] BiocSingular_1.26.1      RCurl_1.98-1.17          magrittr_2.0.3          
+[124] Formula_1.2-5            dotCall64_1.2            Rcpp_1.0.14             
+[127] viridis_0.6.5            reticulate_1.44.1        stringi_1.8.7           
+[130] MASS_7.3-65              plyr_1.8.9               parallel_4.5.0          
+[133] listenv_0.10.0           ggrepel_0.9.6            deldir_2.0-4            
+[136] graphlayouts_1.2.2       Biostrings_2.78.0        splines_4.5.0           
+[139] tensor_1.5.1             hms_1.1.4                locfit_1.5-9.12         
+[142] ps_1.9.1                 igraph_2.2.1             spatstat.geom_3.7-0     
+[145] ggsignif_0.6.4           RcppHNSW_0.6.0           reshape2_1.4.5          
+[148] ScaledMatrix_1.18.0      XML_3.99-0.20            evaluate_1.0.3          
+[151] RcppParallel_5.1.11-1    renv_1.1.4               BiocManager_1.30.27     
+[154] tweenr_2.0.3             tzdb_0.5.0               httpuv_1.6.16           
+[157] RANN_2.6.2               polyclip_1.10-7          scattermore_1.2         
+[160] ggforce_0.5.0            rsvd_1.0.5               broom_1.0.11            
+[163] xtable_1.8-4             restfulr_0.0.16          RSpectra_0.16-2         
+[166] rstatix_0.7.3            later_1.4.2              viridisLite_0.4.2       
+[169] memoise_2.0.1            beeswarm_0.4.0           GenomicAlignments_1.46.0
+[172] cluster_2.1.8.1          timechange_0.3.0         globals_0.18.0          </code></pre>
 </div>
 </div>
 </div>

@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree59ab7d9155fecf0add99cf85d7c0c7cdcf15b177targetblank59ab7d9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree516694aab77d66662d0476a94b45681d61642da9targetblank516694aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/59ab7d9155fecf0add99cf85d7c0c7cdcf15b177" target="_blank">59ab7d9</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/516694aab77d66662d0476a94b45681d61642da9" target="_blank">516694a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree59ab7d9155fecf0add99cf85d7c0c7cdcf15b177targetblank59ab7d9a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree516694aab77d66662d0476a94b45681d61642da9targetblank516694aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/59ab7d9155fecf0add99cf85d7c0c7cdcf15b177" target="_blank">59ab7d9</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/516694aab77d66662d0476a94b45681d61642da9" target="_blank">516694a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -549,13 +549,20 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
     Ignored:    code/pre_processing/
     Ignored:    data/.DS_Store
     Ignored:    data/genesets/
     Ignored:    data/input/
+    Ignored:    output/.DS_Store
+    Ignored:    output/analysis/
     Ignored:    output/data/
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd
+    Untracked:  code/analysis/
 
 Unstaged changes:
     Modified:   analysis/index.Rmd
@@ -606,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/516694aab77d66662d0476a94b45681d61642da9/analysis/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd" target="_blank">516694a</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+wflow_publish(c("analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/pre_processing_D10025_yap1_dataset_makeObject_Level03.html" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -702,8 +743,8 @@ list_objects$D10025_yap1_dataset_Level_03 &lt;- run_subset_lecvec(list_objects$D
 <pre class="r"><code>list_objects$D10025_yap1_dataset_Level_02_kept_doublets_annotated &lt;- list_objects$D10025_yap1_dataset_Level_02_annotated &lt;- NULL
 gc()</code></pre>
 <pre><code>            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-Ncells  12020928 642.0   17476882  933.4         NA  17476882  933.4
-Vcells 114335381 872.4  347368912 2650.3      49152 432364192 3298.7</code></pre>
+Ncells  12022206 642.1   19299408 1030.7         NA  17652682  942.8
+Vcells 114338833 872.4  347372865 2650.3      49152 428007025 3265.5</code></pre>
 <p>Replace name in object</p>
 <pre class="r"><code>list_objects$D10025_yap1_dataset_Level_03_kept_doublets@misc$name &lt;- &quot;Level_03_kept_doublets&quot;
 list_objects$D10025_yap1_dataset_Level_03@misc$name &lt;- &quot;Level_03&quot;</code></pre>
@@ -766,21 +807,21 @@ Negative:  esm1, ap1s3b, mcamb, msna, CABZ01030107.1, dll4, bcl6b, plecb, aqp1a.
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>11:56:25 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>11:56:25 Read 8426 rows and found 30 numeric columns</code></pre>
-<pre><code>11:56:25 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>11:56:25 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>16:56:30 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>16:56:30 Read 8426 rows and found 30 numeric columns</code></pre>
+<pre><code>16:56:30 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>16:56:30 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-11:56:25 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp3FLLUk/file54215e9594cc
-11:56:25 Searching Annoy index using 1 thread, search_k = 3000
-11:56:26 Annoy recall = 100%
-11:56:26 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-11:56:27 Initializing from normalized Laplacian + noise (using RSpectra)
-11:56:27 Commencing optimization for 500 epochs, with 362614 positive edges
-11:56:27 Using rng type: pcg
-11:56:33 Optimization finished
+16:56:31 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpCFjV3W/file14fb6eddf3de
+16:56:31 Searching Annoy index using 1 thread, search_k = 3000
+16:56:32 Annoy recall = 100%
+16:56:32 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+16:56:33 Initializing from normalized Laplacian + noise (using RSpectra)
+16:56:33 Commencing optimization for 500 epochs, with 362614 positive edges
+16:56:33 Using rng type: pcg
+16:56:39 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -914,21 +955,21 @@ Positive:  rrm2.1, CT027638.1, mibp, zgc:110540, stmn1a, hmgn2, asf1ba, krt4, dn
 Negative:  ier2a, fosab, ier2b, btg2, junba, jun, dusp5, pim1, si:ch73-335l21.4, jdp2b 
        socs3b, zgc:158343, zgc:162730, klf6a, sdc4, atf3, egr1, fosb, pde4ba, fosl2 
        jund, socs3a, higd1a, msna, tnfaip2b, ch25h, fosl1a, ppp1r14aa, actb1, sik1 
-11:56:54 UMAP embedding parameters a = 0.9922 b = 1.112
-11:56:54 Read 6557 rows and found 30 numeric columns
-11:56:54 Using Annoy for neighbor search, n_neighbors = 30
-11:56:54 Building Annoy index with metric = cosine, n_trees = 50
+16:57:00 UMAP embedding parameters a = 0.9922 b = 1.112
+16:57:00 Read 6557 rows and found 30 numeric columns
+16:57:00 Using Annoy for neighbor search, n_neighbors = 30
+16:57:00 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-11:56:54 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp3FLLUk/file54212e5c0d97
-11:56:54 Searching Annoy index using 1 thread, search_k = 3000
-11:56:55 Annoy recall = 100%
-11:56:55 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-11:56:56 Initializing from normalized Laplacian + noise (using RSpectra)
-11:56:56 Commencing optimization for 500 epochs, with 282002 positive edges
-11:56:56 Using rng type: pcg
-11:57:00 Optimization finished
+16:57:01 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpCFjV3W/file14fb6db57b72
+16:57:01 Searching Annoy index using 1 thread, search_k = 3000
+16:57:02 Annoy recall = 100%
+16:57:02 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+16:57:03 Initializing from normalized Laplacian + noise (using RSpectra)
+16:57:03 Commencing optimization for 500 epochs, with 282002 positive edges
+16:57:03 Using rng type: pcg
+16:57:07 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -1071,6 +1112,43 @@ Elapsed time: 0 seconds</code></pre>
 Joining with `by = join_by(Barcode)`</code></pre>
 <pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F))</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-11-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-11-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlation lib size with PC3.</p>
 </div>
 <div id="umap-overviews" class="section level2">
@@ -1096,6 +1174,43 @@ Level 2 celltypes</p>
 
 wrap_plots(unlist(plot_list, recursive = F)) +  plot_layout(nrow = 2)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-13-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-13-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="clustree-composition" class="section level2">
 <h2>Clustree + Composition</h2>
@@ -1105,6 +1220,43 @@ wrap_plots(unlist(plot_list, recursive = F)) +  plot_layout(nrow = 2)</code></pr
 
 wrap_plots(plot_list, ncol = 2)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-14-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-14-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Reassignments in kept doublets at low resolutions. With removed
 doublets its a lot cleaner.</p>
 <p>Stacked barplot for different resolutions capturing genotype
@@ -1130,6 +1282,43 @@ using the `.groups` argument.
 using the `.groups` argument.</code></pre>
 <pre class="r"><code>wrap_plots(plot_list, ncol = 1)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-16-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-16-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Make UMAPs for res 0.2, 0.3, 0.4</p>
 <pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
   plot_list &lt;- list()
@@ -1143,9 +1332,83 @@ using the `.groups` argument.</code></pre>
 
 wrap_plots(unlist(plot_list, recursive = F), ncol = 4)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-17-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-17-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Look at predicted doublets for when we kept them:</p>
 <pre class="r"><code>DimPlot(object = list_objects$D10025_yap1_dataset_Level_03_kept_doublets, group.by = &quot;scDblFinder.class&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-18-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-18-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>They clearly cluster together.</p>
 </div>
 <div id="scgate-find-major-subpopulations" class="section level2">
@@ -1189,27 +1452,22 @@ on Level 03. We can add it later if we think its necessary.</p>
   
   cat(&quot;\n\n&quot;) #make tabs
 })</code></pre>
-<pre><code>#### RNA_snn_res.0.2
-
-
-#### RNA_snn_res.0.3
-
-
-#### RNA_snn_res.0.4
-
-
-#### RNA_snn_res.0.5</code></pre>
-<pre><code>[[1]]
-NULL
-
-[[2]]
-NULL
-
-[[3]]
-NULL
-
-[[4]]
-NULL</code></pre>
+<div id="rna_snn_res.0.2" class="section level4">
+<h4>RNA_snn_res.0.2</h4>
+</div>
+<div id="rna_snn_res.0.3" class="section level4">
+<h4>RNA_snn_res.0.3</h4>
+</div>
+<div id="rna_snn_res.0.4" class="section level4">
+<h4>RNA_snn_res.0.4</h4>
+</div>
+<div id="rna_snn_res.0.5" class="section level4">
+<h4>RNA_snn_res.0.5</h4>
+<p>[[1]] NULL</p>
+<p>[[2]] NULL</p>
+<p>[[3]] NULL</p>
+<p>[[4]] NULL</p>
+</div>
 </div>
 </div>
 <div id="feature-umaps" class="section level2">
@@ -1222,6 +1480,43 @@ NULL</code></pre>
 
 wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-23-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/1f8196630f59edc7e1aa48309eed15e5a5b62092/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-23-1.png" target="_blank">1f81966</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>You can see one of the VEC cluster starting to express prox1a, they
 might just not be proper LECs yet? We could increase the resolution
 until we get it to split off, but that would give us a very high
