@@ -21,17 +21,51 @@ All cells captured in sequencing
 [Level 01; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.html)
 
 
+[Level 01, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html), using SCT and regressing out %mito
+
+[Level 01; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html), using SCT and regressing out %mito + adding annotation
+
+
 ### Level 02 (all endothelial cells; kdrl+)
 
 Endothelial cell subclusters; >95% endothelial cell purity.
 
-[Level 02]()
+[Level 02; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
 
+[Level 02; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level02_regressCC.html), regressing out %mito and cell cycle position
+
+[Level 02; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level02_SCT_annotation.html), using SCT and regressing out %mito and cell cycle position
+
+### Level 03 (VEC + LEC cells)
+
+Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
+
+Cycling cells contain a mix of all endothelial cells, which is why we are not selecting them. 
+
+[Level 03](pre_processing_D10025_yap1_dataset_makeObject_Level03.html) only making object
+
+[Level 03, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level03_SCT.html) only making object
 
 
 # **Pre-processing - meox1 dataset**
 
+## Levels{.tabset}
+
+### Level 01 (all cells)
+
 [Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
+
+
+# **Pre-processing - wildtype only yap + meox1 dataset**
+
+## Levels{.tabset}
+
+### Level 01 (all cells)
+
+[Level 01; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html): both making object + annotation in the same doc
+
+### Level 02 (all endothelial cells; kdrl+)
+
 
 
 
