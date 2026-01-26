@@ -1,0 +1,360 @@
+---
+title: "D10025 yap1 dataset: Make Level 02 (all endothelial cells) object - trying to regress out cell cycle"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Making Level 02 object for yap1 dataset. Alternative to ./pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.Rmd, we're tying to regress out cell cycle this time.
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+})
+```
+
+
+### Load data
+
+Made here: ./pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd
+
+```{r}
+input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_kept_doublets_annotated.qs2'),
+                 here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_annotated.qs2'))
+list_objects <- lapply(input_paths, qs_read)
+
+names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
+```
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+## Subset datasets: Endothelial clusters only
+
+Subset Level 01 to only include endothelial subsets. By going through .pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.Rmd, we can see that:
+
+- there are no low quality clusters that stand out
+
+- we can find endothelial subsets using a mix of marker genes and scGate endothelial purity (95%) for clusters
+
+
+```{r}
+#for each setting separately
+
+#with doublets
+cells_to_keep <- list_objects$D10025_yap1_dataset_Level_01_kept_doublets_annotated@meta.data %>% 
+  filter(., RNA_snn_res.0.5_cluster_purity > 0.95) %>% 
+  rownames_to_column("Barcode") %>% 
+  pull(Barcode) 
+
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets <- subset(list_objects$D10025_yap1_dataset_Level_01_kept_doublets, cells = cells_to_keep)
+
+#without doublets
+cells_to_keep <- list_objects$D10025_yap1_dataset_Level_01_annotated@meta.data %>% 
+  filter(., RNA_snn_res.0.5_cluster_purity > 0.95) %>% 
+  rownames_to_column("Barcode") %>% 
+  pull(Barcode) 
+
+list_objects$D10025_yap1_dataset_Level_02 <- subset(list_objects$D10025_yap1_dataset_Level_01_annotated, cells = cells_to_keep)
+
+
+```
+
+Clean up list, remove Level 01
+
+```{r}
+list_objects$D10025_yap1_dataset_Level_01_kept_doublets_annotated <- list_objects$D10025_yap1_dataset_Level_01_annotated <- NULL
+gc()
+```
+
+Clean up some metadata
+
+```{r}
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets$endothelial_UCell <- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$scGate_multi <- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$is_endothlial <- list_objects$D10025_yap1_dataset_Level_02_kept_doublets$RNA_snn_res.0.5_cluster_purity <- NULL
+
+list_objects$D10025_yap1_dataset_Level_02$endothelial_UCell <- list_objects$D10025_yap1_dataset_Level_02$scGate_multi <- list_objects$D10025_yap1_dataset_Level_02$is_endothlial <- list_objects$D10025_yap1_dataset_Level_02$RNA_snn_res.0.5_cluster_purity <- NULL
+```
+
+
+Replace name in object
+
+```{r}
+list_objects$D10025_yap1_dataset_Level_02_kept_doublets@misc$name <- "Level_02_kept_doublets"
+list_objects$D10025_yap1_dataset_Level_02@misc$name <- "Level_02"
+
+```
+
+
+
+## Re-run single-cell workflow
+
+Not using sctransform, regressing out %mito and tricycle position. 
+
+```{r}
+run_workflow <- function(seurat){
+  seurat <- NormalizeData(seurat) %>%   #this is technically unneccessary, but also won't hurt
+    FindVariableFeatures() %>% 
+    ScaleData(., vars.to.regress = c("percent.mt", "tricycle_stage")) %>% #tried tricycle position, did nothing
+    RunPCA() %>% 
+    RunUMAP(., dims = 1:30) %>% #defaults
+    FindNeighbors(., dims = 1:30) %>% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1)) #this will overwrite old clustering (that's okay)
+}
+```
+
+
+```{r}
+list_objects <- lapply(list_objects, run_workflow)
+```
+
+
+## PCA correlations
+
+```{r}
+run_pca_correlations <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %>% 
+    select(., log10ncount, log10nfeat) %>% 
+    rownames_to_column("Barcode") %>% 
+    full_join(., seurat@reductions$pca@cell.embeddings %>% as.data.frame() %>% rownames_to_column("Barcode") %>% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "PC_1", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC1 vs library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "PC_2", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC2 vs library size, %s", seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "PC_3", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC3 vs library size, %s", seurat@project.name))
+  
+  return(plot_list)
+}
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, run_pca_correlations)
+
+wrap_plots(unlist(plot_list, recursive = F)) +plot_annotation(title = "top with doublets, bottom without")
+```
+
+Slight correlation lib size with PC1.
+
+## UMAP overviews
+
+Make UMAPs for features, ncounts, clusters, genotype and cell cycle.
+
+```{r}
+plot_umap_dataset <- function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters")) + ggtitle(seurat@project.name)
+  plot_list[[4]] <- DimPlot(seurat,  group.by = c("Genotype"), shuffle = T) + ggtitle(seurat@project.name)
+  plot_list[[5]] <- DimPlot(seurat,  group.by = c("tricycle_stage"), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+Top with, bottom without doublets. 
+
+```{r, fig.align='center', fig.height=10, fig.width=25}
+plot_list <- lapply(list_objects, plot_umap_dataset)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = "top with doublets, bottom without") + plot_layout(nrow = 2)
+```
+
+## Clustree + Composition
+
+
+```{r, fig.align='center', fig.height=12, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat){
+  clustree(seurat) + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol = 2)
+```
+
+Stacked barplot for different resolutions capturing genotype split.
+
+```{r}
+run_barplot_genotype <- function(seurat){
+  seurat@meta.data %>% 
+    select(., Genotype, starts_with("RNA")) %>% 
+    pivot_longer(., cols = starts_with("RNA"), values_to = "cluster", names_to = "resolution") %>% 
+    mutate(., resolution = gsub("RNA_snn_", "", resolution)) %>% 
+    group_by(resolution, cluster, Genotype) %>% 
+    summarise(., count = n()) %>% 
+    ggplot(., aes(x= cluster, y = count, fill= Genotype)) +
+    geom_bar(position = "fill", stat = "identity") +
+    plot_sizing +
+    facet_wrap(~resolution, scales = "free_x", nrow =2) + 
+    strip_fix +
+    ggtitle(seurat@misc$name)
+}
+```
+
+
+```{r, fig.align='center', fig.height=20, fig.width=30}
+
+plot_list <- lapply(list_objects, run_barplot_genotype)
+
+wrap_plots(plot_list, ncol = 1)
+```
+
+Mutant specific cluster jumps out from ~resolution 0.4
+
+
+## scGate: Find major subpopulations
+
+Didn't really work, skipping.
+
+## Feature UMAPs
+
+```{r}
+level_02_dotplot <- c(
+  "prox1a", #LEC
+  "cdh6", #LEC
+  "stab2", #LEC, VEC
+  "mrc1a",#LEC, VEC
+  "lyve1b", #LEC, VEC
+  # "cdh5", #AEC, VEC -> almost everything expresses this
+  "flt1", #AEC
+  "dll4", #AEC
+  "hlx1", #migrAEC
+  "esm1", #migrAEC
+  "mki67", #cycling
+  "pcna", #cycling
+  "hand2", #endocardium
+  "fn1a" #endocardium
+)
+```
+
+This can sometimes be helpful.
+
+```{r}
+run_feature_umap <- function(seurat, genes){
+  FeaturePlot(seurat, features = genes, ncol = 4) 
+}
+
+```
+
+```{r, fig.align='center', fig.height=40, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat) run_feature_umap(seurat, level_02_dotplot))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+## Dotplot for genes
+
+Make dotplot function:
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+
+Make for res 0.4.
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat) run_dotplot(seurat, level_02_dotplot, group = "RNA_snn_res.0.4"))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+Show UMAP for res 0.4
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat){
+  DimPlot(seurat, group.by = "RNA_snn_res.0.4", shuffle = T, label = T) + ggtitle(sprintf("res 0.4, %s", seurat@misc$name)) 
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 2)
+```
+
+What's frustrating is that prox1a expression is like a smear across, and its not captured by the clustering. It makes me think that they express prox1a, but are very much still a VEC in their other gene expression
+
+
+## Add annotations
+
+No annotations, regressing out cell cycle didn't do much so I'd rather not mess with the count data more than I need to.
+
+## Export 
+
+Export Level 02. 
+
+```{r}
+
+file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level02_regressCC.qs2')
+qs_save(list_objects$D10025_yap1_dataset_Level_02, file_name)
+
+file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_02_kept_doublets_regressCC.qs2')
+qs_save(list_objects$D10025_yap1_dataset_Level_02_kept_doublets , file_name)
+
+```
+
+
+
