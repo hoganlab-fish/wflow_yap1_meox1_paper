@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeefab85cfcabeb3db60b1c285e40366981d5d6651targetblankefab85ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreefa07560a4d7ec30faeda12fd6aee127155fa9a5dtargetblankfa07560a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/efab85cfcabeb3db60b1c285e40366981d5d6651" target="_blank">efab85c</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/fa07560a4d7ec30faeda12fd6aee127155fa9a5d" target="_blank">fa07560</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeefab85cfcabeb3db60b1c285e40366981d5d6651targetblankefab85ca"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreefa07560a4d7ec30faeda12fd6aee127155fa9a5dtargetblankfa07560a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/efab85cfcabeb3db60b1c285e40366981d5d6651" target="_blank">efab85c</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/fa07560a4d7ec30faeda12fd6aee127155fa9a5d" target="_blank">fa07560</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -550,6 +550,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    code/.DS_Store
+    Ignored:    code/analysis/.DS_Store
     Ignored:    code/pre_processing/
     Ignored:    data/.DS_Store
     Ignored:    data/genesets/
@@ -562,10 +563,9 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd
-    Untracked:  code/analysis/
 
 Unstaged changes:
-    Modified:   renv.lock
+    Modified:   analysis/pre_processing_D10025_yap1_dataset_makeObject_Level03_SCT.Rmd
 
 </code></pre>
 <p>
@@ -612,6 +612,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3bf4d8875a796e605785c536e2c47a5cca7662aa/docs/pre_processing_D10025_yap1_dataset_makeObject_Level03.html" target="_blank">3bf4d88</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -776,8 +793,8 @@ list_objects$D10025_yap1_dataset_Level_03 &lt;- run_subset_lecvec(list_objects$D
 <pre class="r"><code>list_objects$D10025_yap1_dataset_Level_02_kept_doublets_annotated &lt;- list_objects$D10025_yap1_dataset_Level_02_annotated &lt;- NULL
 gc()</code></pre>
 <pre><code>            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-Ncells  12024569 642.2   19316642 1031.7         NA  17655024  942.9
-Vcells 114344721 872.4  347379648 2650.3      49152 428012913 3265.5</code></pre>
+Ncells  12024722 642.2   21612215 1154.3         NA  17685059  944.5
+Vcells 114345225 872.4  433900127 3310.4      49152 449892022 3432.5</code></pre>
 <p>Replace name in object</p>
 <pre class="r"><code>list_objects$D10025_yap1_dataset_Level_03_kept_doublets@misc$name &lt;- &quot;Level_03_kept_doublets&quot;
 list_objects$D10025_yap1_dataset_Level_03@misc$name &lt;- &quot;Level_03&quot;</code></pre>
@@ -840,21 +857,21 @@ Negative:  esm1, ap1s3b, mcamb, msna, CABZ01030107.1, dll4, bcl6b, plecb, aqp1a.
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>22:27:25 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>22:27:25 Read 8426 rows and found 30 numeric columns</code></pre>
-<pre><code>22:27:25 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>22:27:25 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>22:35:07 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>22:35:07 Read 8426 rows and found 30 numeric columns</code></pre>
+<pre><code>22:35:07 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>22:35:07 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-22:27:26 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmpsa4DLy/filee7f449c52413
-22:27:26 Searching Annoy index using 1 thread, search_k = 3000
-22:27:27 Annoy recall = 100%
-22:27:27 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-22:27:28 Initializing from normalized Laplacian + noise (using RSpectra)
-22:27:28 Commencing optimization for 500 epochs, with 362614 positive edges
-22:27:28 Using rng type: pcg
-22:27:33 Optimization finished
+22:35:07 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp15e1jx/filef3a17c2bb768
+22:35:07 Searching Annoy index using 1 thread, search_k = 3000
+22:35:08 Annoy recall = 100%
+22:35:08 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+22:35:09 Initializing from normalized Laplacian + noise (using RSpectra)
+22:35:09 Commencing optimization for 500 epochs, with 362614 positive edges
+22:35:09 Using rng type: pcg
+22:35:14 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -988,21 +1005,21 @@ Positive:  rrm2.1, CT027638.1, mibp, zgc:110540, stmn1a, hmgn2, asf1ba, krt4, dn
 Negative:  ier2a, fosab, ier2b, btg2, junba, jun, dusp5, pim1, si:ch73-335l21.4, jdp2b 
        socs3b, zgc:158343, zgc:162730, klf6a, sdc4, atf3, egr1, fosb, pde4ba, fosl2 
        jund, socs3a, higd1a, msna, tnfaip2b, ch25h, fosl1a, ppp1r14aa, actb1, sik1 
-22:27:54 UMAP embedding parameters a = 0.9922 b = 1.112
-22:27:54 Read 6557 rows and found 30 numeric columns
-22:27:54 Using Annoy for neighbor search, n_neighbors = 30
-22:27:54 Building Annoy index with metric = cosine, n_trees = 50
+22:35:35 UMAP embedding parameters a = 0.9922 b = 1.112
+22:35:35 Read 6557 rows and found 30 numeric columns
+22:35:35 Using Annoy for neighbor search, n_neighbors = 30
+22:35:35 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-22:27:54 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmpsa4DLy/filee7f42dc3813b
-22:27:54 Searching Annoy index using 1 thread, search_k = 3000
-22:27:55 Annoy recall = 100%
-22:27:55 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-22:27:56 Initializing from normalized Laplacian + noise (using RSpectra)
-22:27:56 Commencing optimization for 500 epochs, with 282002 positive edges
-22:27:56 Using rng type: pcg
-22:28:00 Optimization finished
+22:35:35 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmp15e1jx/filef3a11a164c88
+22:35:35 Searching Annoy index using 1 thread, search_k = 3000
+22:35:36 Annoy recall = 100%
+22:35:36 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+22:35:37 Initializing from normalized Laplacian + noise (using RSpectra)
+22:35:37 Commencing optimization for 500 epochs, with 282002 positive edges
+22:35:37 Using rng type: pcg
+22:35:41 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -1498,13 +1515,161 @@ on Level 03. We can add it later if we think its necessary.</p>
 <div id="rna_snn_res.0.5" class="section level4">
 <h4>RNA_snn_res.0.5</h4>
 <p>[[1]]
-<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;" />
-[[2]]
-<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-2.png" width="960" style="display: block; margin: auto;" />
-[[3]]
-<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-3.png" width="960" style="display: block; margin: auto;" />
-[[4]]
+<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3bf4d8875a796e605785c536e2c47a5cca7662aa/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-1.png" target="_blank">3bf4d88</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>[[2]]
+<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-2">
+Past versions of unnamed-chunk-21-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3bf4d8875a796e605785c536e2c47a5cca7662aa/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-2.png" target="_blank">3bf4d88</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>[[3]]
+<img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-3.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-3">
+Past versions of unnamed-chunk-21-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3bf4d8875a796e605785c536e2c47a5cca7662aa/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-3.png" target="_blank">3bf4d88</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>[[4]]
 <img src="figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-4">
+Past versions of unnamed-chunk-21-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3bf4d8875a796e605785c536e2c47a5cca7662aa/docs/figure/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd/unnamed-chunk-21-4.png" target="_blank">3bf4d88</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
