@@ -349,15 +349,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreea9bc8fed6f98850e13c4b07bf1a0eab8bfe67fc0targetblanka9bc8fea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeefab85cfcabeb3db60b1c285e40366981d5d6651targetblankefab85ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/a9bc8fed6f98850e13c4b07bf1a0eab8bfe67fc0" target="_blank">a9bc8fe</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/efab85cfcabeb3db60b1c285e40366981d5d6651" target="_blank">efab85c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreea9bc8fed6f98850e13c4b07bf1a0eab8bfe67fc0targetblanka9bc8fea"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeefab85cfcabeb3db60b1c285e40366981d5d6651targetblankefab85ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -367,7 +367,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/a9bc8fed6f98850e13c4b07bf1a0eab8bfe67fc0" target="_blank">a9bc8fe</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/efab85cfcabeb3db60b1c285e40366981d5d6651" target="_blank">efab85c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -385,16 +385,20 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
     Ignored:    code/pre_processing/
     Ignored:    data/.DS_Store
     Ignored:    data/genesets/
     Ignored:    data/input/
+    Ignored:    output/.DS_Store
+    Ignored:    output/analysis/
     Ignored:    output/data/
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
 Untracked files:
-    Untracked:  analysis/pre_processing_D10025_yap1_dataset_makeObject_Level02.Rmd
+    Untracked:  analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd
+    Untracked:  code/analysis/
 
 Unstaged changes:
     Modified:   renv.lock
@@ -441,6 +445,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/efab85cfcabeb3db60b1c285e40366981d5d6651/analysis/index.Rmd" target="_blank">efab85c</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+wflow_publish(c("analysis/pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/81b64c32d31f95b526c902934af89e61a36bae95/docs/index.html" target="_blank">81b64c3</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -529,19 +567,72 @@ href="pre_processing_D10025_yap1_dataset_makeObject_Level01.html">Level
 <p><a
 href="pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.html">Level
 01; annotation</a></p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html">Level
+01, SCT</a>, using SCT and regressing out %mito</p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html">Level
+01; annotation, SCT</a>, using SCT and regressing out %mito + adding
+annotation</p>
 </div>
 <div id="level-02-all-endothelial-cells-kdrl" class="section level3">
 <h3>Level 02 (all endothelial cells; kdrl+)</h3>
 <p>Endothelial cell subclusters; &gt;95% endothelial cell purity.</p>
-<p><a href="">Level 02</a></p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html">Level
+02; annotation</a>: both making object + annotation in the same doc</p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level02_regressCC.html">Level
+02; annotation, SCT</a>, regressing out %mito and cell cycle
+position</p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level02_SCT_annotation.html">Level
+02; annotation, SCT</a>, using SCT and regressing out %mito and cell
+cycle position</p>
+</div>
+<div id="level-03-vec-lec-cells" class="section level3">
+<h3>Level 03 (VEC + LEC cells)</h3>
+<p>Subsettig further, only including VEC and LEC cells -&gt; removing
+AEC, cycling cells and endocardium.</p>
+<p>Cycling cells contain a mix of all endothelial cells, which is why we
+are not selecting them.</p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level03.html">Level
+03</a> only making object</p>
+<p><a
+href="pre_processing_D10025_yap1_dataset_makeObject_Level03_SCT.html">Level
+03, SCT</a> only making object</p>
 </div>
 </div>
 </div>
 <div id="pre-processing---meox1-dataset" class="section level1">
 <h1><strong>Pre-processing - meox1 dataset</strong></h1>
+<div id="levels-1" class="section level2 tabset">
+<h2 class="tabset">Levels</h2>
+<div id="level-01-all-cells-1" class="section level3">
+<h3>Level 01 (all cells)</h3>
 <p><a
 href="pre_processing_D10051_meox1_dataset_makeObject_Level01.html">Level
 01</a></p>
+</div>
+</div>
+</div>
+<div id="pre-processing---wildtype-only-yap-meox1-dataset"
+class="section level1">
+<h1><strong>Pre-processing - wildtype only yap + meox1
+dataset</strong></h1>
+<div id="levels-2" class="section level2 tabset">
+<h2 class="tabset">Levels</h2>
+<div id="level-01-all-cells-2" class="section level3">
+<h3>Level 01 (all cells)</h3>
+<p><a
+href="pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html">Level
+01; annotation</a>: both making object + annotation in the same doc</p>
+</div>
+<div id="level-02-all-endothelial-cells-kdrl-1" class="section level3">
+<h3>Level 02 (all endothelial cells; kdrl+)</h3>
+</div>
+</div>
 </div>
 </div>
 </div>
