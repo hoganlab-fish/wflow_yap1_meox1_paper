@@ -62,12 +62,19 @@ Cycling cells contain a mix of all endothelial cells, which is why we are not se
 
 ### Level 01 (all cells)
 
-[Level 01; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html): both making object + annotation in the same doc
+[Level 01; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html): both making object + annotation in the same doc - did not run tricycle
 
 ### Level 02 (all endothelial cells; kdrl+)
 
+[Level 02; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
 
+### Level 03 (VEC + LEC cells)
 
+Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
+
+[Level 03](pre_processing_combining_wildtypes_dataset_makeObject_Level03.html) only making object
+
+-> note there's a weird small library size meox1 batch hippo responsive cluster, will likely need to be reanalysed
 
 
 
