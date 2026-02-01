@@ -353,7 +353,7 @@ div.tocify {
 <h1 class="title toc-ignore">D10051 meox1 dataset: Make Level 02 (all
 endothelial cells) object</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">28. January 2026</h4>
+<h4 class="date">01. February 2026</h4>
 
 </div>
 
@@ -382,7 +382,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-28
+<strong>Last updated:</strong> 2026-02-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee72a99a18bd97aa8ca646ac6d1f610480ced74cftargetblanke72a99aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeef6b4e24f868b0edb2f24f46192e1fec7fb507aatargetblankef6b4e2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e72a99a18bd97aa8ca646ac6d1f610480ced74cf" target="_blank">e72a99a</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ef6b4e24f868b0edb2f24f46192e1fec7fb507aa" target="_blank">ef6b4e2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee72a99a18bd97aa8ca646ac6d1f610480ced74cftargetblanke72a99aa"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeef6b4e24f868b0edb2f24f46192e1fec7fb507aatargetblankef6b4e2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e72a99a18bd97aa8ca646ac6d1f610480ced74cf" target="_blank">e72a99a</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ef6b4e24f868b0edb2f24f46192e1fec7fb507aa" target="_blank">ef6b4e2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,6 +560,9 @@ Ignored files:
     Ignored:    output/data/
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/pre_processing_D10051_meox1_dataset_makeObject_Level03.Rmd
 
 </code></pre>
 <p>
@@ -606,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ef6b4e24f868b0edb2f24f46192e1fec7fb507aa/analysis/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd" target="_blank">ef6b4e2</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-01
+</td>
+<td>
+wflow_publish("analysis/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.html" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -748,8 +785,8 @@ list_objects$D10051_meox1_dataset_Level_02 &lt;- subset(list_objects$D10051_meox
 <pre class="r"><code>list_objects$D10051_meox1_dataset_Level_01_kept_doublets_annotated &lt;- list_objects$D10051_meox1_dataset_Level_01_annotated &lt;- NULL
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-Ncells  12063498  644.3   18616264  994.3         NA  17731558  947.0
-Vcells 245826958 1875.6  724843943 5530.2      49152 634504176 4840.9</code></pre>
+Ncells  12064278  644.4   21594138 1153.3         NA  17732338  947.1
+Vcells 245828632 1875.6  724846836 5530.2      49152 634917064 4844.1</code></pre>
 <p>Clean up some metadata</p>
 <pre class="r"><code>list_objects$D10051_meox1_dataset_Level_02_kept_doublets$endothelial_UCell &lt;- list_objects$D10051_meox1_dataset_Level_02_kept_doublets$scGate_multi &lt;- list_objects$D10051_meox1_dataset_Level_02_kept_doublets$is_endothlial &lt;- NULL
 
@@ -816,21 +853,21 @@ Negative:  npm1a, dkc1, snu13b, ncl, nop58, fbl, nop56, c1qbp, hspd1, hells
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>22:52:57 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>22:52:57 Read 14439 rows and found 30 numeric columns</code></pre>
-<pre><code>22:52:57 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>22:52:57 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>15:50:33 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>15:50:33 Read 14439 rows and found 30 numeric columns</code></pre>
+<pre><code>15:50:33 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>15:50:33 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-22:52:57 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpiSPUaB/file15f623fc0a253
-22:52:57 Searching Annoy index using 1 thread, search_k = 3000
-22:52:59 Annoy recall = 100%
-22:52:59 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-22:53:00 Initializing from normalized Laplacian + noise (using RSpectra)
-22:53:00 Commencing optimization for 200 epochs, with 604584 positive edges
-22:53:00 Using rng type: pcg
-22:53:04 Optimization finished
+15:50:33 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmplpkIPZ/file43c49567c9c
+15:50:33 Searching Annoy index using 1 thread, search_k = 3000
+15:50:35 Annoy recall = 100%
+15:50:35 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+15:50:36 Initializing from normalized Laplacian + noise (using RSpectra)
+15:50:36 Commencing optimization for 200 epochs, with 604584 positive edges
+15:50:36 Using rng type: pcg
+15:50:40 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -964,21 +1001,21 @@ Positive:  npm1a, dkc1, snu13b, ncl, nkx2.3, mcm2, hells, fbl, nop58, c1qbp
 Negative:  gpm6ab, zgc:158423, lef1, limch1b, plk1, cenpf, nusap1, top2a, fxyd1, slco1c1 
        kcnn1a, ube2c, slco1d1, aspm, ncam3, tpx2, kifc1, plpp3, fabp11a, slc7a5 
        tcima, znf536, pmp22b, six3a, mmel1, kif23, prc1b, cks2, igfbp1a, si:ch211-69g19.2 
-22:53:35 UMAP embedding parameters a = 0.9922 b = 1.112
-22:53:35 Read 11162 rows and found 30 numeric columns
-22:53:35 Using Annoy for neighbor search, n_neighbors = 30
-22:53:35 Building Annoy index with metric = cosine, n_trees = 50
+15:51:10 UMAP embedding parameters a = 0.9922 b = 1.112
+15:51:10 Read 11162 rows and found 30 numeric columns
+15:51:10 Using Annoy for neighbor search, n_neighbors = 30
+15:51:10 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-22:53:35 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpiSPUaB/file15f627fe117d7
-22:53:35 Searching Annoy index using 1 thread, search_k = 3000
-22:53:37 Annoy recall = 100%
-22:53:37 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-22:53:38 Initializing from normalized Laplacian + noise (using RSpectra)
-22:53:38 Commencing optimization for 200 epochs, with 460028 positive edges
-22:53:38 Using rng type: pcg
-22:53:41 Optimization finished
+15:51:11 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmplpkIPZ/file43c4d0eea8e
+15:51:11 Searching Annoy index using 1 thread, search_k = 3000
+15:51:12 Annoy recall = 100%
+15:51:13 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+15:51:13 Initializing from normalized Laplacian + noise (using RSpectra)
+15:51:13 Commencing optimization for 200 epochs, with 460028 positive edges
+15:51:13 Using rng type: pcg
+15:51:16 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -1121,6 +1158,43 @@ Elapsed time: 0 seconds</code></pre>
 Joining with `by = join_by(Barcode)`</code></pre>
 <pre class="r"><code>wrap_plots(unlist(plot_list, recursive = F), ncol =3) +plot_annotation(title = &quot;top with doublets, bottom without&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-11-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-11-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlation lib size with PC1 for with doublets</p>
 </div>
 <div id="umap-overviews" class="section level2">
@@ -1142,6 +1216,43 @@ cycle.</p>
 
 wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = &quot;top with doublets, bottom without&quot;) + plot_layout(nrow = 2)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-13-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-13-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="clustree-composition" class="section level2">
 <h2>Clustree + Composition</h2>
@@ -1151,6 +1262,43 @@ wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = &quot;top
 
 wrap_plots(plot_list, ncol = 2)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-14-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-14-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Maybe 0.4?</p>
 <p>Stacked barplot for different resolutions capturing genotype
 split.</p>
@@ -1175,6 +1323,43 @@ using the `.groups` argument.
 using the `.groups` argument.</code></pre>
 <pre class="r"><code>wrap_plots(plot_list, ncol = 1)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-16-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-16-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Make UMAPs for res 0.4</p>
 <pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
   DimPlot(seurat, group.by = &quot;RNA_snn_res.0.4&quot;, shuffle = T, label = T) + ggtitle(sprintf(&quot;res 0.4, %s&quot;, seurat@misc$name)) 
@@ -1182,6 +1367,43 @@ using the `.groups` argument.</code></pre>
 
 wrap_plots(plot_list, ncol = 2)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-17-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-17-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Mutant-enriched cluster 13/11?</p>
 </div>
 <div id="low-quality-clusters" class="section level2">
@@ -1210,6 +1432,43 @@ some celltypes do have naturally higher %mt and counts.</p>
 
 wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;collect&quot;) </code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Whatever cluster 4 (in both) is does stand out a little bit</p>
 </div>
 <div id="scgate-find-major-subpopulations" class="section level2">
@@ -1244,6 +1503,43 @@ wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = &quot;c
 
 wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-21-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-21-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="dotplot-for-genes" class="section level2">
 <h2>Dotplot for genes</h2>
@@ -1256,6 +1552,43 @@ wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis
 
 wrap_plots(plot_list, ncol = 1) + plot_layout(guides = &quot;collect&quot;, axis_titles = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-23-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-23-1">
+Past versions of unnamed-chunk-23-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-23-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-23-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="add-annotations" class="section level2">
 <h2>Add annotations</h2>
@@ -1356,16 +1689,53 @@ list_objects$D10051_meox1_dataset_Level_02 &lt;- add_seurat_names(
 
 wrap_plots(plot_list, ncol =2) + plot_layout(guides = &quot;collect&quot;)</code></pre>
 <p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-28-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-28-1">
+Past versions of unnamed-chunk-28-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-28-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627cf49ec124531ad167f1cb51edca412ea6f10b/docs/figure/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-28-1.png" target="_blank">627cf49</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="export" class="section level2">
 <h2>Export</h2>
 <p>Export Level 02.</p>
 <pre class="r"><code>file_name &lt;- here(&#39;output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_02_annotated.qs2&#39;)
-qs_save(list_objects$D10025_yap1_dataset_Level_02, file_name)
+qs_save(list_objects$D10051_meox1_dataset_Level_02, file_name)
 
 file_name &lt;- here(&#39;output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_02_kept_doublets_annotated.qs2&#39;)
-qs_save(list_objects$D10025_yap1_dataset_Level_02_kept_doublets , file_name)</code></pre>
+qs_save(list_objects$D10051_meox1_dataset_Level_02_kept_doublets , file_name)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
