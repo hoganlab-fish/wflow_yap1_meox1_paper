@@ -1,0 +1,437 @@
+---
+title: "Combined WT only dataset: Make Level 03 (LEC/VEC) object"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Making Level 03 object for yap1 dataset, using stringent meox1 thresholds. 
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+})
+```
+
+
+### Load data
+
+Made here: ./.pre_processing_combining_wildtypes_dataset_makeObject_Level02_stringent_annotation.Rmd
+
+```{r}
+level_02 <- qs_read(here('output/data/Datsets/merged_wildtypes/merged_wildtypes_Level_02_stringent_annotated.qs2'))
+```
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+## Subset datasets: LEC/VEC clusters only
+
+Subset Level 01 to only include LEC and VEC subsets. Annotation was done in .pre_processing_combining_wildtypes_dataset_makeObject_Level02_stringent_annotation.Rmd
+
+-> note that we are not keeping mixed EC as they express AEC markers, but we have a cycling LEC/VEC population we kept.
+
+```{r}
+celltype_to_keep <- c("LEC", "VEC",  "pre_muLEC")
+
+run_subset_lecvec <- function(seurat, keep = celltype_to_keep){
+  cells_to_keep <- seurat@meta.data %>% 
+  filter(., L2_celltype %in% celltype_to_keep) %>% 
+  rownames_to_column("Barcode") %>% 
+  pull(Barcode) 
+  
+  seurat <- subset(seurat, cells = cells_to_keep)
+  return(seurat)
+}
+```
+
+
+```{r}
+level_03 <- run_subset_lecvec(level_02)
+  
+```
+
+Clean up list, remove Level 02
+
+```{r}
+rm(level_02); gc()
+```
+
+
+## Re-run single-cell workflow
+
+
+Not using sctransform, regressing out %mito. Same function we used for Level 01, 02
+
+```{r, message=FALSE, warning=FALSE}
+run_workflow <- function(seurat){
+  seurat <- NormalizeData(seurat) %>%   #this is technically unneccessary, but also won't hurt
+    FindVariableFeatures() %>% 
+    ScaleData(., split.by = "batch") %>% 
+    RunPCA() %>% 
+    IntegrateLayers(object = ., method = HarmonyIntegration, orig.reduction = "pca",
+  new.reduction = 'harmony', verbose = FALSE) %>% 
+    RunUMAP(., dims = 1:30, reduction = "harmony") %>% #defaults
+    FindNeighbors(., dims = 1:30, reduction = "harmony") %>% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1), reduction = "harmony")
+}
+```
+
+
+```{r, message=F}
+level_03 <- run_workflow(level_03)
+```
+
+
+## PCA correlations
+
+```{r}
+run_pca_correlations <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %>% 
+    select(., log10ncount, log10nfeat) %>% 
+    rownames_to_column("Barcode") %>% 
+    full_join(., seurat@reductions$pca@cell.embeddings %>% as.data.frame() %>% rownames_to_column("Barcode") %>% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "PC_1", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC1 vs library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "PC_2", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC2 vs library size, %s", seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "PC_3", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC3 vs library size, %s", seurat@project.name))
+  
+  return(plot_list)
+}
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=15}
+wrap_plots(run_pca_correlations(level_03), ncol = 3)
+```
+
+Correlation lib size with harmony 1
+
+## UMAP overviews
+
+Make UMAPs for features, ncounts, clusters, genotype, cell cycle, Level 2 celltypes
+
+```{r}
+plot_umap_dataset <- function(seurat){
+  colours <- Polychrome::dark.colors() %>% unname()
+  
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("RNA_snn_res.0.4"), label = T) + ggtitle(seurat@project.name)
+  plot_list[[4]] <- DimPlot(seurat,  group.by = c("batch"), shuffle = T) + ggtitle(seurat@project.name)
+  plot_list[[5]] <- DimPlot(seurat,  group.by = c("tricycle_stage"), shuffle = T) + ggtitle(seurat@project.name)
+  plot_list[[6]] <- DimPlot(seurat,  group.by = c("L2_celltype"), shuffle = T,cols =colours) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+Top with, bottom without doublets. 
+
+```{r, fig.align='center', fig.height=15, fig.width=12}
+
+wrap_plots(plot_umap_dataset(level_03), ncol=2)
+```
+
+## Clustree + Composition
+
+
+```{r, fig.align='center', fig.height=6, fig.width=6}
+clustree(level_03)
+```
+
+Stacked barplot for different resolutions capturing genotype split.
+
+```{r, fig.align='center', fig.height=8, fig.width=25}
+level_03@meta.data %>% 
+    select(., batch, starts_with("RNA")) %>% 
+    pivot_longer(., cols = starts_with("RNA"), values_to = "cluster", names_to = "resolution") %>% 
+    mutate(., resolution = gsub("RNA_snn_", "", resolution)) %>% 
+    group_by(resolution, cluster, batch) %>% 
+    summarise(., count = n()) %>% 
+    ggplot(., aes(x= cluster, y = count, fill= batch)) +
+    geom_bar(position = "fill", stat = "identity") +
+    plot_sizing +
+    facet_wrap(~resolution, scales = "free_x", nrow =2) + 
+    strip_fix 
+```
+
+Make for seurat clusters. 
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+level_03@meta.data %>% 
+    select(., batch, RNA_snn_res.0.4) %>% 
+    group_by(RNA_snn_res.0.4, batch) %>% 
+    summarise(., count = n()) %>% 
+    ggplot(., aes(x= RNA_snn_res.0.4, y = count, fill= batch)) +
+    geom_bar(position = "fill", stat = "identity") +
+    plot_sizing + ggtitle("RNA_snn_res.0.4 composition") +
+  theme(legend.position = "bottom")
+
+```
+
+
+
+## Low quality cluster 
+
+
+```{r, fig.align='center', fig.height=5, fig.width=15}
+plot_list <- list()
+plot_list[[1]] <- level_03@meta.data %>% 
+  ggplot(., aes(y = log10(nCount_RNA), x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+
+plot_list[[2]] <- level_03@meta.data %>% 
+  ggplot(., aes(y = log10(nFeature_RNA), x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+plot_list[[3]] <- level_03@meta.data %>% 
+  ggplot(., aes(y = percent.mt, x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") 
+```
+
+
+## Feature UMAPs
+
+
+```{r}
+level_03_dotplot <- c(
+  "dll4", #aec
+  "flt1", #aec
+  "stab2",  #cvp
+  "stab1", #cvp
+  "ifi30",#cvp
+  "mafba",#cvp
+  "cxcl12a", #mapk signaling
+  "esm1", #migrating
+  "hlx1", #migrating
+  "mki67", #cycling
+  "pcna", #cycling
+  "nop53", #lec? 
+  "ddx21", #lec?
+  "tbx1", #lec
+  "prox1a", #LEC
+  "cdh6", #LEC, hippo
+  "fn1a", #hippo
+  "osr2", #muLEC
+  "sparc"
+)
+```
+
+```{r}
+run_feature_umap <- function(seurat, genes){
+  FeaturePlot(seurat, features = genes, ncol = 4) 
+}
+
+```
+
+```{r, fig.align='center', fig.height=20, fig.width=20}
+run_feature_umap(seurat = level_03, genes = level_03_dotplot)
+```
+
+Small selection:
+
+```{r, fig.align='center', fig.height=15, fig.width=10}
+FeaturePlot(level_03, features = c("prox1a", "osr2", "ifi30", "fn1a", "cdh6"), ncol = 2) 
+
+```
+
+
+## Compare GEX to time course data
+
+```{r}
+Fish_atlas <- readRDS("/Users/meiermichelle/Library/CloudStorage/OneDrive-PeterMac/HOGAN_LAB/analysis/GeneralDataset/Level_02_D10042_LymphaticTimeCourse_annotated.RDS")
+Fish_atlas$Stage <- factor(Fish_atlas$Stage, levels = c("40hpf", "3dpf", "4dpf", "5dpf", "7dpf"))
+
+```
+
+Make dotplots
+
+```{r}
+run_dotplot_atlas <- function(genes, max_expression){
+  plot_list <- lapply(levels(Fish_atlas$Stage), function(stage){
+  subset_stage <- subset(Fish_atlas, cells = colnames(Fish_atlas)[Fish_atlas$Stage == stage])
+  Idents(subset_stage) <- "L2_Predicted_phenotype"
+  DotPlot(subset_stage, features = genes, group.by = "L2_Predicted_phenotype", scale.min = 0,
+          scale.max = max_expression, idents = c("LEC", "VEC"), scale = F)+ RotatedAxis() + ylab("") + xlab("") + ggtitle(stage)})
+   wrap_plots(plot_list, nrow = 1) + plot_layout(guides = "collect", axes = "collect")
+
+  }
+
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+run_dotplot_atlas("ifi30", max_expression = 60)
+```
+
+
+
+
+## Dotplot for genes
+
+
+Make dotplot function:
+
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+run_dotplot(seurat = level_03, genes = level_03_dotplot, group = "RNA_snn_res.0.4")
+```
+
+## pre-muLECs?
+
+Look at % expressed for osr2+ cluster. 
+
+```{r}
+subset_osr2_pos <- subset(level_03, subset = osr2 > 0)
+
+subset_osr2_pos@meta.data %>% 
+  group_by(batch) %>% 
+  summarise(., count = n())
+
+```
+
+
+## Add annotations
+
+After cross checking annotations at 0.4 and 0.2, I think we can stick with 0.2
+
+````{r, fig.align='center', fig.height=4, fig.width=8}
+run_dotplot(seurat = level_03, genes = level_03_dotplot, group = "RNA_snn_res.0.2")
+````
+
+
+### Cell type level
+
+```{r}
+level_03$L3_celltype <- case_when(
+  level_03$RNA_snn_res.0.2 == 0 ~ "msVEC",
+  level_03$RNA_snn_res.0.2 == 1 ~ "LEC",
+  level_03$RNA_snn_res.0.2 == 2 ~ "hmsVEC",
+  level_03$RNA_snn_res.0.2 == 3 ~ "cvpVEC"
+)
+
+
+# add different names
+level_03$L3_celltype_descriptive <- case_when(
+  level_03$RNA_snn_res.0.2 == 0 ~ "cxcl12a_VEC",
+  level_03$RNA_snn_res.0.2 == 1 ~ "LEC",
+  level_03$RNA_snn_res.0.2 == 2 ~ "hippo_VEC",
+  level_03$RNA_snn_res.0.2 == 3 ~ "cvpVEC"
+)
+
+```
+
+
+
+### For each cluster
+
+Not necessary.
+
+### UMAPs
+
+Show on UMAPs
+
+```{r}
+run_celltype_umaps <-function(seurat){
+  colours <- Polychrome::dark.colors(length(unique(seurat$L3_celltype))) %>% unname()
+  DimPlot(seurat, group.by = "L3_celltype", cols = colours) + ggtitle(seurat@misc$name)
+}
+
+```
+
+```{r,fig.align='center', fig.height=5, fig.width=7}
+run_celltype_umaps(level_03)
+```
+
+## Export 
+
+Export Level 03. 
+
+```{r}
+
+file_name <- here('output/data/Datsets/merged_wildtypes/merged_wildtypes_Level_03_stringent.qs2')
+qs_save(level_03, file_name)
+
+```
+
