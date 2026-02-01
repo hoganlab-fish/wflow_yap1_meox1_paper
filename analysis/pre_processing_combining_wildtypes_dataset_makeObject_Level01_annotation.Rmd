@@ -29,6 +29,7 @@ suppressPackageStartupMessages({
   library(scran)
   library(qs2)
   library(scGate)
+  library(tricycle)
  })
 ```
 
@@ -49,6 +50,13 @@ Add batch information.
 yap1_wildtype$batch <- "yap1_experiment"
 meox1_wildtype$batch <- "meox1_experiment"
 ```
+
+Read in mouse -> fish names
+
+```{r}
+mouse_to_fish <- qs_read(here("data/genesets/geneMap_mmusculus_to_drerio.qs2"))
+```
+
 
 
 ### Plotting themes
@@ -71,6 +79,16 @@ strip_fix <- theme(strip.background = element_rect(fill = "white"),
                    strip.text = element_text(size = 14))
 ```
 
+
+## Re-filter meox1 wildtype
+
+See [here](https://atlassian.petermac.org.au/bitbucket/pages/HL/wflow_yap1_meox1_paper/master/browse/docs/pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation.html), but the original filtering we performed did not really get rid of all the low quality cells, so we need to introduce a second filtering step where we remove cells with nFeatures < 400 (nCounts threshold already implemented is 600, both of these thresholds are informed through the yap1 dataset). 
+
+
+```{r}
+meox1_wildtype <- meox1_wildtype[, !meox1_wildtype$nFeature_RNA < 400]
+```
+
 ## Downsample yap1 batch
 
 yap1 batch is much larger, let's randomly downsample to match meox1 numbers
@@ -78,6 +96,61 @@ yap1 batch is much larger, let's randomly downsample to match meox1 numbers
 ```{r}
 yap1_wildtype <- yap1_wildtype[, sample(colnames(yap1_wildtype), size = ncol(meox1_wildtype), replace=F)]
 ```
+
+
+## Tricycle: Run cell cycle analysis
+
+Run tricycle on each separately as the merged layers later make it difficult.
+
+Make function.
+
+```{r}
+
+run_tricycle_for_fish <- function(seurat, x_species_dictionary = mouse_to_fish){
+  #prepare
+  sce <- as.SingleCellExperiment(seurat, assay = "RNA") #convert to SCE
+  sub_sce <- sce[rownames(sce) %in% x_species_dictionary$drerio_zfin_id_symbol,] #subset to genes in dic
+  sub_x_species_dictionary <- x_species_dictionary %>%  #subset dictionary to only include the genes that we kept 
+  filter(., drerio_zfin_id_symbol %in% rownames(sub_sce)) %>% 
+  distinct(drerio_zfin_id_symbol, .keep_all = TRUE) #needed for function
+  sub_x_species_dictionary <- sub_x_species_dictionary[match(rownames(sub_sce),
+                                                             sub_x_species_dictionary$drerio_zfin_id_symbol),]
+  stopifnot(all(sub_x_species_dictionary$drerio_zfin_id_symbol == rownames(sub_sce))) #check
+  
+  #run tricycle
+  sub_sce <- project_cycle_space(sub_sce, 
+                                 gname = sub_x_species_dictionary$mmusculus_mgi_symbol, 
+                                 species = "mouse", 
+                                 gname.type = "SYMBOL")
+  #estimate position
+  sub_sce <- estimate_cycle_position(sub_sce)
+  
+  
+  #add back to seurat object
+  seurat$tricycle_position <- sub_sce$tricyclePosition
+  
+  #add categorical cell cycle:
+  # https://github.com/lb15/multiciliation_cycle/blob/main/mcc_timecourse/mcc_timecourse_analysis.R#L619
+  seurat$tricycle_stage <- case_when(seurat$tricycle_position > pi/2 & seurat$tricycle_position < pi ~ "S",
+                             seurat$tricycle_position >= pi & seurat$tricycle_position < pi*7/4 ~ "G2M",
+                             TRUE ~ "G1/G0")
+  
+  rm(sce,sub_sce, sub_x_species_dictionary); gc()
+  return(seurat)
+  
+
+}
+
+```
+
+
+```{r}
+meox1_wildtype <- run_tricycle_for_fish(meox1_wildtype)
+yap1_wildtype <- run_tricycle_for_fish(yap1_wildtype)
+
+```
+
+We know from processing the datasets independently that tricycle works, so won't run additional tests here.
 
 
 ## Combine 
@@ -124,7 +197,7 @@ Clear batch effect.
 
 ## Integration: Harmony
 
-```{r}
+```{r, message=FALSE}
 merged <- merge(yap1_wildtype,
                 y = meox1_wildtype,
                 project = "wildtype_only", merge.data = TRUE) #don't join layers, leave then in there
@@ -137,7 +210,7 @@ merged <- NormalizeData(merged) %>%
 
 ```
 
-```{r}
+```{r, message=FALSE}
 merged <- IntegrateLayers(object = merged, method = HarmonyIntegration, orig.reduction = "pca",
   new.reduction = 'harmony', verbose = FALSE)
 
@@ -145,7 +218,7 @@ merged <- IntegrateLayers(object = merged, method = HarmonyIntegration, orig.red
 
 Run workflow:
 
-```{r}
+```{r, message=FALSE}
 merged <- RunUMAP(merged, dims = 1:30, reduction = "harmony") %>% #defaults
     FindNeighbors(., dims = 1:30, reduction = "harmony") %>% 
     FindClusters(., resolution = seq(0.1, 1, 0.1), reduction = "harmony")
@@ -249,7 +322,7 @@ clustree(merged)
 
 Stacked barplot for different resolutions capturing genotype split.
 
-```{r, fig.align='center', fig.height=8, fig.width=25}
+```{r, fig.align='center', fig.height=15, fig.width=30}
 merged@meta.data %>% 
     select(., batch, starts_with("RNA")) %>% 
     pivot_longer(., cols = starts_with("RNA"), values_to = "cluster", names_to = "resolution") %>% 
@@ -259,7 +332,7 @@ merged@meta.data %>%
     ggplot(., aes(x= cluster, y = count, fill= batch)) +
     geom_bar(position = "fill", stat = "identity") +
     plot_sizing +
-    facet_wrap(~resolution, scales = "free_x", nrow =2) + 
+    facet_wrap(~resolution, scales = "free_x", nrow =3) + 
     strip_fix 
 ```
 ## scGate: Find endothelial subset
@@ -284,17 +357,17 @@ pure_colours <- c("grey", "green3"); names(pure_colours) <- c("Impure", "Pure")
 DimPlot(merged, group.by = "is_endothlial", cols = pure_colours)
 ```
 
-Make purity plots for res 0.2:
+Make purity plots for res 0.4:
 
 ```{r, fig.align='center', fig.height=5, fig.width=8}
 merged@meta.data %>% 
-  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %>% 
-  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %>% 
+  mutate(.,RNA_snn_res.0.4 = as.factor(RNA_snn_res.0.4)) %>% 
+  group_by(., RNA_snn_res.0.4, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
-    group_by(RNA_snn_res.0.2) %>%
-    mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
-    summarise(RNA_snn_res.0.2_cluster_purity) %>% distinct() %>% 
-    ggplot(., aes(x= reorder(RNA_snn_res.0.2, -RNA_snn_res.0.2_cluster_purity),  y = RNA_snn_res.0.2_cluster_purity))+
+    group_by(RNA_snn_res.0.4) %>%
+    mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.4_cluster_purity) %>% distinct() %>% 
+    ggplot(., aes(x= reorder(RNA_snn_res.0.4, -RNA_snn_res.0.4_cluster_purity),  y = RNA_snn_res.0.4_cluster_purity))+
     geom_bar(stat = "identity") + plot_sizing +
     ylab("Endo Purity per cluster") + xlab("cluster") 
 ```
@@ -355,11 +428,11 @@ Make dotplots for all clusters
 
 ```{r, fig.align='center', fig.height=5, fig.width=7}
 
-DimPlot(merged, group.by = "RNA_snn_res.0.2", label = T)
+DimPlot(merged, group.by = "RNA_snn_res.0.4", label = T)
 ```
 
 ```{r, fig.align='center', fig.height=5, fig.width=10}
-run_dotplot(merged, dotplot.level.01, group = "RNA_snn_res.0.2")
+run_dotplot(merged, dotplot.level.01, group = "RNA_snn_res.0.4")
 
 ```
 Make dotplot for clusters that have mid-range purity.
@@ -367,23 +440,23 @@ Make dotplot for clusters that have mid-range purity.
 ```{r}
 run_dotplot_mid_purity <- function(seurat, genes, limits){
   clusters <- seurat@meta.data %>% 
-  mutate(.,RNA_snn_res.0.2 = as.factor(RNA_snn_res.0.2)) %>% 
-  group_by(., RNA_snn_res.0.2, is_endothlial,.drop = F) %>% 
+  mutate(.,RNA_snn_res.0.4 = as.factor(RNA_snn_res.0.4)) %>% 
+  group_by(., RNA_snn_res.0.4, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
-    group_by(RNA_snn_res.0.2) %>%
-    mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
-    summarise(RNA_snn_res.0.2_cluster_purity) %>% distinct() %>% 
-    filter(., RNA_snn_res.0.2_cluster_purity > limits[1] & RNA_snn_res.0.2_cluster_purity < limits[2]) %>% 
-    pull(RNA_snn_res.0.2) %>% unique()
+    group_by(RNA_snn_res.0.4) %>%
+    mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.4_cluster_purity) %>% distinct() %>% 
+    filter(., RNA_snn_res.0.4_cluster_purity > limits[1] & RNA_snn_res.0.4_cluster_purity < limits[2]) %>% 
+    pull(RNA_snn_res.0.4) %>% unique()
   
-  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.2")
-  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.2", idents = clusters)  +plot_sizing_seurat + rotate_x
+  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.4")
+  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.4", idents = clusters)  +plot_sizing_seurat + rotate_x
 }
 
 ```
 
 ```{r, fig.align='center', fig.height=4, fig.width=10}
-run_dotplot_mid_purity(merged, limits = c(0.2, 0.8), genes = dotplot.level.01)
+run_dotplot_mid_purity(merged, limits = c(0.2, 0.95), genes = dotplot.level.01)
 ```
 
 They all express other markers as well. 
