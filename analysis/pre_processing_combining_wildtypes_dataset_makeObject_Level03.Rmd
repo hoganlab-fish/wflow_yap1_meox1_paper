@@ -68,7 +68,7 @@ Subset Level 01 to only include LEC and VEC subsets. Annotation was done in .pre
 -> note that we are not keeping mixed EC as they express AEC markers, but we have a cycling LEC/VEC population we kept.
 
 ```{r}
-celltype_to_keep <- c("LEC", "VEC", "cycling_LEC_VEC")
+celltype_to_keep <- c("LEC", "VEC", "cycling_LEC_VEC", "pre_muLEC", "hippo+_VEC")
 
 run_subset_lecvec <- function(seurat, keep = celltype_to_keep){
   cells_to_keep <- seurat@meta.data %>% 
@@ -171,7 +171,7 @@ run_pca_correlations <- function(seurat){
 wrap_plots(run_pca_correlations(level_03), ncol = 3)
 ```
 
-Correlation lib size with PC1.
+Correlation lib size with harmony 1
 
 ## UMAP overviews
 
@@ -179,16 +179,15 @@ Make UMAPs for features, ncounts, clusters, genotype, cell cycle, Level 2 cellty
 
 ```{r}
 plot_umap_dataset <- function(seurat){
-  colours <- Polychrome::dark.colors(7); names(colours) <- c("AEC", "VEC", "LEC", 
-                                                             "cycling_LEC_VEC", "cycling_AEC", "Endocardium", "mixed_EC")
+  colours <- Polychrome::dark.colors() %>% unname()
   
   plot_list <- list()
   plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
   plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
   plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters"), label = T) + ggtitle(seurat@project.name)
   plot_list[[4]] <- DimPlot(seurat,  group.by = c("batch"), shuffle = T) + ggtitle(seurat@project.name)
-  # plot_list[[5]] <- DimPlot(seurat,  group.by = c("tricycle_stage"), shuffle = T) + ggtitle(seurat@project.name)
-  plot_list[[5]] <- DimPlot(seurat,  group.by = c("L2_celltype"), shuffle = T,cols =colours) + ggtitle(seurat@project.name)
+  plot_list[[5]] <- DimPlot(seurat,  group.by = c("tricycle_stage"), shuffle = T) + ggtitle(seurat@project.name)
+  plot_list[[6]] <- DimPlot(seurat,  group.by = c("L2_celltype"), shuffle = T,cols =colours) + ggtitle(seurat@project.name)
   return(plot_list)
   
 }
@@ -196,7 +195,7 @@ plot_umap_dataset <- function(seurat){
 
 Top with, bottom without doublets. 
 
-```{r, fig.align='center', fig.height=15, fig.width=15}
+```{r, fig.align='center', fig.height=15, fig.width=12}
 
 wrap_plots(plot_umap_dataset(level_03), ncol=2)
 ```
@@ -252,15 +251,27 @@ wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collec
 ```
 
 
+One cluster does stand out a bit, cluster 4 in seurat clusters. Is that a meox1 enriched cluster?
 
-## scGate: Find major subpopulations
+```{r, fig.align='center', fig.align='center', fig.height=5, fig.width=8}
+level_03@meta.data %>% 
+    select(., batch, seurat_clusters) %>% 
+    group_by(seurat_clusters,batch) %>% 
+    summarise(., count = n()) %>% 
+    ggplot(., aes(x= seurat_clusters, y = count, fill= batch)) +
+    geom_bar(position = "fill", stat = "identity") +
+    plot_sizing + ggtitle("seurat clusters composition")
+```
 
-As scGate was no longer useful on Level 02, we're not going to use it on Level 03. We can add it later if we think its necessary.
+Yep, cluster 4 is a bit of a meox1 cluster...
 
-## Dotplot for genes
+## Feature UMAPs
+
 
 ```{r}
 level_03_dotplot <- c(
+  "dll4", #aec
+  "flt1", #aec
   "stab2",  #cvp
   "stab1", #cvp
   "ifi30",#cvp
@@ -276,26 +287,10 @@ level_03_dotplot <- c(
   "prox1a", #LEC
   "cdh6", #LEC, hippo
   "fn1a", #hippo
-  "meox1"
+  "osr2", #muLEC
+  "sparc"
 )
 ```
-
-Make dotplot function:
-
-
-```{r}
-run_dotplot <- function(seurat, genes, group){
-  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
-}
-
-```
-
-
-Skip for now. 
-
-## Feature UMAPs
-
-This can sometimes be helpful.
 
 ```{r}
 run_feature_umap <- function(seurat, genes){
@@ -308,9 +303,83 @@ run_feature_umap <- function(seurat, genes){
 run_feature_umap(seurat = level_03, genes = level_03_dotplot)
 ```
 
+Small selection:
+
+```{r, fig.align='center', fig.height=15, fig.width=10}
+FeaturePlot(level_03, features = c("prox1a", "osr2", "ifi30", "fn1a", "cdh6"), ncol = 2) 
+
+```
+
 So interestingly, the meox1 cluster with low counts seems to be a hippo+ cluster...
 
--> might need to re-run everything and remove those low quality cells.. if that's what they are. 
+Small selection #2:
+
+```{r, fig.align='center', fig.height=10, fig.width=5}
+FeaturePlot(level_03, features = c("dll4", "lyve1b"), ncol = 1) 
+
+```
+
+## Compare GEX to time course data
+
+```{r}
+Fish_atlas <- readRDS("/Users/meiermichelle/Library/CloudStorage/OneDrive-PeterMac/HOGAN_LAB/analysis/GeneralDataset/Level_02_D10042_LymphaticTimeCourse_annotated.RDS")
+Fish_atlas$Stage <- factor(Fish_atlas$Stage, levels = c("40hpf", "3dpf", "4dpf", "5dpf", "7dpf"))
+
+```
+
+Make dotplots
+
+```{r}
+run_dotplot_atlas <- function(genes, max_expression){
+  plot_list <- lapply(levels(Fish_atlas$Stage), function(stage){
+  subset_stage <- subset(Fish_atlas, cells = colnames(Fish_atlas)[Fish_atlas$Stage == stage])
+  Idents(subset_stage) <- "L2_Predicted_phenotype"
+  DotPlot(subset_stage, features = genes, group.by = "L2_Predicted_phenotype", scale.min = 0,
+          scale.max = max_expression, idents = c("LEC", "VEC"), scale = F)+ RotatedAxis() + ylab("") + xlab("") + ggtitle(stage)})
+   wrap_plots(plot_list, nrow = 1) + plot_layout(guides = "collect", axes = "collect")
+
+  }
+
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+run_dotplot_atlas("ifi30", max_expression = 60)
+```
+
+
+
+
+## Dotplot for genes
+
+
+Make dotplot function:
+
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+run_dotplot(seurat = level_03, genes = level_03_dotplot, group = "seurat_clusters")
+```
+
+
+
+## pre-muLECs?
+
+Look at % expressed for osr2+ cluster
+
+```{r}
+plot_info <- DotPlot(level_03, features = "osr2", split.by = "batch", group.by = "seurat_clusters")
+
+plot_info@data %>% filter(., grepl("12_", id)) %>% select(, avg.exp, pct.exp, id)
+```
+
+
 
 ## Add annotations
 
