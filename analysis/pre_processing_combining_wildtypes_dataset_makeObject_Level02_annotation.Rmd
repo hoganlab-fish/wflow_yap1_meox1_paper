@@ -75,14 +75,14 @@ Subset Level 01 to only include endothelial subsets. By going through ./pre_proc
 ```{r}
 #without doublets
 clusters_to_keep <- level_01@meta.data %>% 
-  group_by(., RNA_snn_res.0.2, is_endothlial) %>% 
+  group_by(., RNA_snn_res.0.4, is_endothlial,.drop =F) %>% 
   summarise(., count = n()) %>%
-  group_by(RNA_snn_res.0.2) %>%
-  mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
-  filter(., RNA_snn_res.0.2_cluster_purity > 0.95) %>% 
-  pull(RNA_snn_res.0.2) %>% unique()
+  group_by(RNA_snn_res.0.4) %>%
+  mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+  filter(., RNA_snn_res.0.4_cluster_purity > 0.95) %>% 
+  pull(RNA_snn_res.0.4) %>% unique()
 
-Idents(level_01) <- "RNA_snn_res.0.2"
+Idents(level_01) <- "RNA_snn_res.0.4"
 level_02 <- subset(level_01, idents = clusters_to_keep)
 
 ```
@@ -224,18 +224,8 @@ level_02@meta.data %>%
     strip_fix 
 ```
 
+## Feature UMAPs
 
-Make UMAP for res 0.5
-
-```{r, fig.align='center', fig.height=5, fig.width=7}
- DimPlot(level_02, group.by = "RNA_snn_res.0.5", shuffle = T, label = T)
-```
-
-## scGate: Find major subpopulations
-
-Didn't really work, so we're skipping it. 
-
-## Dotplot for genes
 
 ```{r}
 level_02_dotplot <- c(
@@ -252,28 +242,13 @@ level_02_dotplot <- c(
   "mki67", #cycling
   "pcna", #cycling
   "hand2", #endocardium
-  "fn1a" #endocardium
+  "fn1a", #endocardium
+  "osr2", #muLEC
+  "sparc",
+  "ifi30"
 )
 ```
 
-Make dotplot function:
-
-```{r}
-run_dotplot <- function(seurat, genes, group){
-  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
-}
-
-```
-
-Make for res 0.5.
-
-```{r, fig.align='center', fig.height=5, fig.width=5}
-run_dotplot(seurat = level_02, group = "RNA_snn_res.0.5", genes = level_02_dotplot) + ylab('') + xlab("")
-```
-
-## Feature UMAPs
-
-This can sometimes be helpful.
 
 ```{r}
 run_feature_umap <- function(seurat, genes){
@@ -286,7 +261,42 @@ run_feature_umap <- function(seurat, genes){
 run_feature_umap(seurat = level_02, genes = level_02_dotplot)
 ```
 
-## Add annotations
+
+Make UMAP for res 0.4
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+ DimPlot(level_02, group.by = "RNA_snn_res.0.4", shuffle = T, label = T)
+```
+
+Show prox1a expression in big next to it?
+
+```{r, fig.align='center', fig.height=5, fig.width=12}
+ DimPlot(level_02, group.by = "RNA_snn_res.0.4", shuffle = T, label = T) +
+  FeaturePlot(level_02, features = "prox1a")
+```
+
+
+## scGate: Find major subpopulations
+
+Didn't really work, so we're skipping it. 
+
+## Dotplot for genes
+
+Make dotplot function:
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+Make for res 0.4.
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+run_dotplot(seurat = level_02, group = "RNA_snn_res.0.4", genes = level_02_dotplot) + ylab('') + xlab("")
+```
+
 
 ## Add annotations
 
@@ -294,13 +304,16 @@ run_feature_umap(seurat = level_02, genes = level_02_dotplot)
 
 ```{r}
 level_02$L2_celltype <- case_when(
-  level_02$RNA_snn_res.0.5 %in% c(1,4) ~ "VEC",
-  level_02$RNA_snn_res.0.5 %in% c(6,8,9,10,11) ~ "AEC",
-  level_02$RNA_snn_res.0.5 == 2 ~ "cycling_LEC_VEC",
-  level_02$RNA_snn_res.0.5 == 3 ~ "cycling_AEC",
+  level_02$RNA_snn_res.0.4 %in% c(1,12) ~ "VEC",
+  level_02$RNA_snn_res.0.4 == 4 ~ "hippo+_VEC",
+  level_02$RNA_snn_res.0.4 %in% c(6,8,9,10,11,14) ~ "AEC",
+  level_02$RNA_snn_res.0.4 == 2 ~ "cycling_LEC_VEC",
+  level_02$RNA_snn_res.0.4 == 3 ~ "cycling_AEC",
+  level_02$RNA_snn_res.0.4 == 0 ~ "mixed_EC",
+  level_02$RNA_snn_res.0.4 %in% c(5, 15) ~ "Endocardium",
+  level_02$RNA_snn_res.0.4 == 7 ~ "LEC",
   level_02$RNA_snn_res.0.5 == 0 ~ "mixed_EC",
-  level_02$RNA_snn_res.0.5 == 5 ~ "Endocardium",
-  level_02$RNA_snn_res.0.5 == 7 ~ "LEC"
+  level_02$RNA_snn_res.0.5 == 13 ~ "pre_muLEC"
 )
 
 ```
@@ -330,19 +343,23 @@ L2_seurat_names <- c(
 'VEC_01',#1
 'cycling_LEC_VEC_01', #2
 'cycling_AEC_01',#3
-'VEC_02',#4
+'hippo+_VEC_01',#4
 'Endocardium_01',#5
 'AEC_01', #6
 'LEC_01', #7
 'AEC_02', #8
 'AEC_03',#9
 'AEC_04', #10
-"AEC_05" #11
+"AEC_05", #11
+"VEC_02", #12
+"pre_muLEC_01", #13
+"AEC_06", #14
+"Endocardium_02" #15
 )
 
 level_02 <- add_seurat_names(
   seurat = level_02,
-  group = "RNA_snn_res.0.5",
+  group = "RNA_snn_res.0.4",
   names = L2_seurat_names)
 
 ```
@@ -351,8 +368,7 @@ Show on UMAPs
 
 ```{r}
 run_celltype_umaps <-function(seurat){
-  colours <- Polychrome::dark.colors(7); names(colours) <- c("AEC", "VEC", "LEC", 
-                                                             "cycling_LEC_VEC", "cycling_AEC", "Endocardium", "mixed_EC")
+  colours <- Polychrome::dark.colors(length(unique(seurat$L2_celltype))) %>% unname()
   DimPlot(seurat, group.by = "L2_celltype", cols = colours) + ggtitle(seurat@misc$name)
 }
 
