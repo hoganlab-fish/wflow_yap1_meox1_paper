@@ -1,0 +1,744 @@
+---
+title: "D10051 meox1 dataset: Annotate Level 01 (all cells) object, introducing a more stringent threshold"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Annotate Level 01 of the meox1 dataset, using a more stringent filtering threshold to ditch all the low quality cells. 
+
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(tricycle)
+  library(scGate)
+})
+```
+
+### Load objects
+
+Objects made here: ./pre_processing_D10051_meox1_dataset_makeObject_Level01.Rmd 
+
+Only loading merged ones for now.
+
+```{r}
+input_paths <- c(here('output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_01_kept_doublets.qs2'),
+                here('output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_01.qs2'))
+list_objects <- lapply(input_paths, qs_read)
+
+names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
+```
+
+Give them names in the object
+
+```{r}
+list_objects$D10051_meox1_dataset_Level_01_kept_doublets@misc[["name"]] <- "Level_01_kept_doublets"
+list_objects$D10051_meox1_dataset_Level_01@misc[["name"]] <- "Level_01"
+
+```
+
+
+Read in mouse -> fish names
+
+```{r}
+mouse_to_fish <- qs_read(here("data/genesets/geneMap_mmusculus_to_drerio.qs2"))
+```
+
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+## Tricycle: Run cell cycle analysis
+
+Make function.
+
+```{r}
+
+run_tricycle_for_fish <- function(seurat, x_species_dictionary = mouse_to_fish){
+  #prepare
+  sce <- as.SingleCellExperiment(seurat, assay = "RNA") #convert to SCE
+  sub_sce <- sce[rownames(sce) %in% x_species_dictionary$drerio_zfin_id_symbol,] #subset to genes in dic
+  sub_x_species_dictionary <- x_species_dictionary %>%  #subset dictionary to only include the genes that we kept 
+  filter(., drerio_zfin_id_symbol %in% rownames(sub_sce)) %>% 
+  distinct(drerio_zfin_id_symbol, .keep_all = TRUE) #needed for function
+  sub_x_species_dictionary <- sub_x_species_dictionary[match(rownames(sub_sce),
+                                                             sub_x_species_dictionary$drerio_zfin_id_symbol),]
+  stopifnot(all(sub_x_species_dictionary$drerio_zfin_id_symbol == rownames(sub_sce))) #check
+  
+  #run tricycle
+  sub_sce <- project_cycle_space(sub_sce, 
+                                 gname = sub_x_species_dictionary$mmusculus_mgi_symbol, 
+                                 species = "mouse", 
+                                 gname.type = "SYMBOL")
+  #estimate position
+  sub_sce <- estimate_cycle_position(sub_sce)
+  
+  
+  #add back to seurat object
+  seurat$tricycle_position <- sub_sce$tricyclePosition
+  
+  #add categorical cell cycle:
+  # https://github.com/lb15/multiciliation_cycle/blob/main/mcc_timecourse/mcc_timecourse_analysis.R#L619
+  seurat$tricycle_stage <- case_when(seurat$tricycle_position > pi/2 & seurat$tricycle_position < pi ~ "S",
+                             seurat$tricycle_position >= pi & seurat$tricycle_position < pi*7/4 ~ "G2M",
+                             TRUE ~ "G1/G0")
+  
+  rm(sce,sub_sce, sub_x_species_dictionary); gc()
+  return(seurat)
+  
+
+}
+
+```
+
+
+```{r}
+list_objects <- lapply(list_objects, run_tricycle_for_fish)
+```
+
+### Visualise test genes
+
+Write function:
+
+```{r}
+
+make_tricycle_plots <- function(seurat){
+  #colours 
+  cols_cellcycle <- c('#ffff66', '#a0d0e0', '#cc85ff')
+  names(cols_cellcycle) <- c('G1', 'G2M', 'S')
+  rects <- data.frame(xmin = c(0, 0.5*pi, pi, 1.75*pi),
+                    xmax = c(0.5*pi, pi, 1.75*pi, 2*pi),
+                    fill = c('#ffff66',  '#cc85ff','#a0d0e0', '#ffff66'))
+  
+  
+  plot_list <- list()
+  plot_list[[1]] <- fit_periodic_loess(seurat$tricycle_position,
+                                       seurat[["RNA"]]@layers$data[which(rownames(seurat) == 'cdt1'),],
+                                       plot = TRUE,
+                                       x_lab = "Cell cycle position \u03b8", y_lab = "cdt1 expression",
+                                       fig.title = paste0("Expression of cdt1 (G1-phase)"))$fig +
+    plot_sizing +
+    annotate(geom = "text", x = c(0.25*pi, 0.75*pi, 1.4*pi, 1.9*pi), y = 4, label = c("G0/G1", "S", "G2M","G0/G1"), size = 4) +
+    coord_cartesian(expand = FALSE, clip = "off", ylim = c(0, 4.5)) +
+    geom_vline(xintercept=0.5*pi,linetype="dashed")+
+    geom_vline(xintercept =pi,linetype="dashed")+
+    geom_vline(xintercept=1.75*pi,linetype="dashed")  +
+    geom_rect(aes(xmin = xmin, xmax = xmax, fill = fill, ymin = -Inf, ymax = Inf),
+              data = rects, inherit.aes = FALSE, size = 1, alpha = .1) +
+    scale_fill_manual(values = c( '#a0d0e0', '#cc85ff', '#ffff66','#ffff66')) +
+    theme(legend.position = "none")
+
+
+  plot_list[[2]] <- fit_periodic_loess(seurat$tricycle_position,
+                                       seurat[["RNA"]]@layers$data[which(rownames(seurat) == 'pcna'),],
+                                       plot = TRUE,
+                                       x_lab = "Cell cycle position \u03b8", y_lab = "pcna expression",
+                                       fig.title = paste0("Expression of pcna (S-phase)"))$fig + 
+    plot_sizing +
+    annotate(geom = "text", x = c(0.25*pi, 0.75*pi, 1.4*pi, 1.9*pi), y = 4, label = c("G0/G1", "S", "G2M","G0/G1"), size = 4) +
+    coord_cartesian(expand = FALSE, clip = "off", ylim = c(0, 6)) +
+    geom_vline(xintercept=0.5*pi,linetype="dashed")+
+    geom_vline(xintercept =pi,linetype="dashed")+
+    geom_vline(xintercept=1.75*pi,linetype="dashed") +
+    geom_rect(aes(xmin = xmin, xmax = xmax, fill = fill, ymin = -Inf, ymax = Inf),
+              data = rects, inherit.aes = FALSE, size = 1, alpha = .1) +
+    scale_fill_manual(values = c( '#a0d0e0', '#cc85ff', '#ffff66','#ffff66')) +
+    theme(legend.position = "none")
+  
+  plot_list[[3]] <- fit_periodic_loess(seurat$tricycle_position,
+                                       seurat[["RNA"]]@layers$data[which(rownames(seurat) == 'mki67'),],
+                                       plot = TRUE,
+                                       x_lab = "Cell cycle position \u03b8", y_lab = "mki67 expression",
+                                       fig.title = paste0("Expression of mki67 (G2M-phase)"))$fig +
+    plot_sizing +
+    annotate(geom = "text", x = c(0.25*pi, 0.75*pi, 1.4*pi, 1.9*pi), y = 4, label = c("G0/G1", "S", "G2M","G0/G1"), size = 4) +
+    coord_cartesian(expand = FALSE, clip = "off", ylim = c(0, 4.5)) +
+    geom_vline(xintercept=0.5*pi,linetype="dashed")+
+    geom_vline(xintercept =pi,linetype="dashed")+
+    geom_vline(xintercept=1.75*pi,linetype="dashed") +
+    geom_rect(aes(xmin = xmin, xmax = xmax, fill = fill, ymin = -Inf, ymax = Inf),
+              data = rects, inherit.aes = FALSE, size = 1, alpha = .1) +
+    scale_fill_manual(values = c( '#a0d0e0', '#cc85ff', '#ffff66','#ffff66')) +
+    theme(legend.position = "none")
+  
+  return(plot_list)
+}
+
+
+```
+
+Run for all
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, make_tricycle_plots)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation(title = "top = with doublets, bottom = without")
+```
+
+### UMAPs for cell cycle stages
+
+```{r}
+run_umap_stages <- function(seurat){
+  #colours 
+  cols_cellcycle <- c('#ffff66', '#a0d0e0', '#cc85ff')
+  names(cols_cellcycle) <- c('G1/G0', 'G2M', 'S')
+  #plot
+  DimPlot(seurat, group.by = "tricycle_stage", cols = cols_cellcycle) + ggtitle(seurat@misc$name)
+}
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, run_umap_stages)
+
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+
+
+## Clustree
+
+```{r, fig.align='center', fig.height=12, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat){
+  clustree(seurat) + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol = 2)
+```
+
+Maybe try 0.5? Might already be too granular. 
+
+## Low quality clusters
+
+Do any clusters have high mt and/or low count? Being mindful that some celltypes do have naturally higher %mt and counts.
+
+```{r, fig.align='center', fig.height=8, fig.width=15}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = log10(nCount_RNA), x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  plot_list[[2]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = log10(nFeature_RNA), x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  plot_list[[3]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = percent.mt, x = RNA_snn_res.0.5, fill=RNA_snn_res.0.5)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  return(plot_list) 
+})
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") 
+```
+
+There are definitively a few clusters with smaller library size, though they don't necessarily seem to express many mito genes. 
+
+Make DimPlots for this resolution.
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat){
+  DimPlot(seurat, group.by = "RNA_snn_res.0.5", shuffle = T, label = T)
+})
+
+wrap_plots(plot_list, ncol = 2)
+```
+
+I really hate this, nmads doesn't work, and its very difficult to say whether these cells are bad quality or not- because in terms of number of genes they do still express quite a decent amount. The two peaks are just not right. 
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+
+  #ncount
+  plot_list[[1]] <- ggplot(seurat@meta.data, aes(x=log10(nCount_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(count)') +
+    plot_sizing + ggtitle(sprintf("Library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggplot(seurat@meta.data, aes(x=log10(nFeature_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(nfeature)') +
+    plot_sizing + ggtitle(sprintf("#features, %s",  seurat@project.name))
+  
+  
+  return(plot_list)
+  
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol =2)
+```
+
+It particularly looks like the features were not affected by the ncount threshold of 600 at all (this is roughly what the yap1 dataset had)
+
+```{r}
+list_objects$D10051_meox1_dataset_Level_01_kept_doublets$nFeature_RNA %>% min()
+```
+
+Yeah, that's too low. We need to implement another round of filtering. 
+
+
+I'm manually selecting thresholds that should eliminate the peak on the left, which is what good quality data should look like after QC filtering. 
+
+
+## Additional QC filtering step
+
+Try some more stringent feature thresholds
+
+```{r}
+remove_outliers <- function(seurat){
+  count_low <- seurat$nCount_RNA < 1000 
+  feature_low <- seurat$nFeature_RNA < 1000
+  seurat <- seurat[, !(count_low | feature_low)]
+}
+```
+
+```{r}
+list_objects <- lapply(list_objects, remove_outliers)
+```
+
+
+### replot distribution of counts and features
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+
+  #ncount
+  plot_list[[1]] <- ggplot(seurat@meta.data, aes(x=log10(nCount_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(count)') +
+    plot_sizing + ggtitle(sprintf("Library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggplot(seurat@meta.data, aes(x=log10(nFeature_RNA))) + 
+    geom_histogram(aes(y=..density..), colour="black", fill="white")+
+    geom_density(alpha=.2, fill="#FF6666")+ xlab('log10(nfeature)') +
+    plot_sizing + ggtitle(sprintf("#features, %s",  seurat@project.name))
+  
+  
+  return(plot_list)
+  
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol =2)
+```
+
+## Run single-cell workflow
+
+Not using sctransform, regressing out %mito
+
+```{r}
+run_workflow <- function(seurat){
+  seurat <- NormalizeData(seurat) %>%   #should deal with basic library size differences
+    FindVariableFeatures() %>% 
+    ScaleData(., vars.to.regress = c("percent.mt")) %>% 
+    RunPCA() %>% 
+    RunUMAP(., dims = 1:30) %>% #defaults
+    FindNeighbors(., dims = 1:30) %>% 
+    FindClusters(., resolution = seq(0.1, 1, 0.1))
+}
+```
+
+```{r, message=FALSE}
+list_objects <- lapply(list_objects, run_workflow)
+```
+
+### PCA correlations
+
+```{r}
+run_pca_correlations <- function(seurat){
+  plot_list <- list()
+
+  meta <- seurat@meta.data %>% 
+    mutate(., log10ncount = log10(nCount_RNA),
+              log10nfeat = log10(nFeature_RNA)) %>% 
+    select(., log10ncount, log10nfeat) %>% 
+    rownames_to_column("Barcode") %>% 
+    full_join(., seurat@reductions$pca@cell.embeddings %>% as.data.frame() %>% rownames_to_column("Barcode") %>% select(., Barcode, PC_1, PC_2,PC_3))
+  
+  #ncount
+  plot_list[[1]] <- ggscatter(meta, x = "PC_1", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC1 vs library size, %s", seurat@project.name))
+  
+  #nfeat
+  plot_list[[2]] <- ggscatter(meta, x = "PC_2", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC2 vs library size, %s", seurat@project.name))
+  
+  #mito
+  plot_list[[3]] <- ggscatter(meta, x = "PC_3", y = "log10ncount",
+          add = "reg.line",                                 
+          conf.int = TRUE,                                
+          add.params = list(color = "red4",
+                            fill = "lightgray")) +
+    plot_sizing + ylab("log10(nCount)") + xlab("PC1") +
+    stat_cor(method = "pearson", size = 5, colour = "red4") +
+    ggtitle(sprintf("PC3 vs library size, %s", seurat@project.name))
+  
+  return(plot_list)
+}
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, run_pca_correlations)
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_annotation("top with doublets, bottom without")
+```
+
+### UMAP overviews
+
+Not that much to see, only make UMAPs for nfeature, ncount and seurat_cluster.
+
+```{r}
+plot_umap_dataset <- function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- FeaturePlot(seurat,  features = c("nCount_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[2]] <- FeaturePlot(seurat, features = c("nFeature_RNA")) + ggtitle(seurat@project.name)
+  plot_list[[3]] <- DimPlot(seurat,  group.by = c("seurat_clusters")) + ggtitle(seurat@project.name)
+  plot_list[[4]] <- DimPlot(seurat,  group.by = c("Genotype"), shuffle = T) + ggtitle(seurat@project.name)
+  return(plot_list)
+  
+}
+```
+
+Top with, bottom without doublets. 
+
+```{r, fig.align='center', fig.height=10, fig.width=20}
+plot_list <- lapply(list_objects, plot_umap_dataset)
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 4) 
+```
+
+
+### Clustree
+
+```{r, fig.align='center', fig.height=12, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat){
+  clustree(seurat) + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol = 2)
+```
+
+### Stacked barplots for Genotype
+
+```{r}
+run_stacked_barplot <- function(seurat){
+  seurat@meta.data %>% 
+    select(., starts_with("RNA"), Genotype) %>% 
+    pivot_longer(., cols = starts_with("RNA"), names_to = "resolution", values_to = "cluster") %>% 
+    group_by(resolution, cluster, Genotype) %>% 
+    summarise(., count =n()) %>% 
+    ggplot(., aes(x = cluster, y = count, fill = Genotype))+
+    geom_bar(position = "fill", stat = "identity") +
+    facet_wrap(~resolution, scales = "free_x", ncol =5) + plot_sizing+ strip_fix
+
+}
+```
+
+
+```{r, fig.align='center', fig.height=15, fig.width=30}
+plot_list <- lapply(list_objects, run_stacked_barplot)
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+```{r, fig.align='center', fig.height=10, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- DimPlot(seurat, group.by = "RNA_snn_res.0.1", shuffle = T, label = T)
+  plot_list[[2]] <- FeaturePlot(seurat, features  = c("fn1a", "lyve1b", "prox1a"), ncol = 3)
+  return(plot_list)
+})
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 2) +plot_layout(widths = c(1,3))
+```
+
+Can already spot the hippo+ cluster, and it stands out with a wt enrichment as well! promising.
+
+### Low quality clusters
+
+Re-run this
+
+```{r, fig.align='center', fig.height=8, fig.width=20}
+plot_list <- lapply(list_objects, function(seurat){
+  plot_list <- list()
+  plot_list[[1]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = log10(nCount_RNA), x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  plot_list[[2]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = log10(nFeature_RNA), x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  plot_list[[3]] <- seurat@meta.data %>% 
+  ggplot(., aes(y = percent.mt, x = seurat_clusters, fill=seurat_clusters)) +
+  geom_boxplot() +
+  plot_sizing + theme(legend.position = "none")
+  
+  return(plot_list) 
+})
+
+wrap_plots(unlist(plot_list, recursive = F)) + plot_layout(axis_titles = "collect") 
+```
+
+
+### For kept doublets - where are doublets?
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+DimPlot(list_objects$D10051_meox1_dataset_Level_01_kept_doublets, group.by = "scDblFinder.class", shuffle = T)
+```
+
+## scGate: Find endothelial subset
+
+Using scGate as a computational gating strategy to identify all endothelial cells. Endothelial cells are marked by expression of kdrl, and absence of expression of col1a1a (Fibroblasts), epcam (Epithelial), gata2b (haematopoietic), myod1 (Muscle). 
+
+Mark clusters that have > 95% purity for resolution 0.5.
+
+```{r}
+endothelial_gating_model <- gating_model(name = "endothelial", signature = c("kdrl+", 
+                                                                    "col1a1a-",
+                                                                    "epcam-",
+                                                                    "gata2b-", 
+                                                                    "myod1-", 
+                                                                    "gch2-",
+                                                                    "aox5-"))
+
+#write function
+run_scgate_endo <- function(seurat){
+  seurat <- scGate(data = seurat,
+                   model = endothelial_gating_model,
+                   output.col.name = "is_endothlial")
+
+  return(seurat)
+}
+
+```
+
+
+```{r}
+list_objects <- lapply(list_objects, run_scgate_endo)
+```
+
+Show UMAPs with is pure
+
+```{r}
+run_umap_scgate_results <- function(seurat){
+  #colours
+  pure_colours <- c("grey", "green3"); names(pure_colours) <- c("Impure", "Pure")
+  DimPlot(seurat, group.by = "is_endothlial", cols = pure_colours) + ggtitle(sprintf("Endo Gate, %s", seurat@misc$name))
+}
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, run_umap_scgate_results)
+
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+Make barplots for endo purity
+
+```{r, fig.align='center', fig.height=5, fig.width=12}
+plot_list <- lapply(list_objects, function(seurat){
+  seurat@meta.data %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_purity) %>% distinct() %>% 
+    ggplot(., aes(x= reorder(RNA_snn_res.0.5, -RNA_snn_res.0.5_purity),  y = RNA_snn_res.0.5_purity))+
+    geom_bar(stat = "identity") + plot_sizing +
+    ylab("Endo Purity per cluster") + xlab("cluster") + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides = "collect", axis_titles = "collect", axes = "collect_y")
+
+```
+
+## Dotplot for genes
+
+Use some known marker genes for celltypes to double check scGate annotation.
+
+```{r}
+dotplot.level.01 <- c(
+  "cdh6",
+  "prox1a",
+  "stab2",
+  "lyve1b",
+  "mrc1a",
+  "flt1",
+  "dll4",
+  "esm1",
+  "hlx1",
+  "hand2",
+  "fn1a",
+  "gata2b",
+  "runx1",
+  "alas2",
+  "blvrb",
+  "spi1b",
+  "mpx",
+  "neurod4",
+  "nova2",
+  "cdh1",
+  "epcam",
+  "myod1",
+  "myog",
+  "pmela",
+  "dct",
+  "lum",
+  "col1a1a",
+  "krt4",
+  "cyt1",
+  "cryba1b",
+  "crybb1",
+  "ednrba",
+  "pnp4a",
+  "gch2",
+  "aox5")
+```
+
+Make dotplot function:
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(seurat@misc$name)  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+Make dotplots for all clusters
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat) run_dotplot(seurat, dotplot.level.01, group = "RNA_snn_res.0.5"))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+Make dotplot for clusters that have mid-range purity.
+
+```{r}
+run_dotplot_mid_purity <- function(seurat, genes, limits){
+  clusters <- seurat@meta.data %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_purity) %>%
+    filter(., RNA_snn_res.0.5_purity > limits[1] &  RNA_snn_res.0.5_purity < limits[2] ) %>% 
+    pull(RNA_snn_res.0.5)
+  
+  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.5")
+  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.5", idents = clusters) + ggtitle(seurat@misc$name)  +plot_sizing_seurat + rotate_x
+}
+
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat) run_dotplot_mid_purity(seurat, dotplot.level.01, limits = c(0.4, 0.95)))
+
+wrap_plots(plot_list, ncol = 1) + plot_layout(guides = "collect", axis_titles = "collect")
+```
+
+Look more into clusters that express endothelial markers:
+
+
+```{r}
+# removed doublets
+list_objects$D10051_meox1_dataset_Level_01@meta.data %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_purity) %>%
+    filter(., RNA_snn_res.0.5_purity > 0.4 &  RNA_snn_res.0.5_purity < 0.95) %>% 
+  distinct()
+```
+
+```{r}
+# kept doublets
+list_objects$D10051_meox1_dataset_Level_01_kept_doublets@meta.data %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
+  summarise(., count = n()) %>%
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_purity) %>%
+    filter(., RNA_snn_res.0.5_purity > 0.4 &  RNA_snn_res.0.5_purity < 0.95) %>% 
+  distinct()
+```
+
+Set purity threshold to 90, these are LECs.
+
+
+## Export 
+
+Export them all. Selection of clusters to move to Level 02 will happen in next script
+
+```{r}
+
+file_name <- here('output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_01_stringent_annotated.qs2')
+qs_save(list_objects$D10051_meox1_dataset_Level_01, file_name)
+
+file_name <- here('output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_01_stringent_kept_doublets_annotated.qs2')
+qs_save(list_objects$D10051_meox1_dataset_Level_01_kept_doublets , file_name)
+
+```
+
