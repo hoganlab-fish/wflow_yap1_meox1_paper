@@ -9,7 +9,7 @@ editor_options:
 
 ## Introduction
 
-Combine wildtype from yap1 and meox1 experiments. 
+Combine wildtype from yap1 and meox1 experiments, stringent threshold for meox1.
 
 
 ### Set-up
@@ -82,11 +82,10 @@ strip_fix <- theme(strip.background = element_rect(fill = "white"),
 
 ## Re-filter meox1 wildtype
 
-See [here](https://atlassian.petermac.org.au/bitbucket/pages/HL/wflow_yap1_meox1_paper/master/browse/docs/pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation.html), but the original filtering we performed did not really get rid of all the low quality cells, so we need to introduce a second filtering step where we remove cells with nFeatures < 400 (nCounts threshold already implemented is 600, both of these thresholds are informed through the yap1 dataset). 
-
+See [here](https://atlassian.petermac.org.au/bitbucket/pages/HL/wflow_yap1_meox1_paper/master/browse/docs/pre_processing_D10051_meox1_dataset_makeObject_Level01_stringent_annotation.html), but the original filtering we performed did not really get rid of all the low quality cells, so we need to introduce a second filtering step where we remove cells.
 
 ```{r}
-meox1_wildtype <- meox1_wildtype[, !meox1_wildtype$nFeature_RNA < 400]
+meox1_wildtype <- meox1_wildtype[, !(meox1_wildtype$nCount_RNA < 1000 | meox1_wildtype$nFeature_RNA < 1000)]
 ```
 
 ## Downsample yap1 batch
@@ -357,17 +356,17 @@ pure_colours <- c("grey", "green3"); names(pure_colours) <- c("Impure", "Pure")
 DimPlot(merged, group.by = "is_endothlial", cols = pure_colours)
 ```
 
-Make purity plots for res 0.4:
+Make purity plots for res 0.5:
 
 ```{r, fig.align='center', fig.height=5, fig.width=8}
 merged@meta.data %>% 
-  mutate(.,RNA_snn_res.0.4 = as.factor(RNA_snn_res.0.4)) %>% 
-  group_by(., RNA_snn_res.0.4, is_endothlial,.drop = F) %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
-    group_by(RNA_snn_res.0.4) %>%
-    mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
-    summarise(RNA_snn_res.0.4_cluster_purity) %>% distinct() %>% 
-    ggplot(., aes(x= reorder(RNA_snn_res.0.4, -RNA_snn_res.0.4_cluster_purity),  y = RNA_snn_res.0.4_cluster_purity))+
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_cluster_purity) %>% distinct() %>% 
+    ggplot(., aes(x= reorder(RNA_snn_res.0.5, -RNA_snn_res.0.5_cluster_purity),  y = RNA_snn_res.0.5_cluster_purity))+
     geom_bar(stat = "identity") + plot_sizing +
     ylab("Endo Purity per cluster") + xlab("cluster") 
 ```
@@ -455,29 +454,30 @@ Make dotplots for all clusters
 
 ```{r, fig.align='center', fig.height=5, fig.width=7}
 
-DimPlot(merged, group.by = "RNA_snn_res.0.4", label = T)
+DimPlot(merged, group.by = "RNA_snn_res.0.5", label = T)
 ```
 
 ```{r, fig.align='center', fig.height=5, fig.width=10}
-run_dotplot(merged, dotplot.level.01, group = "RNA_snn_res.0.4")
+run_dotplot(merged, dotplot.level.01, group = "RNA_snn_res.0.5")
 
 ```
+
 Make dotplot for clusters that have mid-range purity.
 
 ```{r}
 run_dotplot_mid_purity <- function(seurat, genes, limits){
   clusters <- seurat@meta.data %>% 
-  mutate(.,RNA_snn_res.0.4 = as.factor(RNA_snn_res.0.4)) %>% 
-  group_by(., RNA_snn_res.0.4, is_endothlial,.drop = F) %>% 
+  mutate(.,RNA_snn_res.0.5 = as.factor(RNA_snn_res.0.5)) %>% 
+  group_by(., RNA_snn_res.0.5, is_endothlial,.drop = F) %>% 
   summarise(., count = n()) %>%
-    group_by(RNA_snn_res.0.4) %>%
-    mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
-    summarise(RNA_snn_res.0.4_cluster_purity) %>% distinct() %>% 
-    filter(., RNA_snn_res.0.4_cluster_purity > limits[1] & RNA_snn_res.0.4_cluster_purity < limits[2]) %>% 
-    pull(RNA_snn_res.0.4) %>% unique()
+    group_by(RNA_snn_res.0.5) %>%
+    mutate(., RNA_snn_res.0.5_cluster_purity = count[is_endothlial == "Pure"]/sum(count)) %>% 
+    summarise(RNA_snn_res.0.5_cluster_purity) %>% distinct() %>% 
+    filter(., RNA_snn_res.0.5_cluster_purity > limits[1] & RNA_snn_res.0.5_cluster_purity < limits[2]) %>% 
+    pull(RNA_snn_res.0.5) %>% unique()
   
-  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.4")
-  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.4", idents = clusters)  +plot_sizing_seurat + rotate_x
+  seurat <- SetIdent(seurat, value = "RNA_snn_res.0.5")
+  DotPlot(seurat, features = genes, group.by = "RNA_snn_res.0.5", idents = clusters)  +plot_sizing_seurat + rotate_x
 }
 
 ```
@@ -494,19 +494,20 @@ They all express other markers as well.
 
 ```{r}
 merged$L1_celltype <- case_when(
-  merged$RNA_snn_res.0.4 == 8 ~ "hippo+_VEC",
-  merged$RNA_snn_res.0.4 %in% c(1,9, 10) ~ "AEC",
-  merged$RNA_snn_res.0.4 == 0 ~ "LEC_VEC",
-  merged$RNA_snn_res.0.4 == 2 ~ "cycling_EC",
-  merged$RNA_snn_res.0.4 == 3 ~ "Fibroblast",
-  merged$RNA_snn_res.0.4 == 6 ~ "Endocardium",
-  merged$RNA_snn_res.0.4 %in% c(4,7) ~ "Neuronal",
-  merged$RNA_snn_res.0.4 %in% c(5, 14, 17) ~ "Epithelial", 
-  merged$RNA_snn_res.0.4 %in% c(11,19) ~ "Hematopoietic",
-  merged$RNA_snn_res.0.4 %in% c(12, 13) ~ "Chromatophore",
-  merged$RNA_snn_res.0.4 == 15 ~ "Epithelium_Fibroblast",
-  merged$RNA_snn_res.0.4 == 16 ~ "Immune",
-  merged$RNA_snn_res.0.4 == 18 ~ "Eye_lens"
+  merged$RNA_snn_res.0.5 == 10 ~ "hippo+_VEC",
+  merged$RNA_snn_res.0.5 %in% c(1,7,8) ~ "AEC",
+  merged$RNA_snn_res.0.5 == 2 ~ "LEC",
+  merged$RNA_snn_res.0.5 ==  3~ "VEC",
+  merged$RNA_snn_res.0.5 == 0 ~ "cycling_EC",
+  merged$RNA_snn_res.0.5 == 4 ~ "Fibroblast",
+  merged$RNA_snn_res.0.5 == 9 ~ "Endocardium",
+  merged$RNA_snn_res.0.5 %in% c(6,12) ~ "Neuronal",
+  merged$RNA_snn_res.0.5 %in% c(5, 18, 17) ~ "Epithelial", 
+  merged$RNA_snn_res.0.5 %in% c(11,19) ~ "Hematopoietic",
+  merged$RNA_snn_res.0.5 %in% c(12, 13) ~ "Chromatophore",
+  merged$RNA_snn_res.0.5 == 15 ~ "Epithelium_Fibroblast",
+  merged$RNA_snn_res.0.5 == 16 ~ "Immune",
+  merged$RNA_snn_res.0.5 == 14 ~ "Eye_lens"
 )
 
 ```
@@ -532,31 +533,31 @@ return(seurat)
 ```{r}
 
 L1_seurat_names <- c(
-'LEC_VEC_01', #0
+'cycling_EC_01', #0
 'AEC_01',#1
-'cycling_EC_01', #2
-'Fibroblast_01',#3
-'Neuronal_01',#4
+'LEC_01', #2
+'VEC_01',#3
+'Fibroblast_01',#4
 'Epithelial_01',#5
-'Endocardium_01', #6
-'Neuronal_02', #7
-'hippo+_VEC_01', #8
-'AEC_02',#9
-'AEC_03', #10
+'Neuronal_01', #6
+'AEC_02', #7
+'AEC_03', #8
+'Endocardium_01',#9
+'hippo+_VEC_01', #10
 "Hematopoietic_01", #11
-"Chromatophore_01", #12
-"Chromatophore_02", #13
-"Epithelial_02", #14
+"Neuronal_02", #12
+"Chromatophore_01", #13
+"Eye_lens_01", #14
 "Epithelial_Fibroblast_01", #15
 "Immune_01", #16
-"Epithelial_03", #17
-"Eye_lens_01", #18
+"Epithelial_02", #17
+"Epithelial_03", #18
 "Hematopoietic_02" #19
 )
 
 merged <- add_seurat_names(
   seurat = merged,
-  group = "RNA_snn_res.0.4",
+  group = "RNA_snn_res.0.5",
   names = L1_seurat_names)
 
 ```
@@ -593,10 +594,11 @@ merged@meta.data %>%
 
 ```{r}
 
-file_name <- here('output/data/Datsets/merged_wildtypes/merged_wildtypes_Level_01_annotated.qs2')
+file_name <- here('output/data/Datsets/merged_wildtypes/merged_wildtypes_Level_01_stringent_annotated.qs2')
 qs_save(merged, file_name)
 
 ```
+
 
 
 
