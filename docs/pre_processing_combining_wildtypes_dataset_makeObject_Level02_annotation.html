@@ -353,7 +353,7 @@ div.tocify {
 <h1 class="title toc-ignore">Combined WT only dataset: Make Level 02
 (all endothelial cells) object</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">27. January 2026</h4>
+<h4 class="date">01. February 2026</h4>
 
 </div>
 
@@ -382,7 +382,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-01-27
+<strong>Last updated:</strong> 2026-02-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7dd201423f29169ff16bf031dfbe796076a8f3cftargetblank7dd2014a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee026a5f6e12bb740ad4db2f37ed33f79bec470cetargetblanke026a5fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7dd201423f29169ff16bf031dfbe796076a8f3cf" target="_blank">7dd2014</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e026a5f6e12bb740ad4db2f37ed33f79bec470ce" target="_blank">e026a5f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7dd201423f29169ff16bf031dfbe796076a8f3cftargetblank7dd2014a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee026a5f6e12bb740ad4db2f37ed33f79bec470cetargetblanke026a5fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7dd201423f29169ff16bf031dfbe796076a8f3cf" target="_blank">7dd2014</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e026a5f6e12bb740ad4db2f37ed33f79bec470ce" target="_blank">e026a5f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -549,7 +549,6 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
     Ignored:    code/.DS_Store
     Ignored:    code/analysis/.DS_Store
     Ignored:    code/pre_processing/
@@ -607,6 +606,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/e026a5f6e12bb740ad4db2f37ed33f79bec470ce/analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd" target="_blank">e026a5f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-01
+</td>
+<td>
+wflow_publish("analysis/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.html" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -689,21 +722,21 @@ scGate endothelial purity (95%) for clusters</p></li>
 </ul>
 <pre class="r"><code>#without doublets
 clusters_to_keep &lt;- level_01@meta.data %&gt;% 
-  group_by(., RNA_snn_res.0.2, is_endothlial) %&gt;% 
+  group_by(., RNA_snn_res.0.4, is_endothlial,.drop =F) %&gt;% 
   summarise(., count = n()) %&gt;%
-  group_by(RNA_snn_res.0.2) %&gt;%
-  mutate(., RNA_snn_res.0.2_cluster_purity = count[is_endothlial == &quot;Pure&quot;]/sum(count)) %&gt;% 
-  filter(., RNA_snn_res.0.2_cluster_purity &gt; 0.95) %&gt;% 
-  pull(RNA_snn_res.0.2) %&gt;% unique()</code></pre>
-<pre><code>`summarise()` has grouped output by &#39;RNA_snn_res.0.2&#39;. You can override using
+  group_by(RNA_snn_res.0.4) %&gt;%
+  mutate(., RNA_snn_res.0.4_cluster_purity = count[is_endothlial == &quot;Pure&quot;]/sum(count)) %&gt;% 
+  filter(., RNA_snn_res.0.4_cluster_purity &gt; 0.95) %&gt;% 
+  pull(RNA_snn_res.0.4) %&gt;% unique()</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;RNA_snn_res.0.4&#39;. You can override using
 the `.groups` argument.</code></pre>
-<pre class="r"><code>Idents(level_01) &lt;- &quot;RNA_snn_res.0.2&quot;
+<pre class="r"><code>Idents(level_01) &lt;- &quot;RNA_snn_res.0.4&quot;
 level_02 &lt;- subset(level_01, idents = clusters_to_keep)</code></pre>
 <p>Clean up list, remove Level 01</p>
 <pre class="r"><code>rm(level_01); gc()</code></pre>
 <pre><code>            used  (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-Ncells  12052747 643.7   19609784 1047.3         NA  18974516 1013.4
-Vcells 110585415 843.7  336144020 2564.6      49152 280018662 2136.4</code></pre>
+Ncells  12053794 643.8   21618728 1154.6         NA  18956786 1012.5
+Vcells 111100910 847.7  334919852 2555.3      49152 277787863 2119.4</code></pre>
 <p>Clean up some metadata</p>
 <pre class="r"><code>level_02$endothelial_UCell &lt;- level_02$scGate_multi &lt;- level_02$is_endothlial &lt;- NULL</code></pre>
 </div>
@@ -733,153 +766,153 @@ for Level 01</p>
 <pre><code>Warning: Different features in new layer data than already exists for
 scale.data</code></pre>
 <pre><code>PC_ 1 
-Positive:  edn1, limch1b, cxcr4b, krt8, LO018188.1, eppk1, hapln3, krt18a.1, si:ch211-145b13.6, cldn5a 
-       fabp11a, gpm6ab, CABZ01021592.1, sult2st1, selenop, CR848683.2, socs3a, kcnn1a, glula, smad6b 
-       aqp1a.1, icn, bnc2, sesn1, fbln2, slco1d1, bsg, sema7a, lyve1a, vegfc 
-Negative:  mki67, top2a, si:dkey-108k21.10, hist1h4l.11, CABZ01058261.1, hist1h4l.6, hist1h4l.16, tubb2b, cdk1, tpx2 
-       hmgb2a, smc2, hmga1a, stmn1a, mad2l1, lbr, cenpf, h3f3b.1, nusap1, ube2c 
-       zgc:110425, aurkb, si:ch211-113a14.12, mibp, ccna2, dlgap5, plk1, si:dkey-261m9.12, tuba8l4, aspm 
+Positive:  mki67, top2a, si:dkey-108k21.10, hist1h4l.11, CABZ01058261.1, hist1h4l.6, hist1h4l.16, tubb2b, cdk1, tpx2 
+       smc2, hmgb2a, stmn1a, mad2l1, hmga1a, cenpf, nusap1, ube2c, h3f3b.1, lbr 
+       zgc:110425, aurkb, dlgap5, ccna2, mibp, aspm, plk1, si:ch211-113a14.12, si:dkey-261m9.12, tuba8l4 
+Negative:  cxcr4b, edn1, limch1b, krt8, LO018188.1, eppk1, krt18a.1, cldn5a, fabp11a, sult2st1 
+       si:ch211-145b13.6, gpm6ab, hapln3, CABZ01021592.1, CR848683.2, socs3a, aqp1a.1, icn, sema7a, kcnn1a 
+       bsg, cavin1b, selenop, sesn1, smad6b, vegfc, adipor2, slco1d1, fbln2, efemp2b 
 PC_ 2 
-Positive:  esm1, dll4, cxcr4a, rbpms2b, csrp2, hopx, mcamb, crip2, flt1, pdgfbb 
-       CABZ01030107.1, mpped2a, fxyd1, efnb2a, scarb2a, igfbp1a, zgc:112332, pcdh19, cxcr4b, ca16b 
-       adra1aa, prdm1a, cd81b, hlx1, aqp1a.1, rasgrp3, sox7, CABZ01076275.1, zgc:158423, col4a2 
-Negative:  lyve1b, dab2, stab2, lgmn, igf2b, lyve1a, mrc1a, sele, foxp4, cxcl12a 
-       si:dkey-28n18.9, il13ra2, mafbb, postnb, aplnra, stab1, nhsl2, selenop, nrp2b, ctsla 
-       bnc2, cdh6, prcp, lypd6, arl4aa, ccn2a, cldn11a, sdk1a, fn1a, zgc:110591 
+Positive:  esm1, dll4, cxcr4a, rbpms2b, csrp2, hopx, crip2, mcamb, flt1, pdgfbb 
+       CABZ01030107.1, mpped2a, efnb2a, scarb2a, fxyd1, igfbp1a, zgc:112332, pcdh19, adra1aa, ca16b 
+       prdm1a, cxcr4b, cd81b, aqp1a.1, rasgrp3, hlx1, col4a2, sox7, zgc:158423, apln 
+Negative:  lyve1b, dab2, stab2, lgmn, igf2b, cxcl12a, sele, mrc1a, il13ra2, si:dkey-28n18.9 
+       postnb, lyve1a, foxp4, aplnra, stab1, selenop, nhsl2, nrp2b, prcp, ctsla 
+       bnc2, zgc:110591, cldn11a, lypd6, cdh6, arl4aa, hexb, glula, pxk, gnpda1 
 PC_ 3 
 Positive:  f8, si:ch211-160j14.3, hand2, gata5, id2b, icn, adarb1a, rpz5, errfi1a, krt94 
-       sall1a, hapln1b, s100a10b, FP102018.1, col5a2a, alcama, plcd1a, kctd12.2, anxa2a, has2 
-       mb, si:ch211-119e14.1, angptl2b, rhag, col1a1b, meis1b, cd82a, zgc:64106, chl1a, zgc:158689 
-Negative:  plvapb, prcp, lyve1b, cxcl12a, stab2, flt4, si:dkey-28n18.9, dab2, rab11bb, mrc1a 
-       lgmn, postnb, il13ra2, nrp2b, glula, stab1, pxk, rgcc, kirrel3l, sele 
-       slc29a1a, zgc:110239, tnfaip2b, ogna, mrc1b, slco2b1, cyp1a, mafba, marcksl1a, emid1 
+       hapln1b, s100a10b, sall1a, FP102018.1, col5a2a, alcama, kctd12.2, plcd1a, anxa2a, si:ch211-119e14.1 
+       meis1b, zgc:64106, col1a1b, cd82a, angptl2b, has2, chl1a, mb, rhag, gas2l1 
+Negative:  plvapb, prcp, cxcl12a, lyve1b, flt4, stab2, mrc1a, si:dkey-28n18.9, dab2, rab11bb 
+       lgmn, postnb, il13ra2, nrp2b, glula, rgcc, pxk, stab1, kirrel3l, sele 
+       slc29a1a, mrc1b, cyp1a, zgc:110239, tnfaip2b, ogna, slco2b1, gapdhs, mafba, cldn5b 
 PC_ 4 
-Positive:  npm1a, hells, dkc1, mcm2, ncl, snu13b, nasp, mcm6, mcm5, fbl 
-       nop58, pcna, nop10, c1qbp, fen1, mcm3, hspd1, hspe1, nop2, pa2g4a 
-       cdca7a, nkx2.3, nop56, lig1, ssb, gnl3, myca, si:ch211-217k17.7, rbbp4, chaf1a 
-Negative:  krt18a.1, gpm6ab, krt8, histh1l, socs3a, limch1b, eppk1, si:ch211-145b13.6, id1, spns2 
-       efna1b, hapln3, btg2, kcnn1a, tcima, sesn1, bsg, LO018188.1, pmp22b, lyve1a 
-       podxl, klf2a, edn1, cldn5a, aqp1a.1, dusp1, cenpf, plk1, fxyd1, selenop 
+Positive:  npm1a, dkc1, hells, ncl, mcm2, snu13b, nop10, nop58, fbl, mcm6 
+       mcm5, c1qbp, nasp, pcna, nkx2.3, hspd1, hspe1, mcm3, fen1, nop2 
+       nop56, myca, cdca7a, gnl3, si:ch211-217k17.7, ssb, lig1, rrs1, twistnb, msh6 
+Negative:  krt18a.1, gpm6ab, krt8, socs3a, limch1b, si:ch211-145b13.6, histh1l, eppk1, id1, tcima 
+       spns2, btg2, hapln3, efna1b, adipor2, kcnn1a, sesn1, bsg, pmp22b, podxl 
+       LO018188.1, cldn5a, klf2a, selenop, lyve1a, dusp1, edn1, ier2b, sox7, aqp1a.1 
 PC_ 5 
-Positive:  fosab, junba, ier2a, btg2, ier2b, pim1, si:ch73-335l21.4, mcm6, mcm2, nasp 
-       mcm5, jdp2b, zgc:162730, jun, pcna, mcm3, socs3a, dnajc9, msna, hells 
-       fen1, sat1a.2, marcksl1a, rbbp4, egr1, krt8, cdca7a, lig1, chaf1a, klf6a 
-Negative:  aspm, CABZ01021592.1, ube2c, cdc20, cenpf, si:ch211-69g19.2, nusap1, kif11, kpna2, kmt5ab 
-       ccnb1, plk1, ccnb3, prc1b, dlgap5, top2a, kifc1, kif20a, prc1a, tpx2 
-       hmmr, cdc14b, zgc:194627, cdk1, birc5a, tacc3, aurka, g2e3, mki67, si:ch211-156j22.4 </code></pre>
+Positive:  fosab, ier2a, junba, ier2b, btg2, pim1, mcm6, mcm2, nasp, mcm5 
+       si:ch73-335l21.4, pcna, jun, mcm3, zgc:162730, jdp2b, hells, dnajc9, fen1, cdca7a 
+       egr1, lig1, chaf1a, msna, socs3a, msh6, sat1a.2, baz1b, nop56, npm1a 
+Negative:  aspm, ube2c, cdc20, CABZ01021592.1, si:ch211-69g19.2, cenpf, nusap1, kpna2, kif11, ccnb1 
+       kmt5ab, plk1, prc1b, ccnb3, top2a, prc1a, dlgap5, tpx2, kifc1, hmmr 
+       kif20a, birc5a, cdk1, cdc14b, zgc:194627, g2e3, aurka, si:ch211-156j22.4, tacc3, mki67 </code></pre>
 <pre><code>The `features` argument is ignored by `HarmonyIntegration`.
 This message is displayed once per session.</code></pre>
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>18:01:32 UMAP embedding parameters a = 0.9922 b = 1.112
-18:01:32 Read 9991 rows and found 30 numeric columns
-18:01:32 Using Annoy for neighbor search, n_neighbors = 30
-18:01:32 Building Annoy index with metric = cosine, n_trees = 50
+<pre><code>14:24:44 UMAP embedding parameters a = 0.9922 b = 1.112
+14:24:44 Read 10058 rows and found 30 numeric columns
+14:24:44 Using Annoy for neighbor search, n_neighbors = 30
+14:24:44 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-18:01:33 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//Rtmpd0vXWd/file16af926764ef7
-18:01:33 Searching Annoy index using 1 thread, search_k = 3000
-18:01:34 Annoy recall = 100%
-18:01:34 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-18:01:35 Initializing from normalized Laplacian + noise (using RSpectra)
-18:01:35 Commencing optimization for 500 epochs, with 418624 positive edges
-18:01:35 Using rng type: pcg
-18:01:41 Optimization finished
+14:24:44 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpYjffJa/file380b26f26c43
+14:24:44 Searching Annoy index using 1 thread, search_k = 3000
+14:24:45 Annoy recall = 100%
+14:24:46 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+14:24:46 Initializing from normalized Laplacian + noise (using RSpectra)
+14:24:46 Commencing optimization for 200 epochs, with 419772 positive edges
+14:24:46 Using rng type: pcg
+14:24:49 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Warning: The following arguments are not used: reduction</code></pre>
 <pre><code>Warning: The following arguments are not used: reduction</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9430
+Maximum modularity in 10 random starts: 0.9404
 Number of communities: 6
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9231
+Maximum modularity in 10 random starts: 0.9185
 Number of communities: 11
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9111
+Maximum modularity in 10 random starts: 0.9054
 Number of communities: 12
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9005
-Number of communities: 13
+Maximum modularity in 10 random starts: 0.8952
+Number of communities: 16
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8903
-Number of communities: 12
+Maximum modularity in 10 random starts: 0.8858
+Number of communities: 16
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8822
-Number of communities: 15
+Maximum modularity in 10 random starts: 0.8769
+Number of communities: 17
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8747
-Number of communities: 18
-Elapsed time: 0 seconds
-Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
-
-Number of nodes: 9991
-Number of edges: 378042
-
-Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8674
+Maximum modularity in 10 random starts: 0.8686
 Number of communities: 19
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8606
-Number of communities: 19
+Maximum modularity in 10 random starts: 0.8616
+Number of communities: 20
 Elapsed time: 0 seconds
 Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 9991
-Number of edges: 378042
+Number of nodes: 10058
+Number of edges: 383607
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.8541
-Number of communities: 21
+Maximum modularity in 10 random starts: 0.8548
+Number of communities: 22
+Elapsed time: 0 seconds
+Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 10058
+Number of edges: 383607
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.8497
+Number of communities: 24
 Elapsed time: 0 seconds</code></pre>
 </div>
 <div id="pca-correlations" class="section level2">
@@ -929,6 +962,43 @@ Elapsed time: 0 seconds</code></pre>
 <pre class="r"><code>wrap_plots(run_harmony_correlations(level_02), ncol = 3)</code></pre>
 <pre><code>Joining with `by = join_by(Barcode)`</code></pre>
 <p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-10-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-10-1.png" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Correlation with harmony1</p>
 </div>
 <div id="umap-overviews" class="section level2">
@@ -946,6 +1016,43 @@ Elapsed time: 0 seconds</code></pre>
 <p>Top with, bottom without doublets.</p>
 <pre class="r"><code>wrap_plots(plot_umap_dataset(level_02), ncol = 2)</code></pre>
 <p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-12-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-12-1.png" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="clustree-composition" class="section level2">
 <h2>Clustree + Composition</h2>
@@ -954,6 +1061,43 @@ Elapsed time: 0 seconds</code></pre>
 <h2>Clustree</h2>
 <pre class="r"><code>clustree(level_02)</code></pre>
 <p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-13-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-13-1.png" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Stacked barplot for different resolutions capturing genotype
 split.</p>
 <pre class="r"><code>level_02@meta.data %&gt;% 
@@ -970,16 +1114,46 @@ split.</p>
 <pre><code>`summarise()` has grouped output by &#39;resolution&#39;, &#39;cluster&#39;. You can override
 using the `.groups` argument.</code></pre>
 <p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-14-1.png" width="2400" style="display: block; margin: auto;" /></p>
-<p>Make UMAP for res 0.5</p>
-<pre class="r"><code> DimPlot(level_02, group.by = &quot;RNA_snn_res.0.5&quot;, shuffle = T, label = T)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-14-1.png" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="scgate-find-major-subpopulations" class="section level2">
-<h2>scGate: Find major subpopulations</h2>
-<p>Didn’t really work, so we’re skipping it.</p>
 </div>
-<div id="dotplot-for-genes" class="section level2">
-<h2>Dotplot for genes</h2>
+</div>
+<div id="feature-umaps" class="section level2">
+<h2>Feature UMAPs</h2>
 <pre class="r"><code>level_02_dotplot &lt;- c(
   &quot;prox1a&quot;, #LEC
   &quot;cdh6&quot;, #LEC
@@ -994,40 +1168,90 @@ using the `.groups` argument.</code></pre>
   &quot;mki67&quot;, #cycling
   &quot;pcna&quot;, #cycling
   &quot;hand2&quot;, #endocardium
-  &quot;fn1a&quot; #endocardium
+  &quot;fn1a&quot;, #endocardium
+  &quot;osr2&quot;, #muLEC
+  &quot;sparc&quot;,
+  &quot;ifi30&quot;
 )</code></pre>
-<p>Make dotplot function:</p>
-<pre class="r"><code>run_dotplot &lt;- function(seurat, genes, group){
-  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf(&quot;%s, %s&quot;,group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
-}</code></pre>
-<p>Make for res 0.5.</p>
-<pre class="r"><code>run_dotplot(seurat = level_02, group = &quot;RNA_snn_res.0.5&quot;, genes = level_02_dotplot) + ylab(&#39;&#39;) + xlab(&quot;&quot;)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" width="480" style="display: block; margin: auto;" /></p>
-</div>
-<div id="feature-umaps" class="section level2">
-<h2>Feature UMAPs</h2>
-<p>This can sometimes be helpful.</p>
 <pre class="r"><code>run_feature_umap &lt;- function(seurat, genes){
   FeaturePlot(seurat, features = genes, ncol = 4) 
 }</code></pre>
 <pre class="r"><code>run_feature_umap(seurat = level_02, genes = level_02_dotplot)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-20-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-17-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>Make UMAP for res 0.4</p>
+<pre class="r"><code> DimPlot(level_02, group.by = &quot;RNA_snn_res.0.4&quot;, shuffle = T, label = T)</code></pre>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/b26aa58a5b12bb38e7ec968cbc47c0447a648a08/docs/figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-18-1.png" target="_blank">b26aa58</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-01-27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Show prox1a expression in big next to it?</p>
+<pre class="r"><code> DimPlot(level_02, group.by = &quot;RNA_snn_res.0.4&quot;, shuffle = T, label = T) +
+  FeaturePlot(level_02, features = &quot;prox1a&quot;)</code></pre>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-19-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="scgate-find-major-subpopulations" class="section level2">
+<h2>scGate: Find major subpopulations</h2>
+<p>Didn’t really work, so we’re skipping it.</p>
+</div>
+<div id="dotplot-for-genes" class="section level2">
+<h2>Dotplot for genes</h2>
+<p>Make dotplot function:</p>
+<pre class="r"><code>run_dotplot &lt;- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf(&quot;%s, %s&quot;,group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}</code></pre>
+<p>Make for res 0.4.</p>
+<pre class="r"><code>run_dotplot(seurat = level_02, group = &quot;RNA_snn_res.0.4&quot;, genes = level_02_dotplot) + ylab(&#39;&#39;) + xlab(&quot;&quot;)</code></pre>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="add-annotations" class="section level2">
-<h2>Add annotations</h2>
-</div>
-<div id="add-annotations-1" class="section level2">
 <h2>Add annotations</h2>
 <div id="cell-type-level" class="section level3">
 <h3>Cell type level</h3>
 <pre class="r"><code>level_02$L2_celltype &lt;- case_when(
-  level_02$RNA_snn_res.0.5 %in% c(1,4) ~ &quot;VEC&quot;,
-  level_02$RNA_snn_res.0.5 %in% c(6,8,9,10,11) ~ &quot;AEC&quot;,
-  level_02$RNA_snn_res.0.5 == 2 ~ &quot;cycling_LEC_VEC&quot;,
-  level_02$RNA_snn_res.0.5 == 3 ~ &quot;cycling_AEC&quot;,
+  level_02$RNA_snn_res.0.4 %in% c(1,12) ~ &quot;VEC&quot;,
+  level_02$RNA_snn_res.0.4 == 4 ~ &quot;hippo+_VEC&quot;,
+  level_02$RNA_snn_res.0.4 %in% c(6,8,9,10,11,14) ~ &quot;AEC&quot;,
+  level_02$RNA_snn_res.0.4 == 2 ~ &quot;cycling_LEC_VEC&quot;,
+  level_02$RNA_snn_res.0.4 == 3 ~ &quot;cycling_AEC&quot;,
+  level_02$RNA_snn_res.0.4 == 0 ~ &quot;mixed_EC&quot;,
+  level_02$RNA_snn_res.0.4 %in% c(5, 15) ~ &quot;Endocardium&quot;,
+  level_02$RNA_snn_res.0.4 == 7 ~ &quot;LEC&quot;,
   level_02$RNA_snn_res.0.5 == 0 ~ &quot;mixed_EC&quot;,
-  level_02$RNA_snn_res.0.5 == 5 ~ &quot;Endocardium&quot;,
-  level_02$RNA_snn_res.0.5 == 7 ~ &quot;LEC&quot;
+  level_02$RNA_snn_res.0.5 == 13 ~ &quot;pre_muLEC&quot;
 )</code></pre>
 </div>
 <div id="for-each-cluster" class="section level3">
@@ -1048,28 +1272,31 @@ return(seurat)
 &#39;VEC_01&#39;,#1
 &#39;cycling_LEC_VEC_01&#39;, #2
 &#39;cycling_AEC_01&#39;,#3
-&#39;VEC_02&#39;,#4
+&#39;hippo+_VEC_01&#39;,#4
 &#39;Endocardium_01&#39;,#5
 &#39;AEC_01&#39;, #6
 &#39;LEC_01&#39;, #7
 &#39;AEC_02&#39;, #8
 &#39;AEC_03&#39;,#9
 &#39;AEC_04&#39;, #10
-&quot;AEC_05&quot; #11
+&quot;AEC_05&quot;, #11
+&quot;VEC_02&quot;, #12
+&quot;pre_muLEC_01&quot;, #13
+&quot;AEC_06&quot;, #14
+&quot;Endocardium_02&quot; #15
 )
 
 level_02 &lt;- add_seurat_names(
   seurat = level_02,
-  group = &quot;RNA_snn_res.0.5&quot;,
+  group = &quot;RNA_snn_res.0.4&quot;,
   names = L2_seurat_names)</code></pre>
 <p>Show on UMAPs</p>
 <pre class="r"><code>run_celltype_umaps &lt;-function(seurat){
-  colours &lt;- Polychrome::dark.colors(7); names(colours) &lt;- c(&quot;AEC&quot;, &quot;VEC&quot;, &quot;LEC&quot;, 
-                                                             &quot;cycling_LEC_VEC&quot;, &quot;cycling_AEC&quot;, &quot;Endocardium&quot;, &quot;mixed_EC&quot;)
+  colours &lt;- Polychrome::dark.colors(length(unique(seurat$L2_celltype))) %&gt;% unname()
   DimPlot(seurat, group.by = &quot;L2_celltype&quot;, cols = colours) + ggtitle(seurat@misc$name)
 }</code></pre>
 <pre class="r"><code>run_celltype_umaps(level_02)</code></pre>
-<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="export" class="section level2">
