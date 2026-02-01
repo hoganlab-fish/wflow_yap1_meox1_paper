@@ -372,6 +372,31 @@ merged@meta.data %>%
     ylab("Endo Purity per cluster") + xlab("cluster") 
 ```
 
+## Feature UMAPs
+
+```{r}
+umap_features <- c(
+  "cdh6",
+  "prox1a",
+  "stab2",
+  "lyve1b",
+  "mrc1a",
+  "flt1",
+  "dll4",
+  "esm1",
+  "hlx1",
+  "mki67",
+  "pcna",
+  "hand2",
+  "fn1a") # not all, just the endo ones
+```
+
+
+```{r, fig.align='center', fig.height=20, fig.width=20}
+FeaturePlot(merged, features = umap_features, ncol = 4)
+```
+
+
 ## DotPlot
 
 Use some known marker genes for celltypes to double check scGate annotation.
@@ -387,6 +412,8 @@ dotplot.level.01 <- c(
   "dll4",
   "esm1",
   "hlx1",
+  "mki67",
+  "pcna",
   "hand2",
   "fn1a",
   "gata2b",
@@ -460,6 +487,106 @@ run_dotplot_mid_purity(merged, limits = c(0.2, 0.95), genes = dotplot.level.01)
 ```
 
 They all express other markers as well. 
+
+## Add annotations
+
+### Cell type level
+
+```{r}
+merged$L1_celltype <- case_when(
+  merged$RNA_snn_res.0.4 == 8 ~ "hippo+_VEC",
+  merged$RNA_snn_res.0.4 %in% c(1,9, 10) ~ "AEC",
+  merged$RNA_snn_res.0.4 == 0 ~ "LEC_VEC",
+  merged$RNA_snn_res.0.4 == 2 ~ "cycling_EC",
+  merged$RNA_snn_res.0.4 == 3 ~ "Fibroblast",
+  merged$RNA_snn_res.0.4 == 6 ~ "Endocardium",
+  merged$RNA_snn_res.0.4 %in% c(4,7) ~ "Neuronal",
+  merged$RNA_snn_res.0.4 %in% c(5, 14, 17) ~ "Epithelial", 
+  merged$RNA_snn_res.0.4 %in% c(11,19) ~ "Hematopoietic",
+  merged$RNA_snn_res.0.4 %in% c(12, 13) ~ "Chromatophore",
+  merged$RNA_snn_res.0.4 == 15 ~ "Epithelium_Fibroblast",
+  merged$RNA_snn_res.0.4 == 16 ~ "Immune",
+  merged$RNA_snn_res.0.4 == 18 ~ "Eye_lens"
+)
+
+```
+
+
+### For each cluster
+
+```{r}
+add_seurat_names <- function(seurat, group, names){
+  seurat 		<- SetIdent(seurat, value=group)
+names(names) 		<- levels(seurat)
+seurat 		<- RenameIdents(seurat, names)
+seurat 		<- AddMetaData(
+  object=seurat,
+  metadata=seurat@active.ident,
+  col.name="L1_seurat_celltype")
+return(seurat)
+  
+}
+```
+
+
+```{r}
+
+L1_seurat_names <- c(
+'LEC_VEC_01', #0
+'AEC_01',#1
+'cycling_EC_01', #2
+'Fibroblast_01',#3
+'Neuronal_01',#4
+'Epithelial_01',#5
+'Endocardium_01', #6
+'Neuronal_02', #7
+'hippo+_VEC_01', #8
+'AEC_02',#9
+'AEC_03', #10
+"Hematopoietic_01", #11
+"Chromatophore_01", #12
+"Chromatophore_02", #13
+"Epithelial_02", #14
+"Epithelial_Fibroblast_01", #15
+"Immune_01", #16
+"Epithelial_03", #17
+"Eye_lens_01", #18
+"Hematopoietic_02" #19
+)
+
+merged <- add_seurat_names(
+  seurat = merged,
+  group = "RNA_snn_res.0.4",
+  names = L1_seurat_names)
+
+```
+
+Show on UMAPs
+
+```{r}
+run_celltype_umaps <-function(seurat){
+  colours <- Polychrome::dark.colors(length(merged$L1_celltype)) %>% unname()
+  DimPlot(seurat, group.by = "L1_celltype", cols = colours, label = T) + ggtitle(seurat@misc$name) +
+    theme(legend.position = "none")
+}
+
+```
+
+```{r,fig.align='center', fig.height=5, fig.width=8}
+run_celltype_umaps(merged)
+```
+
+Stacked barplot for celltype vs batch
+
+```{r, fig.align='center', fig.height=7, fig.width=10}
+merged@meta.data %>% 
+  group_by(L1_celltype, batch) %>% 
+  summarise(., count = n()) %>% 
+  ggplot(., aes(x = L1_celltype, y = count, fill = batch)) +
+  geom_bar(position = "fill", stat = "identity") +
+  plot_sizing + rotate_x +
+  ggtitle("Batch effect in celltypes")
+```
 
 
 ## Export
