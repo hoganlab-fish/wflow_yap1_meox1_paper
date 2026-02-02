@@ -97,7 +97,11 @@ Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cel
 [Level 03](pre_processing_D10051_meox1_dataset_makeObject_Level03.html) - highlights low quality clusters, objects not exported.
 
 
-# ** **
+# **yap1 vs meox1 LEC-VEC - correlations**
+
+Correlate GEX between clusters of the different datasets to see similarities and differences
+
+[yap1 vs meox1 correlations](pre_processing_correlation_yap1_vs_meox1_dataset_Level03.html)
 
 # **Pre-processing - wildtype only yap + meox1 dataset**
 
