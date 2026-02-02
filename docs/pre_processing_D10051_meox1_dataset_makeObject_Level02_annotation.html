@@ -353,7 +353,7 @@ div.tocify {
 <h1 class="title toc-ignore">D10051 meox1 dataset: Make Level 02 (all
 endothelial cells) object</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">01. February 2026</h4>
+<h4 class="date">02. February 2026</h4>
 
 </div>
 
@@ -382,7 +382,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-01
+<strong>Last updated:</strong> 2026-02-02
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -513,15 +513,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeef6b4e24f868b0edb2f24f46192e1fec7fb507aatargetblankef6b4e2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreed603f638ce25e51491a6c9401e403ad3d630ee3dtargetblankd603f63a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ef6b4e24f868b0edb2f24f46192e1fec7fb507aa" target="_blank">ef6b4e2</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/d603f638ce25e51491a6c9401e403ad3d630ee3d" target="_blank">d603f63</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeef6b4e24f868b0edb2f24f46192e1fec7fb507aatargetblankef6b4e2a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreed603f638ce25e51491a6c9401e403ad3d630ee3dtargetblankd603f63a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +531,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ef6b4e24f868b0edb2f24f46192e1fec7fb507aa" target="_blank">ef6b4e2</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/d603f638ce25e51491a6c9401e403ad3d630ee3d" target="_blank">d603f63</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,7 +562,7 @@ Ignored files:
     Ignored:    renv/staging/
 
 Untracked files:
-    Untracked:  analysis/pre_processing_D10051_meox1_dataset_makeObject_Level03.Rmd
+    Untracked:  analysis/pre_processing_D10051_meox1_dataset_makeObject_Level02_stringent_annotation.Rmd
 
 </code></pre>
 <p>
@@ -609,6 +609,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/236a643bafffe6c997d1e8bf7cdbb0825c399c62/docs/pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.html" target="_blank">236a643</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -785,8 +802,8 @@ list_objects$D10051_meox1_dataset_Level_02 &lt;- subset(list_objects$D10051_meox
 <pre class="r"><code>list_objects$D10051_meox1_dataset_Level_01_kept_doublets_annotated &lt;- list_objects$D10051_meox1_dataset_Level_01_annotated &lt;- NULL
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb) limit (Mb)  max used   (Mb)
-Ncells  12064278  644.4   21594138 1153.3         NA  17732338  947.1
-Vcells 245828632 1875.6  724846836 5530.2      49152 634917064 4844.1</code></pre>
+Ncells  12066456  644.5   18492194  987.6         NA  17734516  947.2
+Vcells 245832284 1875.6  724853146 5530.2      49152 634509502 4841.0</code></pre>
 <p>Clean up some metadata</p>
 <pre class="r"><code>list_objects$D10051_meox1_dataset_Level_02_kept_doublets$endothelial_UCell &lt;- list_objects$D10051_meox1_dataset_Level_02_kept_doublets$scGate_multi &lt;- list_objects$D10051_meox1_dataset_Level_02_kept_doublets$is_endothlial &lt;- NULL
 
@@ -853,21 +870,21 @@ Negative:  npm1a, dkc1, snu13b, ncl, nop58, fbl, nop56, c1qbp, hspd1, hells
 <pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
 To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
 This message will be shown once per session</code></pre>
-<pre><code>15:50:33 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
-<pre><code>15:50:33 Read 14439 rows and found 30 numeric columns</code></pre>
-<pre><code>15:50:33 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
-<pre><code>15:50:33 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>13:12:36 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>13:12:36 Read 14439 rows and found 30 numeric columns</code></pre>
+<pre><code>13:12:36 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>13:12:36 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
 <pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
 <pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
 <pre><code>**************************************************|
-15:50:33 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmplpkIPZ/file43c49567c9c
-15:50:33 Searching Annoy index using 1 thread, search_k = 3000
-15:50:35 Annoy recall = 100%
-15:50:35 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-15:50:36 Initializing from normalized Laplacian + noise (using RSpectra)
-15:50:36 Commencing optimization for 200 epochs, with 604584 positive edges
-15:50:36 Using rng type: pcg
-15:50:40 Optimization finished
+13:12:37 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpHSPd5n/file17d8b6540e616
+13:12:37 Searching Annoy index using 1 thread, search_k = 3000
+13:12:39 Annoy recall = 100%
+13:12:39 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+13:12:40 Initializing from normalized Laplacian + noise (using RSpectra)
+13:12:40 Commencing optimization for 200 epochs, with 604584 positive edges
+13:12:40 Using rng type: pcg
+13:12:44 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
@@ -1001,21 +1018,21 @@ Positive:  npm1a, dkc1, snu13b, ncl, nkx2.3, mcm2, hells, fbl, nop58, c1qbp
 Negative:  gpm6ab, zgc:158423, lef1, limch1b, plk1, cenpf, nusap1, top2a, fxyd1, slco1c1 
        kcnn1a, ube2c, slco1d1, aspm, ncam3, tpx2, kifc1, plpp3, fabp11a, slc7a5 
        tcima, znf536, pmp22b, six3a, mmel1, kif23, prc1b, cks2, igfbp1a, si:ch211-69g19.2 
-15:51:10 UMAP embedding parameters a = 0.9922 b = 1.112
-15:51:10 Read 11162 rows and found 30 numeric columns
-15:51:10 Using Annoy for neighbor search, n_neighbors = 30
-15:51:10 Building Annoy index with metric = cosine, n_trees = 50
+13:13:17 UMAP embedding parameters a = 0.9922 b = 1.112
+13:13:17 Read 11162 rows and found 30 numeric columns
+13:13:17 Using Annoy for neighbor search, n_neighbors = 30
+13:13:17 Building Annoy index with metric = cosine, n_trees = 50
 0%   10   20   30   40   50   60   70   80   90   100%
 [----|----|----|----|----|----|----|----|----|----|
 **************************************************|
-15:51:11 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmplpkIPZ/file43c4d0eea8e
-15:51:11 Searching Annoy index using 1 thread, search_k = 3000
-15:51:12 Annoy recall = 100%
-15:51:13 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
-15:51:13 Initializing from normalized Laplacian + noise (using RSpectra)
-15:51:13 Commencing optimization for 200 epochs, with 460028 positive edges
-15:51:13 Using rng type: pcg
-15:51:16 Optimization finished
+13:13:17 Writing NN index file to temp file /var/folders/cx/d_5b9pls2cq2mv2m5jlps271lnn8nd/T//RtmpHSPd5n/file17d8b7c1e249
+13:13:17 Searching Annoy index using 1 thread, search_k = 3000
+13:13:18 Annoy recall = 100%
+13:13:19 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+13:13:19 Initializing from normalized Laplacian + noise (using RSpectra)
+13:13:19 Commencing optimization for 200 epochs, with 460028 positive edges
+13:13:19 Using rng type: pcg
+13:13:22 Optimization finished
 Computing nearest neighbor graph
 Computing SNN</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
