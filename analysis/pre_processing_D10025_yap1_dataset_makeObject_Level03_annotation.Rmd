@@ -1,0 +1,416 @@
+---
+title: "D10025 yap1 dataset: Annotate Level 03 (LEC/VEC only) object"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Annotate Level 03 object for yap1 dataset. Focus on Level 01 and Level 02 was to exclude any cells we're not interested in, but now at Level 03 we're more interested in LEC/VEC subpopulations. 
+
+ ### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+  library(bluster)
+})
+```
+
+
+### Load data
+
+Made here: ./pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd
+
+```{r}
+input_paths <- c(file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_kept_doublets.qs2'),
+                 here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03.qs2'))
+list_objects <- lapply(input_paths, qs_read)
+
+names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
+```
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_keeplegend <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_text(size = 16)) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+## Picking appropriate resolution
+
+This can be a very delicate process, and there's not really a single data-driven method that everyone uses. For level 01, our main goal was to keep as many kdrl+ endothelial cell clusters as possible. On level 02, it was important to find a clustering solution that would best split the LEC/VEC from the rest of the endothelium. 
+
+
+### Silhouette score
+
+Silhouette scores can be used to score quality of clustering. Not everyone thinks it is the most appropriate solution for single-cell though, particularly if there are multiple samples with potential batch effects involved. 
+
+Following [this](https://www.geeksforgeeks.org/machine-learning/what-is-silhouette-score/)
+
+The score ranges from -1 to +1:
+
+Close to +1: Point is well-matched to its cluster and far from others means excellent clustering.
+
+Around 0: Point is near cluster boundaries or clusters overlap.
+
+Close to -1: Point is likely assigned to the wrong cluster means poor clustering.
+
+```{r}
+#add silhouette score for all clustering solutions 
+run_silhouette_score <- function(seurat){
+  reduction_to_use <- seurat@reductions$pca@cell.embeddings #use PCA cell embeddings
+  list_all_res <- lapply(c(sprintf("RNA_snn_res.%0.1f", seq(0.1,0.9,0.1)), "RNA_snn_res.1"),  function(res){
+    meta_to_use <- seurat@meta.data %>% pull(res)
+    silhouette <- approxSilhouette(reduction_to_use, meta_to_use) %>% as.data.frame() %>% 
+      select(width) 
+    colnames(silhouette) <- c(sprintf("silhouette_%s_width", res))
+    return(silhouette)
+  }) 
+  output_df <- Reduce(cbind, list_all_res) %>% 
+    # pivot_wider(., values_from = "width", names_from = "resolution") %>% 
+    rownames_to_column("Barcode") 
+  
+  new_meta <- seurat@meta.data %>% 
+    mutate(., Barcode = rownames(seurat@meta.data))%>%
+    full_join(., output_df, by = "Barcode") %>% 
+    column_to_rownames("Barcode")
+
+  seurat@meta.data <- new_meta
+  rm(new_meta, reduction_to_use, list_all_res, output_df); gc()
+  
+  return(seurat)
+}
+```
+
+```{r}
+list_objects <- lapply(list_objects, run_silhouette_score)
+```
+
+
+Make plots
+
+```{r}
+run_silhouette_plots <- function(seurat){
+  seurat@meta.data %>% 
+    select(., ends_with("width")) %>% 
+    pivot_longer(., cols = everything(), names_to = "resolution", values_to = "silhouette_width") %>% 
+    mutate(., resolution = gsub("_width" , "",gsub("RNA_snn_", "" ,resolution))) %>% 
+    ggplot(., aes(x = reorder(resolution, -silhouette_width), y = silhouette_width, fill = resolution )) +
+    geom_boxplot() +
+    plot_sizing + rotate_x +
+    theme(legend.position = "none") +
+    ggtitle(seurat@misc$name) +
+    ylab("Silhouette score") + xlab("resolution (sorted)")
+}
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=12}
+plot_list <- lapply(list_objects, run_silhouette_plots)
+
+wrap_plots(plot_list) +plot_layout(axis_titles = "collect")
+```
+
+Silhouette scores are quite similar, top three hits are:
+
+- with doublets: 0.1, 0.3, 0.2
+
+- without doublets: 0.1, 0.3, 0.4
+
+
+### Plot UMAP with candidate resolutions
+
+For now, that's only 0.1 and 0.3, though 0.1 looks more promising.
+
+```{r}
+run_umaps <- function(seurat, resolutions){
+  plot_list <- lapply(resolutions, function(res){
+    DimPlot(seurat, group.by = res, shuffle = T, label = T) +
+      ggtitle(sprintf("%s, %s", seurat@misc$name, res))
+  })
+}
+
+```
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, function(seurat) run_umaps(seurat, resolutions = c("RNA_snn_res.0.1","RNA_snn_res.0.2",  "RNA_snn_res.0.3")))
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 3)
+```
+
+Compare to where the mutant specific cluster is:
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+plot_list <- lapply(list_objects, function(seurat){
+  DimPlot(seurat, group.by = "Genotype") + ggtitle(seurat@misc$name)
+})
+
+wrap_plots(plot_list, ncol =2) + plot_layout(guides = "collect")
+```
+
+
+### Clustree
+
+```{r, fig.align='center', fig.height=15, fig.width=15}
+plot_list <- lapply(list_objects, function(S) clustree(x = S, prefix = 'RNA_snn_res.'))
+
+wrap_plots(plot_list) 
+```
+
+A bit more chaotic for the kept doublets approach. 
+
+
+
+### Correlation between clusters 
+
+Check transcriptional similarities between clusters using correlation. 
+
+```{r}
+run_cluster_correlation <- function(seurat, 
+                                    resolutions = c(sprintf("RNA_snn_res.%0.1f", seq(0.1,0.9,0.1)), "RNA_snn_res.1")){
+  Expression_assay <- GetAssayData(seurat, layer = "scale.data", assay = "RNA")
+  all_res <- lapply(resolutions, function(res){
+    clusters <- seurat@meta.data %>% 
+      pull(res) %>% unique()
+    corr_mat <- pval_mat <- matrix(data = NA, nrow = length(clusters), ncol = length(clusters))
+    colnames(corr_mat) <- rownames(corr_mat) <- colnames(pval_mat) <- rownames(pval_mat) <- clusters
+    
+    #Populate correlation matrix
+  for (cluster1 in clusters){
+    for (cluster2 in clusters){
+      #get barcodes
+      barcodes1 <- seurat@meta.data %>% 
+        rownames_to_column("Barcode") %>% 
+        dplyr::rename(chosen_res=res) %>% 
+        filter(., chosen_res == cluster1) %>% pull(Barcode)
+      barcodes2 <- seurat@meta.data %>% 
+        rownames_to_column("Barcode") %>% 
+        dplyr::rename(chosen_res=res) %>% 
+        filter(., chosen_res == cluster2) %>% pull(Barcode)
+        
+      #filter data sets
+      expr1 <- Expression_assay[, colnames(Expression_assay) %in% barcodes1] %>% as.data.frame() %>% 
+        apply(., 1, mean)
+      expr2 <- Expression_assay[, colnames(Expression_assay) %in% barcodes2] %>% as.data.frame() %>% 
+        apply(., 1, mean)
+
+      #calculate correlation
+        cor_res <- cor.test(expr1, expr2, method = 'spearman')
+        corr_mat[cluster1, cluster2] <- cor_res$estimate
+        pval_mat[cluster1, cluster2] <- cor_res$p.value
+        
+      } 
+    
+  }
+    out_list <- list(corr =corr_mat, pval=pval_mat)
+    return(out_list)
+    
+  })
+  
+  names(all_res) <- resolutions
+  return(all_res)
+
+}
+```
+
+
+Lets only run for those with high silhouette scores
+
+```{r}
+list_in <- lapply(list_objects, function(seurat) run_cluster_correlation(seurat = seurat, 
+                                                                         resolutions = c("RNA_snn_res.0.1","RNA_snn_res.0.2",  "RNA_snn_res.0.3")))
+
+```
+
+Make plots
+
+```{r}
+run_correlation_plots <- function(list_in){
+  plot_list <- lapply(1:length(list_in), function(index){
+    temp_list <- list_in[[index]]
+    #get correlation ready
+    plot_df_corr <- temp_list$corr %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "Correlation") %>% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    #get pvals ready
+    plot_df_pval <- temp_list$pval %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "p-value") %>% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    plot_df <- full_join(plot_df_corr,plot_df_pval) %>% 
+      mutate(., signs = ifelse(`p-value` < 0.05, round(Correlation, 2), "x"))
+    
+    #make plot
+    heatmap.correlation <- ggplot(plot_df, 
+                                  aes(x = cluster1, y = cluster2, fill = Correlation)) +
+      geom_tile() + theme_bw() +
+      scale_fill_gradient2(high = '#762A83', low = "#1B7837", mid = 'white', limits =c(-1,1)) +
+      geom_text(aes(label = signs)) +
+      labs(title = names(list_in)[index], fill = 'Correlation Coefficient') +
+      plot_sizing_keeplegend 
+    
+    return(heatmap.correlation)
+  }
+  )
+  return(plot_list)
+  
+}
+```
+
+
+Should probably plot them separately. In this case, we don't want the clusters to correlated with each other, as clusters that correlate are similar and therefore don't need to be their own cluster. 
+
+First, with doublets.
+
+
+```{r, message=FALSE, fig.align='center', fig.width=10, fig.height=10}
+plot_list <- run_correlation_plots(list_in = list_in$D10025_yap1_dataset_Level_03_kept_doublets)
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides="collect", axis_titles = "collect") +
+  plot_annotation(title = "with doublets") 
+```
+
+```{r, message=FALSE, fig.align='center', fig.width=10, fig.height=10}
+plot_list <- run_correlation_plots(list_in = list_in$D10025_yap1_dataset_Level_03)
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides="collect", axis_titles = "collect") +
+  plot_annotation(title = "without doublets") 
+```
+
+Resolution 0.1 definitively has no positive correlation, resolution 0.2 has some correlation. Setting a threshold to what is "high correlation" is tricky, I'd say anything > 0.3 is probably high? 
+
+The best clustering solution is probably 0.1 (based on pure data-driven analysis), but that resolution does not appropriately capture the mutant specific cluster. Let's move on with 0.1 and 0.2, using some our marker genes to see if we can capture subpopulations. 
+
+
+### Marker gene expression
+
+```{r}
+level_03_dotplot <- c(
+  "dll4", #aec
+  "flt1", #aec
+  "stab2",  #cvp
+  "stab1", #cvp
+  "ifi30",#cvp
+  "mafba",#cvp
+  "cxcl12a", #mapk signaling
+  "esm1", #migrating
+  "hlx1", #migrating
+  "mki67", #cycling
+  "pcna", #cycling
+  "nop53", #lec? 
+  "ddx21", #lec?
+  "tbx1", #lec
+  "prox1a", #LEC
+  "cdh6", #LEC, hippo
+  "fn1a", #hippo
+  "osr2", #muLEC
+  "sparc"
+)
+```
+
+
+
+Make feature plots
+
+```{r}
+run_feature_umap <- function(seurat, genes){
+  FeaturePlot(seurat, features = genes, ncol = 4) 
+}
+```
+
+
+```{r, fig.align='center', fig.height=25, fig.width=20}
+run_feature_umap(seurat = list_objects$D10025_yap1_dataset_Level_03_kept_doublets, genes = level_03_dotplot)
+```
+
+```{r, fig.align='center', fig.height=25, fig.width=20}
+run_feature_umap(seurat = list_objects$D10025_yap1_dataset_Level_03, genes = level_03_dotplot)
+```
+
+Clustering doesn't really capture the prox1a expressing cells. prox1a is probably the best marker for LECs, prox1a is turned on in LEC (or LEC-precursors, they can still be in the PCV)
+
+
+Make dotplots.
+
+```{r}
+run_dotplot <- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf("%s, %s",group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}
+```
+
+```{r, fig.align='center',fig.height=5, fig.width=10}
+run_dotplot(seurat = list_objects$D10025_yap1_dataset_Level_03, genes = level_03_dotplot, group = "RNA_snn_res.0.2") + ggtitle("No doublets")
+```
+
+
+
+### prox1a
+
+Feature UMAPs for fewer genes, related to LEC. Run with highest resolution plot.
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, function(seurat){
+  features <- FeaturePlot(seurat, features =  c("prox1a", "tbx1")) 
+  umap <- DimPlot(seurat, group.by = "RNA_snn_res.1", label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = "none")
+  plot_list <- list(features, umap); return(plot_list)
+})
+
+
+
+wrap_plots(unlist(plot_list, recursive =F), ncol = 2) + plot_layout(widths = c(2,1))
+```
+
+Highest resolution can capture prox1a expression (more or less). What is the lowest resolution that can do that?
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+plot_list <- lapply(list_objects, function(seurat){
+  features <- FeaturePlot(seurat, features =  c("prox1a", "tbx1")) 
+  umap <- DimPlot(seurat, group.by = "RNA_snn_res.0.9", label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = "none")
+  plot_list <- list(features, umap); return(plot_list)
+})
+
+
+
+wrap_plots(unlist(plot_list, recursive =F), ncol = 2) + plot_layout(widths = c(2,1))
+```
+
+Realistically, even 0.9 doesn't fully capture it. If we increase resolution this high, we need to justify how all other clusters are "real" cell states. I'd also not call the prox1a+ cells in the VEC blob LECs, but maybe LEC precursors? 
+
+
+
+
