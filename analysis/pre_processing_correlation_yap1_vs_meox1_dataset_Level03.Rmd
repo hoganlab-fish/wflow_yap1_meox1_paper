@@ -1,0 +1,290 @@
+---
+title: "D10025 yap1 dataset Level 03 vs D10051 meox1 dataset Level 03 - correlation"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+## Introduction
+
+Check overlap of transcriptomic profiles of clusters between the two datasets.
+
+
+### Set-up
+
+Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+  library(bluster)
+})
+```
+
+
+### Load data
+
+Made here: ./pre_processing_D10025_yap1_dataset_makeObject_Level03.Rmd and ./pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent.Rmd
+
+Only using the ones where doublets were removed.
+
+```{r}
+input_paths <- c(file_name <- here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03.qs2'),
+                 here('output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_03_stringent.qs2'))
+list_objects <- lapply(input_paths, qs_read)
+
+names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
+```
+
+### Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_keeplegend <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_text(size = 16)) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+## Correlation
+
+### Re-scale with all genes
+
+```{r}
+run_scale_all_genes <- function(seurat){
+  seurat <- ScaleData(seurat, features = rownames(seurat))
+  return(seurat)
+}
+
+list_objects <- lapply(list_objects, run_scale_all_genes)
+```
+
+### Run correlation - clusters
+
+Run correlation between the two datasets.
+
+```{r}
+run_cluster_correlation <- function(seurat_yap = list_objects$D10025_yap1_dataset_Level_03,
+                                    seurat_meox = list_objects$D10051_meox1_dataset_Level_03_stringent,
+                                    resolution_yap = "RNA_snn_res.0.1",
+                                    resolution_meox = "RNA_snn_res.0.1"){
+  #get GEX
+  Expression_assay_yap <- GetAssayData(seurat_yap, layer = "scale.data", assay = "RNA")
+  Expression_assay_meox <- GetAssayData(seurat_meox, layer = "scale.data", assay = "RNA")
+  #intersect of genes
+  genes <- intersect(rownames(Expression_assay_yap), rownames(Expression_assay_meox))
+  Expression_assay_yap <- Expression_assay_yap[genes,]
+  Expression_assay_meox <- Expression_assay_meox[genes,]
+  
+  #get cluster info
+  clusters_yap <- seurat_yap@meta.data %>% 
+      pull(resolution_yap) %>% unique()
+  clusters_meox <- seurat_meox@meta.data %>% 
+      pull(resolution_meox) %>% unique()
+  
+  #initiate matrices
+  corr_mat <- pval_mat <- matrix(data = NA, nrow = length(clusters_yap), ncol = length(clusters_meox))
+  colnames(corr_mat) <- colnames(pval_mat) <- clusters_meox
+  rownames(corr_mat) <- rownames(pval_mat) <- clusters_yap
+    
+    #Populate correlation matrix
+  for (cluster1 in clusters_yap){
+    for (cluster2 in clusters_meox){
+      #get barcodes
+      barcodes1 <- seurat_yap@meta.data %>% 
+        rownames_to_column("Barcode") %>% 
+        dplyr::rename(chosen_res=resolution_yap) %>% 
+        filter(., chosen_res == cluster1) %>% pull(Barcode)
+      barcodes2 <- seurat_meox@meta.data %>% 
+        rownames_to_column("Barcode") %>% 
+        dplyr::rename(chosen_res=resolution_meox) %>% 
+        filter(., chosen_res == cluster2) %>% pull(Barcode)
+        
+      #filter data sets
+      expr_yap <- Expression_assay_yap[, colnames(Expression_assay_yap) %in% barcodes1] %>% as.data.frame() %>% 
+        apply(., 1, mean)
+      expr_meox <- Expression_assay_meox[, colnames(Expression_assay_meox) %in% barcodes2] %>% as.data.frame() %>% 
+        apply(., 1, mean)
+
+      #calculate correlation
+        cor_res <- cor.test(expr_yap, expr_meox, method = 'spearman')
+        corr_mat[cluster1, cluster2] <- cor_res$estimate
+        pval_mat[cluster1, cluster2] <- cor_res$p.value
+        
+      } 
+    
+  }
+
+  return(list(corr=corr_mat, pval=pval_mat))
+
+}
+```
+
+
+```{r, message=FALSE}
+result <- run_cluster_correlation(resolution_yap = "RNA_snn_res.0.2", 
+                                  resolution_meox = "RNA_snn_res.0.2")
+```
+
+
+
+```{r}
+run_correlation_plots <- function(list_in){
+    #get correlation ready
+    plot_df_corr <- list_in$corr %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "Correlation") %>% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    #get pvals ready
+    plot_df_pval <- list_in$pval %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "p-value") %>% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    plot_df <- full_join(plot_df_corr,plot_df_pval) %>% 
+      mutate(., signs = ifelse(`p-value` < 0.05, round(Correlation, 2), "x"))
+    
+    #make plot
+    heatmap.correlation <- ggplot(plot_df, 
+                                  aes(x = cluster1, y = cluster2, fill = Correlation)) +
+      geom_tile() + theme_bw() +
+      scale_fill_gradient2(high = '#762A83', low = "#1B7837", mid = 'white', limits =c(-1,1)) +
+      geom_text(aes(label = signs)) +
+      labs(fill = 'Correlation Coefficient') +
+      plot_sizing_keeplegend +
+      xlab("yap1 clusters") + ylab("meox1 clusters")
+    
+    return(heatmap.correlation)
+  
+}
+```
+
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+run_correlation_plots(result)
+```
+
+### Run correlation - temporary celltype labels
+
+Add temporary celltype labels to make it easier to read.
+
+```{r}
+#yap1
+list_objects$D10025_yap1_dataset_Level_03$L3_celltype <- case_when(
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 5 ~ "yap1_mutant",
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 4 ~ "LEC",
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 3 ~ "cvpVEC",
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 2 ~ "hippoVEC",
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 1 ~ "msVEC",
+  list_objects$D10025_yap1_dataset_Level_03$RNA_snn_res.0.2 == 0 ~ "preLEC"
+)
+
+#meox1
+list_objects$D10051_meox1_dataset_Level_03_stringent$L3_celltype <- case_when(
+  list_objects$D10051_meox1_dataset_Level_03_stringent$RNA_snn_res.0.2 == 3 ~ "pre_muLEC",
+  list_objects$D10051_meox1_dataset_Level_03_stringent$RNA_snn_res.0.2 == 2 ~ "hippoVEC",
+  list_objects$D10051_meox1_dataset_Level_03_stringent$RNA_snn_res.0.2 == 1 ~ "LEC",
+  list_objects$D10051_meox1_dataset_Level_03_stringent$RNA_snn_res.0.2 == 0 ~ "msVEC"
+)
+
+```
+
+Re-run correlation
+
+```{r, message=FALSE}
+result <- run_cluster_correlation(resolution_yap = "L3_celltype", 
+                                  resolution_meox = "L3_celltype")
+```
+
+Make new plotting function, add levels
+
+```{r}
+run_correlation_plots <- function(list_in, selected_levels){
+    #get correlation ready
+    plot_df_corr <- list_in$corr %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "Correlation") %>% 
+      mutate(., cluster1= factor(cluster1, levels = selected_levels), #overshoot
+                cluster2= factor(cluster2, levels = selected_levels))
+    #get pvals ready
+    plot_df_pval <- list_in$pval %>% as.data.frame() %>%
+      rownames_to_column("cluster1") %>% 
+    pivot_longer(!cluster1, names_to = "cluster2", values_to = "p-value") %>% 
+      mutate(., cluster1= factor(cluster1, levels = selected_levels), #overshoot
+                cluster2= factor(cluster2, levels = selected_levels))
+    plot_df <- full_join(plot_df_corr,plot_df_pval) %>% 
+      mutate(., signs = ifelse(`p-value` < 0.05, round(Correlation, 2), "x"))
+    
+    #make plot
+    heatmap.correlation <- ggplot(plot_df, 
+                                  aes(x = cluster1, y = cluster2, fill = Correlation)) +
+      geom_tile() + theme_bw() +
+      scale_fill_gradient2(high = '#762A83', low = "#1B7837", mid = 'white', limits =c(-1,1)) +
+      geom_text(aes(label = signs)) +
+      labs(fill = 'Correlation Coefficient') +
+      plot_sizing_keeplegend +
+      xlab("yap1 clusters") + ylab("meox1 clusters")
+    
+    return(heatmap.correlation)
+  
+}
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+levels_to_use <- c("hippoVEC", "msVEC", "cvpVEC", "preLEC" , "LEC", "pre_muLEC", "yap1_mutant")
+run_correlation_plots(result, selected_levels = levels_to_use) + rotate_x + ggtitle("yap1 vs meox1 clusters")
+```
+
+How do these correlation values compare to within-dataset correlation? Particularly for the yap1 dataset.
+
+Highjack function
+
+```{r, message=FALSE}
+result_within_yap <- run_cluster_correlation(seurat_yap = list_objects$D10025_yap1_dataset_Level_03,
+                                             seurat_meox =  list_objects$D10025_yap1_dataset_Level_03,
+                                             resolution_yap = "L3_celltype", 
+                                             resolution_meox = "L3_celltype")
+```
+
+Make new plotting function, add levels
+
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+levels_to_use <- c("hippoVEC", "msVEC", "cvpVEC", "preLEC" , "LEC", "yap1_mutant")
+run_correlation_plots(result_within_yap, selected_levels = levels_to_use) + rotate_x + ylab("yap1 clusters") + ggtitle("yap1 datset: Within-dataset correlation")
+```
+
+
+
+

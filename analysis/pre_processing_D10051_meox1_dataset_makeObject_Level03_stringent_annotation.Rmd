@@ -382,16 +382,16 @@ run_dotplot(seurat = list_objects$D10051_meox1_dataset_Level_03_stringent, genes
 
 Feature UMAPs for fewer genes, related to LEC.
 
-```{r, fig.align='center', fig.height=10, fig.width=20}
+```{r, fig.align='center', fig.height=10, fig.width=15}
 plot_list <- lapply(list_objects, function(seurat){
-  features <- FeaturePlot(seurat, features =  c("prox1a", "tbx1", "osr2"), ncol =3) 
+  features <- FeaturePlot(seurat, features =  c("prox1a", "tbx1")) 
   umap <- DimPlot(seurat, group.by = "RNA_snn_res.0.2", label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = "none")
   plot_list <- list(features, umap); return(plot_list)
 })
 
 
 
-wrap_plots(unlist(plot_list, recursive =F), ncol = 2) + plot_layout(widths = c(3,1))
+wrap_plots(unlist(plot_list, recursive =F), ncol = 2) + plot_layout(widths = c(2,1))
 ```
 
 

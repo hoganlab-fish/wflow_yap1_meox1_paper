@@ -11,7 +11,7 @@ editor_options:
 
 Annotate Level 03 object for yap1 dataset. Focus on Level 01 and Level 02 was to exclude any cells we're not interested in, but now at Level 03 we're more interested in LEC/VEC subpopulations. 
 
- ### Set-up
+### Set-up
 
 Load libraries
 
@@ -400,7 +400,7 @@ Highest resolution can capture prox1a expression (more or less). What is the low
 ```{r, fig.align='center', fig.height=10, fig.width=15}
 plot_list <- lapply(list_objects, function(seurat){
   features <- FeaturePlot(seurat, features =  c("prox1a", "tbx1")) 
-  umap <- DimPlot(seurat, group.by = "RNA_snn_res.0.9", label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = "none")
+  umap <- DimPlot(seurat, group.by = "RNA_snn_res.0.2", label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = "none")
   plot_list <- list(features, umap); return(plot_list)
 })
 
@@ -413,4 +413,16 @@ Realistically, even 0.9 doesn't fully capture it. If we increase resolution this
 
 
 
+
+### pre-muLECs?
+
+Look at % expressed for osr2+ cluster. 
+
+```{r}
+subset_osr2_pos <- subset(list_objects$D10025_yap1_dataset_Level_03, subset = osr2 > 0)
+
+subset_osr2_pos@meta.data %>% 
+  summarise(., count = n())
+
+```
 
