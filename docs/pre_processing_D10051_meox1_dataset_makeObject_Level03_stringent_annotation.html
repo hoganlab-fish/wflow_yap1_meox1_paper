@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michelle Meier" />
+
+
+<title>D10051 meox1 dataset: Annotate Level 03 (LEC/VEC only) object</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">yap1_meox1_paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">D10051 meox1 dataset: Annotate Level 03
+(LEC/VEC only) object</h1>
+<h4 class="author">Michelle Meier</h4>
+<h4 class="date">02. February 2026</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-02-02
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>yap1_meox1_paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260119code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260119)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260119code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260119)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree043a8571c734857c66c711c147fdd5a401c0c2detargetblank043a857a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/043a8571c734857c66c711c147fdd5a401c0c2de" target="_blank">043a857</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree043a8571c734857c66c711c147fdd5a401c0c2detargetblank043a857a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/043a8571c734857c66c711c147fdd5a401c0c2de" target="_blank">043a857</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
+    Ignored:    code/analysis/.DS_Store
+    Ignored:    code/pre_processing/
+    Ignored:    data/.DS_Store
+    Ignored:    data/genesets/
+    Ignored:    data/input/
+    Ignored:    output/.DS_Store
+    Ignored:    output/analysis/
+    Ignored:    output/data/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd</code>)
+and HTML
+(<code>docs/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/043a8571c734857c66c711c147fdd5a401c0c2de/analysis/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd" target="_blank">043a857</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-02
+</td>
+<td>
+wflow_publish("analysis/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Annotate Level 03 object for meox1 dataset. Focus on Level 01 and
+Level 02 was to exclude any cells we’re not interested in, but now at
+Level 03 we’re more interested in LEC/VEC subpopulations.</p>
+<p>### Set-up</p>
+<p>Load libraries</p>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(scGate)
+  library(bluster)
+})</code></pre>
+<div id="load-data" class="section level3">
+<h3>Load data</h3>
+<p>Made here:
+./pre_processing_D10025_yap1_dataset_makeObject_Level03_stringent.Rmd</p>
+<pre class="r"><code>input_paths &lt;- c(file_name &lt;- here(&#39;output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_03_stringent_kept_doublets.qs2&#39;),
+                 here(&#39;output/data/Datsets/D10051_meox1_dataset/D10051_meox1_dataset_Level_03_stringent.qs2&#39;))
+list_objects &lt;- lapply(input_paths, qs_read)
+
+names(list_objects) &lt;- gsub(&quot;\\.qs2&quot;, &quot;&quot;, basename(input_paths))</code></pre>
+</div>
+<div id="plotting-themes" class="section level3">
+<h3>Plotting themes</h3>
+<pre class="r"><code>plot_sizing &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_keeplegend &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_text(size = 16)) 
+
+plot_sizing_seurat &lt;- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;), 
+                   strip.text = element_text(size = 14))</code></pre>
+</div>
+</div>
+<div id="picking-appropriate-resolution" class="section level2">
+<h2>Picking appropriate resolution</h2>
+<p>This can be a very delicate process, and there’s not really a single
+data-driven method that everyone uses. For level 01, our main goal was
+to keep as many kdrl+ endothelial cell clusters as possible. On level
+02, it was important to find a clustering solution that would best split
+the LEC/VEC from the rest of the endothelium.</p>
+<div id="silhouette-score" class="section level3">
+<h3>Silhouette score</h3>
+<p>Silhouette scores can be used to score quality of clustering. Not
+everyone thinks it is the most appropriate solution for single-cell
+though, particularly if there are multiple samples with potential batch
+effects involved.</p>
+<p>Following <a
+href="https://www.geeksforgeeks.org/machine-learning/what-is-silhouette-score/">this</a></p>
+<p>The score ranges from -1 to +1:</p>
+<p>Close to +1: Point is well-matched to its cluster and far from others
+means excellent clustering.</p>
+<p>Around 0: Point is near cluster boundaries or clusters overlap.</p>
+<p>Close to -1: Point is likely assigned to the wrong cluster means poor
+clustering.</p>
+<pre class="r"><code>#add silhouette score for all clustering solutions 
+run_silhouette_score &lt;- function(seurat){
+  reduction_to_use &lt;- seurat@reductions$pca@cell.embeddings #use PCA cell embeddings
+  list_all_res &lt;- lapply(c(sprintf(&quot;RNA_snn_res.%0.1f&quot;, seq(0.1,0.9,0.1)), &quot;RNA_snn_res.1&quot;),  function(res){
+    meta_to_use &lt;- seurat@meta.data %&gt;% pull(res)
+    silhouette &lt;- approxSilhouette(reduction_to_use, meta_to_use) %&gt;% as.data.frame() %&gt;% 
+      select(width) 
+    colnames(silhouette) &lt;- c(sprintf(&quot;silhouette_%s_width&quot;, res))
+    return(silhouette)
+  }) 
+  output_df &lt;- Reduce(cbind, list_all_res) %&gt;% 
+    # pivot_wider(., values_from = &quot;width&quot;, names_from = &quot;resolution&quot;) %&gt;% 
+    rownames_to_column(&quot;Barcode&quot;) 
+  
+  new_meta &lt;- seurat@meta.data %&gt;% 
+    mutate(., Barcode = rownames(seurat@meta.data))%&gt;%
+    full_join(., output_df, by = &quot;Barcode&quot;) %&gt;% 
+    column_to_rownames(&quot;Barcode&quot;)
+
+  seurat@meta.data &lt;- new_meta
+  rm(new_meta, reduction_to_use, list_all_res, output_df); gc()
+  
+  return(seurat)
+}</code></pre>
+<pre class="r"><code>list_objects &lt;- lapply(list_objects, run_silhouette_score)</code></pre>
+<p>Make plots</p>
+<pre class="r"><code>run_silhouette_plots &lt;- function(seurat){
+  seurat@meta.data %&gt;% 
+    select(., ends_with(&quot;width&quot;)) %&gt;% 
+    pivot_longer(., cols = everything(), names_to = &quot;resolution&quot;, values_to = &quot;silhouette_width&quot;) %&gt;% 
+    mutate(., resolution = gsub(&quot;_width&quot; , &quot;&quot;,gsub(&quot;RNA_snn_&quot;, &quot;&quot; ,resolution))) %&gt;% 
+    ggplot(., aes(x = reorder(resolution, -silhouette_width), y = silhouette_width, fill = resolution )) +
+    geom_boxplot() +
+    plot_sizing + rotate_x +
+    theme(legend.position = &quot;none&quot;) +
+    ggtitle(seurat@misc$name) +
+    ylab(&quot;Silhouette score&quot;) + xlab(&quot;resolution (sorted)&quot;)
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, run_silhouette_plots)
+
+wrap_plots(plot_list) +plot_layout(axis_titles = &quot;collect&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Silhouette scores are quite similar, top hits are: 0.1 (max without
+doublet), 0.2 (max with doublet)</p>
+</div>
+<div id="plot-umap-with-candidate-resolutions" class="section level3">
+<h3>Plot UMAP with candidate resolutions</h3>
+<p>For now, that’s only 0.1 and 0.2</p>
+<pre class="r"><code>run_umaps &lt;- function(seurat, resolutions){
+  plot_list &lt;- lapply(resolutions, function(res){
+    DimPlot(seurat, group.by = res, shuffle = T, label = T) +
+      ggtitle(sprintf(&quot;%s, %s&quot;, seurat@misc$name, res))
+  })
+}</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat) run_umaps(seurat, resolutions = c(&quot;RNA_snn_res.0.1&quot;,&quot;RNA_snn_res.0.2&quot;)))
+
+wrap_plots(unlist(plot_list, recursive = F), ncol = 2)</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Make composition barcodes for this resolution</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  seurat@meta.data %&gt;% 
+    select(., Genotype, c(&quot;RNA_snn_res.0.1&quot;,&quot;RNA_snn_res.0.2&quot;)) %&gt;% 
+    pivot_longer(., cols = starts_with(&quot;RNA&quot;), names_to = &quot;resolution&quot;, values_to = &quot;cluster&quot;) %&gt;% 
+    group_by(resolution, cluster, Genotype) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    ggplot(., aes(x = cluster, y = count, fill=Genotype))+
+    geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) +
+    plot_sizing +
+    facet_wrap(~resolution, scales = &quot;free_x&quot;) + strip_fix
+})
+
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-10-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="clustree" class="section level3">
+<h3>Clustree</h3>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(S) clustree(x = S, prefix = &#39;RNA_snn_res.&#39;))
+
+wrap_plots(plot_list) </code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="correlation-between-clusters" class="section level3">
+<h3>Correlation between clusters</h3>
+<p>Check transcriptional similarities between clusters using
+correlation.</p>
+<pre class="r"><code>run_cluster_correlation &lt;- function(seurat, 
+                                    resolutions = c(sprintf(&quot;RNA_snn_res.%0.1f&quot;, seq(0.1,0.9,0.1)), &quot;RNA_snn_res.1&quot;)){
+  Expression_assay &lt;- GetAssayData(seurat, layer = &quot;scale.data&quot;, assay = &quot;RNA&quot;)
+  all_res &lt;- lapply(resolutions, function(res){
+    clusters &lt;- seurat@meta.data %&gt;% 
+      pull(res) %&gt;% unique()
+    corr_mat &lt;- pval_mat &lt;- matrix(data = NA, nrow = length(clusters), ncol = length(clusters))
+    colnames(corr_mat) &lt;- rownames(corr_mat) &lt;- colnames(pval_mat) &lt;- rownames(pval_mat) &lt;- clusters
+    
+    #Populate correlation matrix
+  for (cluster1 in clusters){
+    for (cluster2 in clusters){
+      #get barcodes
+      barcodes1 &lt;- seurat@meta.data %&gt;% 
+        rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+        dplyr::rename(chosen_res=res) %&gt;% 
+        filter(., chosen_res == cluster1) %&gt;% pull(Barcode)
+      barcodes2 &lt;- seurat@meta.data %&gt;% 
+        rownames_to_column(&quot;Barcode&quot;) %&gt;% 
+        dplyr::rename(chosen_res=res) %&gt;% 
+        filter(., chosen_res == cluster2) %&gt;% pull(Barcode)
+        
+      #filter data sets
+      expr1 &lt;- Expression_assay[, colnames(Expression_assay) %in% barcodes1] %&gt;% as.data.frame() %&gt;% 
+        apply(., 1, mean)
+      expr2 &lt;- Expression_assay[, colnames(Expression_assay) %in% barcodes2] %&gt;% as.data.frame() %&gt;% 
+        apply(., 1, mean)
+
+      #calculate correlation
+        cor_res &lt;- cor.test(expr1, expr2, method = &#39;spearman&#39;)
+        corr_mat[cluster1, cluster2] &lt;- cor_res$estimate
+        pval_mat[cluster1, cluster2] &lt;- cor_res$p.value
+        
+      } 
+    
+  }
+    out_list &lt;- list(corr =corr_mat, pval=pval_mat)
+    return(out_list)
+    
+  })
+  
+  names(all_res) &lt;- resolutions
+  return(all_res)
+
+}</code></pre>
+<p>Lets only run for those with high silhouette scores</p>
+<pre class="r"><code>list_in &lt;- lapply(list_objects, function(seurat) run_cluster_correlation(seurat = seurat, 
+                                                                         resolutions = c(&quot;RNA_snn_res.0.1&quot;,&quot;RNA_snn_res.0.2&quot;)))</code></pre>
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(res)
+
+  # Now:
+  data %&gt;% select(all_of(res))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<p>Make plots</p>
+<pre class="r"><code>run_correlation_plots &lt;- function(list_in){
+  plot_list &lt;- lapply(1:length(list_in), function(index){
+    temp_list &lt;- list_in[[index]]
+    #get correlation ready
+    plot_df_corr &lt;- temp_list$corr %&gt;% as.data.frame() %&gt;%
+      rownames_to_column(&quot;cluster1&quot;) %&gt;% 
+    pivot_longer(!cluster1, names_to = &quot;cluster2&quot;, values_to = &quot;Correlation&quot;) %&gt;% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    #get pvals ready
+    plot_df_pval &lt;- temp_list$pval %&gt;% as.data.frame() %&gt;%
+      rownames_to_column(&quot;cluster1&quot;) %&gt;% 
+    pivot_longer(!cluster1, names_to = &quot;cluster2&quot;, values_to = &quot;p-value&quot;) %&gt;% 
+      mutate(., cluster1= factor(cluster1, levels = as.character(seq(0,100,1))), #overshoot
+                cluster2= factor(cluster2, levels = as.character(seq(0,100,1))))
+    plot_df &lt;- full_join(plot_df_corr,plot_df_pval) %&gt;% 
+      mutate(., signs = ifelse(`p-value` &lt; 0.05, round(Correlation, 2), &quot;x&quot;))
+    
+    #make plot
+    heatmap.correlation &lt;- ggplot(plot_df, 
+                                  aes(x = cluster1, y = cluster2, fill = Correlation)) +
+      geom_tile() + theme_bw() +
+      scale_fill_gradient2(high = &#39;#762A83&#39;, low = &quot;#1B7837&quot;, mid = &#39;white&#39;, limits =c(-1,1)) +
+      geom_text(aes(label = signs)) +
+      labs(title = names(list_in)[index], fill = &#39;Correlation Coefficient&#39;) +
+      plot_sizing_keeplegend 
+    
+    return(heatmap.correlation)
+  }
+  )
+  return(plot_list)
+  
+}</code></pre>
+<p>Should probably plot them separately. In this case, we don’t want the
+clusters to correlated with each other, as clusters that correlate are
+similar and therefore don’t need to be their own cluster.</p>
+<p>First, with doublets.</p>
+<pre class="r"><code>plot_list &lt;- run_correlation_plots(list_in = list_in$D10051_meox1_dataset_Level_03_stringent_kept_doublets)
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides=&quot;collect&quot;, axis_titles = &quot;collect&quot;) +
+  plot_annotation(title = &quot;with doublets&quot;) </code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-15-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_list &lt;- run_correlation_plots(list_in = list_in$D10051_meox1_dataset_Level_03_stringent)
+wrap_plots(plot_list, ncol = 2) + plot_layout(guides=&quot;collect&quot;, axis_titles = &quot;collect&quot;) +
+  plot_annotation(title = &quot;without doublets&quot;) </code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-16-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>For with doublets, the correlation we see is for presumably the LEC,
+muLEC and sparc+ LECs. It makes sense for them to be correlated. Even
+more clean in the dataset without doublets, muLEC and LECs are expected
+to be correlated. I actually think that’s an interesting usecase - we
+know they are different cell types, so correlation of ~0/25-0.3 is
+reasonable between closely related celltypes and states!</p>
+</div>
+<div id="marker-gene-expression" class="section level3">
+<h3>Marker gene expression</h3>
+<pre class="r"><code>level_03_dotplot &lt;- c(
+  &quot;dll4&quot;, #aec
+  &quot;flt1&quot;, #aec
+  &quot;stab2&quot;,  #cvp
+  &quot;stab1&quot;, #cvp
+  &quot;ifi30&quot;,#cvp
+  &quot;mafba&quot;,#cvp
+  &quot;cxcl12a&quot;, #mapk signaling
+  &quot;esm1&quot;, #migrating
+  &quot;hlx1&quot;, #migrating
+  &quot;mki67&quot;, #cycling
+  &quot;pcna&quot;, #cycling
+  &quot;nop53&quot;, #lec? 
+  &quot;ddx21&quot;, #lec?
+  &quot;tbx1&quot;, #lec
+  &quot;prox1a&quot;, #LEC
+  &quot;cdh6&quot;, #LEC, hippo
+  &quot;fn1a&quot;, #hippo
+  &quot;osr2&quot;, #muLEC
+  &quot;sparc&quot;
+)</code></pre>
+<p>Make feature plots</p>
+<pre class="r"><code>run_feature_umap &lt;- function(seurat, genes){
+  FeaturePlot(seurat, features = genes, ncol = 4) 
+}</code></pre>
+<pre class="r"><code>run_feature_umap(seurat = list_objects$D10051_meox1_dataset_Level_03_stringent_kept_doublets, genes = level_03_dotplot)</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-19-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>run_feature_umap(seurat = list_objects$D10051_meox1_dataset_Level_03_stringent, genes = level_03_dotplot)</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-20-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>Make dotplots.</p>
+<pre class="r"><code>run_dotplot &lt;- function(seurat, genes, group){
+  DotPlot(seurat, features = genes, group.by = group) + ggtitle(sprintf(&quot;%s, %s&quot;,group, seurat@misc$name))  +plot_sizing_seurat + rotate_x
+}</code></pre>
+<pre class="r"><code>run_dotplot(seurat = list_objects$D10051_meox1_dataset_Level_03_stringent, genes = level_03_dotplot, group = &quot;RNA_snn_res.0.2&quot;) + ggtitle(&quot;No doublets&quot;)</code></pre>
+<pre><code>Warning: Scaling data with a low number of groups may produce misleading
+results</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="prox1a" class="section level3">
+<h3>prox1a</h3>
+<p>Feature UMAPs for fewer genes, related to LEC.</p>
+<pre class="r"><code>plot_list &lt;- lapply(list_objects, function(seurat){
+  features &lt;- FeaturePlot(seurat, features =  c(&quot;prox1a&quot;, &quot;tbx1&quot;, &quot;osr2&quot;), ncol =3) 
+  umap &lt;- DimPlot(seurat, group.by = &quot;RNA_snn_res.0.2&quot;, label = T, shuffle = T) + ggtitle(seurat@misc$name) + theme(legend.position = &quot;none&quot;)
+  plot_list &lt;- list(features, umap); return(plot_list)
+})
+
+
+
+wrap_plots(unlist(plot_list, recursive =F), ncol = 2) + plot_layout(widths = c(3,1))</code></pre>
+<p><img src="figure/pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.Rmd/unnamed-chunk-23-1.png" width="1920" style="display: block; margin: auto;" /></p>
+</div>
+<div id="pre-mulecs" class="section level3">
+<h3>pre-muLECs?</h3>
+<p>Look at % expressed for osr2+ cluster.</p>
+<pre class="r"><code>subset_osr2_pos &lt;- subset(list_objects$D10051_meox1_dataset_Level_03_stringent, subset = osr2 &gt; 0)
+
+subset_osr2_pos@meta.data %&gt;% 
+  summarise(., count = n())</code></pre>
+<pre><code>  count
+1   242</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.0 (2025-04-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.7.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] bluster_1.20.0              scGate_1.7.2               
+ [3] qs2_0.1.7                   scran_1.38.0               
+ [5] scater_1.38.0               scuttle_1.20.0             
+ [7] patchwork_1.3.2             clustree_0.5.1             
+ [9] ggraph_2.2.2                ggpubr_0.6.2               
+[11] scDblFinder_1.24.0          SingleCellExperiment_1.32.0
+[13] SummarizedExperiment_1.40.0 Biobase_2.70.0             
+[15] GenomicRanges_1.62.1        Seqinfo_1.0.0              
+[17] IRanges_2.44.0              S4Vectors_0.48.0           
+[19] BiocGenerics_0.56.0         generics_0.1.4             
+[21] MatrixGenerics_1.22.0       matrixStats_1.5.0          
+[23] Seurat_5.4.0                SeuratObject_5.3.0         
+[25] sp_2.2-0                    here_1.0.2                 
+[27] lubridate_1.9.4             forcats_1.0.1              
+[29] stringr_1.5.1               dplyr_1.1.4                
+[31] purrr_1.2.1                 readr_2.1.6                
+[33] tidyr_1.3.2                 tibble_3.3.1               
+[35] ggplot2_4.0.1               tidyverse_2.0.0            
+[37] workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
+  [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
+  [7] sctransform_0.4.3        backports_1.5.0          R6_2.6.1                
+ [10] lazyeval_0.2.2           uwot_0.2.4               withr_3.0.2             
+ [13] gridExtra_2.3            progressr_0.18.0         cli_3.6.5               
+ [16] spatstat.explore_3.7-0   fastDummies_1.7.5        labeling_0.4.3          
+ [19] sass_0.4.10              S7_0.2.1                 spatstat.data_3.1-9     
+ [22] ggridges_0.5.7           pbapply_1.7-4            Rsamtools_2.26.0        
+ [25] parallelly_1.46.1        limma_3.66.0             rstudioapi_0.17.1       
+ [28] BiocIO_1.20.0            ica_1.0-3                spatstat.random_3.4-4   
+ [31] car_3.1-3                Matrix_1.7-3             ggbeeswarm_0.7.3        
+ [34] abind_1.4-8              lifecycle_1.0.4          whisker_0.4.1           
+ [37] yaml_2.3.10              edgeR_4.8.2              carData_3.0-5           
+ [40] SparseArray_1.10.8       Rtsne_0.17               grid_4.5.0              
+ [43] promises_1.5.0           dqrng_0.4.1              crayon_1.5.3            
+ [46] miniUI_0.1.2             lattice_0.22-6           beachmat_2.26.0         
+ [49] cowplot_1.2.0            cigarillo_1.0.0          pillar_1.11.1           
+ [52] knitr_1.50               metapod_1.18.0           rjson_0.2.23            
+ [55] xgboost_3.1.3.1          future.apply_1.20.1      codetools_0.2-20        
+ [58] glue_1.8.0               getPass_0.2-4            spatstat.univar_3.1-6   
+ [61] data.table_1.18.0        vctrs_0.6.5              png_0.1-8               
+ [64] spam_2.11-3              gtable_0.3.6             cachem_1.1.0            
+ [67] xfun_0.52                S4Arrays_1.10.1          mime_0.13               
+ [70] tidygraph_1.3.1          survival_3.8-3           statmod_1.5.1           
+ [73] fitdistrplus_1.2-5       ROCR_1.0-11              nlme_3.1-168            
+ [76] RcppAnnoy_0.0.23         GenomeInfoDb_1.46.2      rprojroot_2.1.1         
+ [79] bslib_0.9.0              irlba_2.3.5.1            vipor_0.4.7             
+ [82] KernSmooth_2.23-26       otel_0.2.0               colorspace_2.1-2        
+ [85] UCell_2.14.0             tidyselect_1.2.1         processx_3.8.6          
+ [88] compiler_4.5.0           curl_6.2.2               git2r_0.36.2            
+ [91] BiocNeighbors_2.4.0      DelayedArray_0.36.0      plotly_4.11.0           
+ [94] stringfish_0.18.0        rtracklayer_1.70.1       checkmate_2.3.3         
+ [97] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
+[100] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
+[103] rmarkdown_2.29           XVector_0.50.0           htmltools_0.5.8.1       
+[106] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
+[109] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
+[112] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
+[115] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
+[118] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
+[121] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
+[124] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
+[127] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
+[130] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
+[133] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
+[136] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
+[139] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
+[142] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
+[145] XML_3.99-0.20            evaluate_1.0.3           RcppParallel_5.1.11-1   
+[148] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
+[151] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
+[154] polyclip_1.10-7          future_1.69.0            scattermore_1.2         
+[157] ggforce_0.5.0            rsvd_1.0.5               broom_1.0.11            
+[160] xtable_1.8-4             restfulr_0.0.16          RSpectra_0.16-2         
+[163] rstatix_0.7.3            later_1.4.2              viridisLite_0.4.2       
+[166] memoise_2.0.1            beeswarm_0.4.0           GenomicAlignments_1.46.0
+[169] cluster_2.1.8.1          timechange_0.3.0         globals_0.18.0          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
