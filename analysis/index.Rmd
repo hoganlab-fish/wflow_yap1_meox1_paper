@@ -57,7 +57,7 @@ Cycling cells contain a mix of all endothelial cells, which is why we are not se
 
 [Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
 
-[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_stringent_annotation.html)- added a second nFeature filter to try to clean up more
+[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation_stringent.html)- added a second nFeature filter to try to clean up more
 
 ### Level 02 (all endothelial cells; kdrl+)
 
@@ -82,7 +82,7 @@ Keeping these for documentation to show that we really should enforce very stric
 
 [Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
 
-[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation_stringent.html)- added a second nFeature filter to try to clean up more
+[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation.html)- added a second nFeature filter to try to clean up more
 
 ### Level 02 (all endothelial cells; kdrl+)
 
