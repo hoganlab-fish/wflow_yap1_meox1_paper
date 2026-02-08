@@ -1,0 +1,343 @@
+---
+title: "D10025 yap1 dataset: Paper annotations for all Levels"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+# Introduction
+
+Formal annotation of all Levels using marker genes and scGate scores (for Level 01 only)
+
+
+## Load libraries
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+ })
+
+```
+
+
+## Load gene sets
+
+```{r}
+source(here("code/general_scripts/yap1_meox1_important_genes.R"))
+```
+
+
+## Load all objects
+
+Level 01 object contains scGate information. This is the scGate model used:
+
+```{r, eval=FALSE}
+endothelial_gating_model <- gating_model(name = "endothelial", signature = c("kdrl+", 
+                                                                    "col1a1a-",
+                                                                    "epcam-",
+                                                                    "gata2b-", 
+                                                                    "myod1-"))
+```
+
+
+```{r}
+
+level_01 <- qs_read(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_01_annotated.qs2'))
+level_02 <- qs_read(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_02_annotated.qs2')) #ignore annotations in here and replace
+level_03 <- qs_read(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03.qs2'))
+
+```
+
+
+## Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+
+```
+
+
+# Annotate Level 01
+
+Resolution 0.5
+
+
+## get cell numbers per cluster
+
+```{r}
+level_01$RNA_snn_res.0.5 %>% table()
+```
+
+## Endothelial cell purity
+
+```{r}
+level_01@meta.data %>% 
+  group_by(RNA_snn_res.0.5,RNA_snn_res.0.5_cluster_purity) %>% 
+  summarise()
+```
+
+
+
+
+## dotplot
+
+```{r}
+DotPlot(object = level_01, features = level_01_annotation_genes, group.by = "RNA_snn_res.0.5") + rotate_x
+```
+
+## Add to object
+
+celltype
+
+```{r}
+level_01$L1_celltype <- case_when(
+  level_01$RNA_snn_res.0.5 %in% c(0,1,2,4,9,11) ~ "Endothelial",
+  level_01$RNA_snn_res.0.5 %in% c(8, 16) ~ "Endocardium",
+  level_01$RNA_snn_res.0.5 %in% c(3, 13) ~ "Fibroblast",
+  level_01$RNA_snn_res.0.5 %in% c(5,10,14, 17,20) ~ "Epithelial",
+  level_01$RNA_snn_res.0.5 %in% c(6,7) ~ "Neuronal",
+  level_01$RNA_snn_res.0.5 == 12 ~ "Hematopoietic",
+  level_01$RNA_snn_res.0.5 == 15 ~ "Chromatophore",
+  level_01$RNA_snn_res.0.5 == 18 ~ "Eye_lens",
+  level_01$RNA_snn_res.0.5 == 19 ~ "Epithelial_Fibroblast",
+  level_01$RNA_snn_res.0.5 == 21 ~ "Immune",
+  level_01$RNA_snn_res.0.5 == 22 ~ "Erythrocyte"
+)
+
+```
+
+cluster_id
+
+```{r}
+names <- c(
+'Endothelial_01',
+'Endothelial_02',
+'Endothelial_03',
+'Fibroblast_01',
+'Endothelial_04',
+'Epithelial_01',
+'Neuronal_01',
+'Neuronal_02',
+'Endocardium_01',
+'Endothelial_05',
+'Epithelial_02',
+'Endothelial_06',
+'Hematopoietic_01',
+'Fibroblast_02',
+'Epithelial_03',
+'Chromatophore_01',
+'Endocardium_02',
+'Epithelial_04',
+'Eye_lens_01',
+'Epithelial_Fibroblast_01',
+'Epithelial_05',
+'Immune_01',
+'Erythrocyte_01'
+)
+
+
+level_01        <- SetIdent(level_01, value="RNA_snn_res.0.5")
+names(names)        <- levels(level_01)
+level_01      <- RenameIdents(level_01, names)
+level_01      <- AddMetaData(
+  object=level_01,
+  metadata=level_01@active.ident,
+  col.name="L1_cluster_id")
+
+```
+
+
+## export
+
+```{r}
+filename <- here('output/data/Datsets/paper/D10025_yap1_dataset_Level_01_annotated.qs2')
+qs_save(object = level_01, file = filename)
+```
+
+
+# Annotate Level 02
+
+Resolution 0.3
+
+## get cell numbers per cluster
+
+```{r}
+level_02$RNA_snn_res.0.3 %>% table()
+```
+
+
+## dotplot
+
+```{r}
+DotPlot(object = level_02, features = level_02_annotation_genes, group.by = "RNA_snn_res.0.3") + rotate_x
+```
+
+## Add to object
+
+celltype
+
+```{r}
+level_02$L2_celltype <- case_when(
+  level_02$RNA_snn_res.0.3 %in% c(0, 5) ~ "AEC",
+  level_02$RNA_snn_res.0.3 %in% c(1,6,8) ~ "VEC",
+  level_02$RNA_snn_res.0.3 %in% c(7,10) ~ "cycling_AEC",
+  level_02$RNA_snn_res.0.3 == 2 ~ "cycling_EC",
+  level_02$RNA_snn_res.0.3 == 4 ~ "migratory_AEC",
+  level_02$RNA_snn_res.0.3 == 9 ~ "LEC",
+  level_02$RNA_snn_res.0.3 == 3 ~ "Endocardium"
+)
+
+```
+
+cluster_id
+
+```{r}
+names <- c(
+'AEC_01',
+'VEC_01',
+'cycling_EC_01',
+'Endocardium_01',
+'migratory_AEC_01',
+'AEC_02',
+'VEC_02',
+'cycling_AEC_01',
+'VEC_03',
+'LEC_01',
+'cycling_AEC_02'
+)
+
+
+level_02       <- SetIdent(level_02, value="RNA_snn_res.0.3")
+names(names)        <- levels(level_02)
+level_02      <- RenameIdents(level_02, names)
+level_02      <- AddMetaData(
+  object=level_02,
+  metadata=level_02@active.ident,
+  col.name="L2_cluster_id")
+
+```
+
+
+
+## clean up meta
+
+```{r}
+level_02@meta.data <- level_02@meta.data %>% 
+  select(-c(starts_with("is.pure"), ends_with("UCell"),"scGate_multi"))
+```
+
+## export
+
+
+```{r}
+filename <- here('output/data/Datsets/paper/D10025_yap1_dataset_Level_02_annotated.qs2')
+qs_save(object = level_02, file = filename)
+```
+
+# Annotate Level 03
+
+Resolution 0.2
+
+## get cell numbers per cluster
+
+```{r}
+level_03$RNA_snn_res.0.2 %>% table()
+```
+
+
+## dotplot
+
+```{r}
+DotPlot(object = level_03, features = level_03_annotation_genes, group.by = "RNA_snn_res.0.2") + rotate_x
+```
+
+## Add to object
+
+celltype
+
+```{r}
+names <- c(
+'preLEC',
+'msVEC',
+'hmsVEC',
+'cvpVEC',
+'LEC',
+'IL_VEC'
+)
+
+
+level_03      <- SetIdent(level_03, value="RNA_snn_res.0.2")
+names(names)        <- levels(level_03)
+level_03      <- RenameIdents(level_03, names)
+level_03      <- AddMetaData(
+  object=level_03,
+  metadata=level_03@active.ident,
+  col.name="L3_celltype")
+
+```
+
+cluster_id
+
+```{r}
+names <- c(
+'preLEC_01',
+'msVEC_01',
+'hmsVEC_01',
+'cvpVEC_01',
+'LEC_01',
+'IL_VEC_01'
+)
+
+
+level_03      <- SetIdent(level_03, value="RNA_snn_res.0.2")
+names(names)        <- levels(level_03)
+level_03      <- RenameIdents(level_03, names)
+level_03      <- AddMetaData(
+  object=level_03,
+  metadata=level_03@active.ident,
+  col.name="L3_cluster_id")
+
+```
+
+
+
+## clean up meta
+
+```{r}
+level_03@meta.data <- level_03@meta.data %>% 
+  select(-c(starts_with("is.pure"), ends_with("UCell"),"scGate_multi"), "L2_celltype", "L2_seurat_celltype")
+```
+
+## export
+
+
+```{r}
+filename <- here('output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2')
+qs_save(object = level_03, file = filename)
+```
+
