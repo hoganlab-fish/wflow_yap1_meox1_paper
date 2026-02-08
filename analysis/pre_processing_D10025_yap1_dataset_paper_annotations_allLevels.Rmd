@@ -330,7 +330,7 @@ level_03      <- AddMetaData(
 
 ```{r}
 level_03@meta.data <- level_03@meta.data %>% 
-  select(-c(starts_with("is.pure"), ends_with("UCell"),"scGate_multi"), "L2_celltype", "L2_seurat_celltype")
+  select(-c(starts_with("is.pure"), ends_with("UCell"),"scGate_multi", "L2_celltype", "L2_seurat_celltype"))
 ```
 
 ## export
