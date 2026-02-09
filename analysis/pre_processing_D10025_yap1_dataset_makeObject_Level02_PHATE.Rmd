@@ -1,0 +1,121 @@
+---
+title: "D10025 yap1 dataset Level 02: try PHATE"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+# Introduction
+
+Try PHATE, might help us with trajectory questions? Following vignettte [here](https://htmlpreview.github.io/?https://github.com/KrishnaswamyLab/phateR/blob/master/inst/examples/bonemarrow_tutorial.html). 
+
+## Load libraries
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+ })
+
+```
+
+Install package using reticulate:
+
+```{r, eval=FALSE}
+#run once, for documentation
+reticulate::py_install("phate", pip=TRUE)
+devtools::install_github("KrishnaswamyLab/phateR")
+```
+
+```{r}
+library(phateR)
+```
+
+
+
+## Load data
+
+Loading only level 02
+
+```{r}
+level_02 <- qs_read(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_02_annotated.qs2')) #ignore annotations in here and replace
+
+```
+
+# PHATE
+
+First steps in the vignette is removing lowly expressed genes and cells with low library size, which we've already done. 
+
+Also, seurat and PHATE are no longer compatible, so following [this](https://gist.github.com/jebard/cea2d161879203ca6e2aa05f32a031bf) for seurat to phate conversion. 
+
+
+## Normalise 
+
+```{r, warning=FALSE}
+### first, grab the input required for phate (here we are using the normalized data stored in Seurat
+seurat_data <- as.data.frame(level_02@assays$RNA@layers$data) #adjust for seurat v5
+
+## reshape for input into PHATE
+phate_data_input <- t(seurat_data)
+```
+
+```{r, include=FALSE}
+rm(seurat_data);gc()
+```
+
+## Run PHATE
+
+From the vignette:
+
+Running PHATE is as simple as running the phate function.
+
+We’ll just use the default parameters for now, but the following parameters can be tuned (read our documentation at https://cran.r-project.org/web/packages/phateR/phateR.pdf or by running help(phateR::phate) to learn more):
+
+knn : Number of nearest neighbors (default: 5). Increase this (e.g. to 20) if your PHATE embedding appears very disconnected. You should also consider increasing knn if your dataset is extremely large (e.g. >100k cells)
+
+decay : Alpha decay (default: 40). Decreasing a increases connectivity on the graph, increasing a decreases connectivity. This rarely needs to be tuned. Set it to NULL for a k-nearest neighbors kernel.
+
+t : Number of times to power the operator (default: ‘auto’). This is equivalent to the amount of smoothing done to the data. It is chosen automatically by default, but you can increase it if your embedding lacks structure, or decrease it if the structure looks too compact.
+
+gamma : Informational distance constant between -1 and 1 (default: 1). gamma=1 gives the PHATE log potential, but other informational distances can be interesting. If most of the points seem concentrated in one section of the plot, you can try gamma=0.
+
+
+```{r, warning=FALSE}
+# run with default parameters first:
+level02_PHATE <- phate(phate_data_input)
+
+```
+
+
+Use ggplot to visualise:
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+ggplot(level02_PHATE) +
+  geom_point(aes(PHATE1, PHATE2)) 
+```
+
+
+Change default parameters to optimise:
+
+```{r, warning=FALSE}
+level02_PHATE <- phate(phate_data_input, gamma = 0,)
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+ggplot(level02_PHATE) +
+  geom_point(aes(PHATE1, PHATE2)) 
+```
+
+I actually don't know if this will help us unfortunately. 
+
+
