@@ -201,11 +201,9 @@ celltype
 
 ```{r}
 level_02$L2_celltype <- case_when(
-  level_02$RNA_snn_res.0.3 %in% c(2, 9,12) ~ "migratory_AEC",
+  level_02$RNA_snn_res.0.3 %in% c(2, 9,12, 7,3,8,11) ~ "AEC",
   level_02$RNA_snn_res.0.3 %in% c(1,4) ~ "VEC",
-  level_02$RNA_snn_res.0.3 %in% c(3,8,11) ~ "cycling_AEC",
   level_02$RNA_snn_res.0.3 == 0 ~ "cycling_EC",
-  level_02$RNA_snn_res.0.3 == 7 ~ "AEC",
   level_02$RNA_snn_res.0.3 %in% c(6,10, 13) ~ "LEC",
   level_02$RNA_snn_res.0.3 == 5 ~ "Endocardium"
 )
@@ -218,17 +216,17 @@ cluster_id
 names <- c(
 'cycling_EC_01',
 'VEC_01',
-'migratory_AEC_01',
-'cycling_AEC_01',
+'AEC_01',
+'AEC_02',
 'VEC_02',
 'Endocardium_01',
 'LEC_01',
-'AEC_01',
-'cycling_AEC_02',
-'migratory_AEC_02',
+'AEC_03',
+'AEC_04',
+'AEC_05',
 'LEC_02',
-'cycling_AEC_03',
-'migratory_AEC_03',
+'AEC_06',
+'AEC_07',
 'LEC_03'
 )
 
@@ -283,9 +281,9 @@ celltype
 
 ```{r}
 names <- c(
-'msVEC',
+'mVEC',
 'LEC',
-'hmsVEC',
+'hmVEC',
 'pre_muLEC'
 )
 
@@ -304,9 +302,9 @@ cluster_id
 
 ```{r}
 names <- c(
-'msVEC_01',
+'mVEC_01',
 'LEC_01',
-'hmsVEC_01',
+'hmVEC_01',
 'pre_muLEC_01'
 )
 
