@@ -8,6 +8,18 @@ editor_options:
   chunk_output_type: console
 ---
 
+# **FIGURES FOR PAPER**
+
+[yap1 dataset, all levels](figures_yap1_dataset.html)
+
+
+# **ANNOTATION FOR PAPER**
+
+[yap1 dataset, all levels](pre_processing_D10025_yap1_dataset_paper_annotations_allLevels.html)
+
+[meox1 dataset, all levels](pre_processing_D10051_meox1_dataset_paper_annotations_allLevels.html)
+
+
 # **Pre-processing - yap1 dataset**
 
 ## Levels{.tabset}
