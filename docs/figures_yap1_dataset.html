@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michelle Meier" />
+
+
+<title>Make figures for yap1 dataset</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">yap1_meox1_paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Make figures for yap1 dataset</h1>
+<h4 class="author">Michelle Meier</h4>
+<h4 class="date">09. February 2026</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-02-09
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>yap1_meox1_paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260119code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260119)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260119code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260119)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree5353707f881114563ea827d20dbe06e625c5cdf1targetblank5353707a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/5353707f881114563ea827d20dbe06e625c5cdf1" target="_blank">5353707</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree5353707f881114563ea827d20dbe06e625c5cdf1targetblank5353707a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/5353707f881114563ea827d20dbe06e625c5cdf1" target="_blank">5353707</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    code/.DS_Store
+    Ignored:    code/analysis/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/genesets/
+    Ignored:    data/input/
+    Ignored:    output/.DS_Store
+    Ignored:    output/analysis/
+    Ignored:    output/data/
+    Ignored:    output/figures/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  code/analysis/D10025_yap1_dataset/D10025_yap1_dataset_analysis_degs.R
+    Untracked:  code/analysis/D10025_yap1_dataset/D10025_yap1_dataset_analysis_degs_EXPLOREONLY.R
+    Untracked:  code/analysis/D10025_yap1_dataset/D10025_yap1_dataset_analysis_enrichr.R
+    Untracked:  code/analysis/D10025_yap1_dataset/D10025_yap1_dataset_analysis_markers.R
+    Untracked:  code/analysis/D10051_meox1_dataset/
+    Untracked:  code/general_scripts/
+    Untracked:  code/pre_processing/
+
+Unstaged changes:
+    Deleted:    code/analysis/D10025_yap1_dataset/DEGs/D10025_yap1_dataset_analysis_degs.R
+    Modified:   renv.lock
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/figures_yap1_dataset.Rmd</code>)
+and HTML (<code>docs/figures_yap1_dataset.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/5353707f881114563ea827d20dbe06e625c5cdf1/analysis/figures_yap1_dataset.Rmd" target="_blank">5353707</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-09
+</td>
+<td>
+wflow_publish("analysis/figures_yap1_dataset.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Make figures for all levels of the yap1 dataset.</p>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(chisq.posthoc.test)
+
+})</code></pre>
+</div>
+<div id="load-data" class="section level2">
+<h2>Load data</h2>
+<pre class="r"><code>level_01 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_01_annotated.qs2&#39;))
+level_02 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_02_annotated.qs2&#39;))
+level_03 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2&#39;))</code></pre>
+<p>load mixing metric as well</p>
+<pre class="r"><code>mixing_metric &lt;- qs_read(here(&#39;output/analysis/D10025_yap1_dataset/MixingMetric/D10025_yap1_dataset_Level_03_mixing_metric.qs2&#39;))</code></pre>
+<p>load DEGs</p>
+<pre class="r"><code>hippo_gene_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_hippo_targets_mutVSwt_L3_celltype_fc0.00_minpct_0.00.csv&quot;), show_col_types = F)
+
+all_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv&quot;), show_col_types = F)</code></pre>
+<p>load GO</p>
+<pre class="r"><code>go_terms &lt;- qs_read(here(&quot;output/analysis/D10025_yap1_dataset/enrichR/D10025_yap1_dataset_markers_L3_celltype_top100_enrichR.qs2&quot;))</code></pre>
+</div>
+<div id="load-gene-sets-paper-settings" class="section level2">
+<h2>Load gene sets + paper settings</h2>
+<pre class="r"><code>source(here(&quot;code/general_scripts/yap1_meox1_important_genes.R&quot;))
+source(here(&quot;code/general_scripts/yap1_meox1_paper_settings.R&quot;))
+
+names(genotype_colours) &lt;- c(&quot;wildtype&quot;, &quot;yap1_mutant&quot;)</code></pre>
+</div>
+<div id="plotting-orders" class="section level2">
+<h2>Plotting orders</h2>
+<pre class="r"><code>level_01_order &lt;- c(
+  &quot;Endothelial&quot;,
+  &quot;Endocardium&quot;,
+  &quot;Hematopoietic&quot;,
+  &quot;Erythrocyte&quot;,
+  &quot;Immune&quot;,
+  &quot;Neuronal&quot;,
+  &quot;Fibroblast&quot;,
+  &quot;Epithelial_Fibroblast&quot;,
+  &quot;Epithelial&quot;,
+  &quot;Eye_lens&quot;,
+  &quot;Chromatophore&quot;)
+
+level_02_id_order &lt;- c(
+  &quot;LEC_01&quot;,
+  &quot;VEC_01&quot;,
+  &quot;VEC_02&quot;,
+  &quot;VEC_03&quot;,
+  &quot;AEC_01&quot;,
+  &quot;AEC_02&quot;,
+  &quot;AEC_03&quot;,
+  &quot;AEC_04&quot;,
+  &quot;AEC_05&quot;,
+  &quot;cycling_EC_01&quot;,
+  &quot;Endocardium_01&quot;
+)
+
+level_02_celltpe_order &lt;- c(
+  &quot;LEC&quot;,
+  &quot;VEC&quot;,
+  &quot;AEC&quot;,
+  &quot;cycling_EC&quot;,
+  &quot;Endocardium&quot;
+)
+
+level_03_celltpe_order &lt;- c(
+  &quot;LEC&quot;,
+  &quot;preLEC&quot;,
+  &quot;hmVEC&quot;,
+  &quot;mVEC&quot;,
+  &quot;cVEC&quot;,
+  &quot;iVEC&quot;
+)</code></pre>
+</div>
+<div id="plotting-colours" class="section level2">
+<h2>Plotting colours</h2>
+<pre class="r"><code>level_02_id_colours &lt;- c(
+  &quot;#a1d99b&quot;,
+  &quot;#6baed6&quot;,
+  &quot;#4292c6&quot;,
+  &quot;#2171b5&quot;,
+  &quot;#fee0d2&quot;,
+  &quot;#fcbba1&quot;,
+  &quot;#fc9272&quot;,
+  &quot;#fb6a4a&quot;,
+  &quot;#ef3b2c&quot;,
+  &quot;#ffffd4&quot;,
+  &quot;#d9d9d9&quot;)
+
+names(level_02_id_colours) &lt;- level_02_id_order
+
+level_02_celltype_colours &lt;- c(
+  &quot;#a1d99b&quot;,
+  &quot;#6baed6&quot;,
+  &quot;#fc9272&quot;,
+  &quot;#ffffd4&quot;,
+  &quot;#d9d9d9&quot;)
+
+names(level_02_celltype_colours) &lt;- level_02_celltpe_order
+
+level_03_celltype_colours &lt;- c(
+  &quot;#41ae76&quot;,
+  &quot;#a1d99b&quot;,
+  &quot;#9ecae1&quot;,
+  &quot;#6baed6&quot;,
+  &quot;#4292c6&quot;,
+  &quot;#084594&quot;)
+
+names(level_03_celltype_colours) &lt;- level_03_celltpe_order</code></pre>
+</div>
+<div id="plotting-themes" class="section level2">
+<h2>Plotting themes</h2>
+<pre class="r"><code>plot_sizing &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat &lt;- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;), 
+                   strip.text = element_text(size = 14))</code></pre>
+</div>
+<div id="directories" class="section level2">
+<h2>directories</h2>
+<pre class="r"><code>save_dir &lt;- here(&quot;output/figures&quot;)
+name &lt;- &quot;yap1_dataset&quot;</code></pre>
+</div>
+</div>
+<div id="level-01---all-cells" class="section level1 tabset">
+<h1 class="tabset">LEVEL 01 - ALL CELLS</h1>
+<pre class="r"><code>name_current &lt;- sprintf(&quot;%s_Level_01&quot;, name)</code></pre>
+<p>n cells</p>
+<pre class="r"><code>level_01 %&gt;% ncol()</code></pre>
+<pre><code>[1] 31415</code></pre>
+<p>n cells per genotype</p>
+<pre class="r"><code>level_01$Genotype %&gt;% table()</code></pre>
+<pre><code>.
+   wildtype yap1_mutant 
+      18985       12430 </code></pre>
+<div id="umaps" class="section level2">
+<h2>UMAPs</h2>
+<p>Level 01 UMAPs don’t have a colour scheme.</p>
+<pre class="r"><code>#clusterID
+make_dim_umap(seurat = level_01, 
+              group = &quot;L1_cluster_id&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#celltype
+make_dim_umap(seurat = level_01, 
+              group = &quot;L1_celltype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#genotype
+make_dim_umap(seurat = level_01, 
+              group = &quot;Genotype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dotplot" class="section level2">
+<h2>Dotplot</h2>
+<pre class="r"><code>level_01_relevel &lt;- level_01
+level_01_relevel        &lt;- SetIdent(level_01_relevel, value=&quot;L1_celltype&quot;)
+Idents(level_01_relevel) &lt;- factor(level_01_relevel@active.ident, level_01_order)
+
+dotplot &lt;- DotPlot(object = level_01_relevel,
+                   features = level_01_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L1_celltype_annotation.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=7 )
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-17-1.png" width="576" style="display: block; margin: auto;" /></p>
+</div>
+<div id="barplot" class="section level2">
+<h2>Barplot</h2>
+<pre class="r"><code>barplot &lt;- level_01@meta.data %&gt;% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L1_celltype = factor(L1_celltype, levels =level_01_order) )%&gt;% 
+  group_by(Genotype, L1_celltype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  ggplot(., aes(x =L1_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L1_celltype_genotype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=7,
+       height=4)
+
+barplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="level-02---all-endothelial-cells"
+class="section level1 tabset">
+<h1 class="tabset">LEVEL 02 - ALL ENDOTHELIAL CELLS</h1>
+<pre class="r"><code>name_current &lt;- sprintf(&quot;%s_Level_02&quot;, name)</code></pre>
+<p>n cells</p>
+<pre class="r"><code>level_02 %&gt;% ncol()</code></pre>
+<pre><code>[1] 19834</code></pre>
+<p>n cells per genotype</p>
+<pre class="r"><code>level_02$Genotype %&gt;% table()</code></pre>
+<pre><code>.
+   wildtype yap1_mutant 
+      11578        8256 </code></pre>
+<div id="umaps-1" class="section level2">
+<h2>UMAPs</h2>
+<pre class="r"><code>level_02$L2_cluster_id &lt;- factor(x = level_02$L2_cluster_id,levels = level_02_id_order)
+
+#clusterID
+make_dim_umap(seurat = level_02, 
+              group = &quot;L2_cluster_id&quot;,
+              width = 5, height = 5,
+              path = save_dir,
+              colours = level_02_id_colours,
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>level_02$L2_celltype &lt;- factor(x = level_02$L2_celltype,levels = level_02_celltpe_order)
+
+#celltype
+make_dim_umap(seurat = level_02, 
+              group = &quot;L2_celltype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              colours = level_02_celltype_colours,
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#genotype
+make_dim_umap(seurat = level_02, 
+              group = &quot;Genotype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dotplot-1" class="section level2">
+<h2>Dotplot</h2>
+<pre class="r"><code>level_02_relevel &lt;- level_02
+level_02_relevel        &lt;- SetIdent(level_02_relevel, value=&quot;L2_cluster_id&quot;)
+Idents(level_02_relevel) &lt;- factor(level_02_relevel@active.ident, level_02_id_order)
+
+dotplot &lt;- DotPlot(object = level_02_relevel,
+                   features = level_02_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L2_cluster_id_annotation.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=5)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-25-1.png" width="480" style="display: block; margin: auto;" /></p>
+</div>
+<div id="barplot-1" class="section level2">
+<h2>Barplot</h2>
+<pre class="r"><code>barplot &lt;- level_02@meta.data %&gt;% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L2_cluster_id = factor(L2_cluster_id, levels =level_02_id_order) )%&gt;% 
+  group_by(Genotype, L2_cluster_id, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  ggplot(., aes(x =L2_cluster_id, y = count, fill = Genotype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L2_cluster_id_genotype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=7,
+       height=4)
+
+barplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="level-03---vec-and-lec" class="section level1 tabset">
+<h1 class="tabset">LEVEL 03 - VEC AND LEC</h1>
+<pre class="r"><code>name_current &lt;- sprintf(&quot;%s_Level_03&quot;, name)</code></pre>
+<p>n cells</p>
+<pre class="r"><code>level_03 %&gt;% ncol()</code></pre>
+<pre><code>[1] 6557</code></pre>
+<p>n cells per genotype</p>
+<pre class="r"><code>level_03$Genotype %&gt;% table()</code></pre>
+<pre><code>.
+   wildtype yap1_mutant 
+       3895        2662 </code></pre>
+<div id="umaps-2" class="section level2">
+<h2>UMAPs</h2>
+<pre class="r"><code>level_03$L3_celltype &lt;- factor(x = level_03$L3_celltype,levels = level_03_celltpe_order)
+
+#celltype
+make_dim_umap(seurat = level_03, 
+              group = &quot;L3_celltype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              colours = level_03_celltype_colours,
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#genotype
+make_dim_umap(seurat = level_03, 
+              group = &quot;Genotype&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-31-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="umaps---gene-expression" class="section level2">
+<h2>UMAPs - gene expression</h2>
+<pre class="r"><code>genes_to_plot &lt;-c(&quot;pcna&quot;, &quot;mki67&quot;, &quot;cdh6&quot;, &quot;ccn2a&quot;, &quot;ccn1&quot;, &quot;prox1a&quot;)
+
+plot_list &lt;- lapply(genes_to_plot, function(gene){
+  make_feature_umap(seurat = level_03, 
+                  feature = gene,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 3)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-32-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="umaps---gene-scores" class="section level2">
+<h2>UMAPs - gene scores</h2>
+<pre class="r"><code>genescores_to_plot &lt;-c(&quot;hippo_1&quot;, &quot;mapk_1&quot;, &quot;wnt_1&quot;, &quot;ap1_1&quot;)
+
+plot_list &lt;- lapply(genescores_to_plot, function(genescore){
+  make_genescore_umap(seurat = level_03, 
+                  feature = genescore,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 2)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-33-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Split by genotype</p>
+<pre class="r"><code>genescores_to_plot &lt;-c(&quot;hippo_1&quot;, &quot;mapk_1&quot;, &quot;wnt_1&quot;, &quot;ap1_1&quot;)
+
+plot_list &lt;- lapply(genescores_to_plot, function(genescore){
+  make_genescore_split_umap(seurat = level_03, 
+                  feature = genescore,
+              width = 5, height = 5,
+              path = save_dir,  
+              split = &quot;Genotype&quot;,
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 2)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-34-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="umaps---transition-scores-mature" class="section level2">
+<h2>UMAPs - transition scores (mature)</h2>
+<pre class="r"><code>p1 &lt;-   make_genescore_umap(seurat = level_03, 
+                  feature = &quot;EMBO_LEC_score_1&quot;,
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c(&quot;#d9d9d9&quot;, &quot;darkgreen&quot;),
+              name = name_current)
+
+p2 &lt;- make_genescore_umap(seurat = level_03, 
+                  feature = &quot;EMBO_VEC_score_1&quot;,
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c(&quot;#d9d9d9&quot;, &quot;#406880&quot;),
+              name = name_current)
+
+p1 + p2 + plot_layout(ncol = 2)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-35-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>transition score with midpoint:</p>
+<pre class="r"><code>md &lt;- level_03[[]]
+coords &lt;- Embeddings(level_03[[&quot;umap&quot;]])
+md &lt;- cbind(md, coords)
+
+midpoint &lt;- mean(range(md$EMBO_transient_score))
+
+# Order by absolute difference from the midpoint
+md &lt;- md[order(abs(md$EMBO_transient_score - midpoint)), ]
+
+# plot
+trans_score_legend &lt;- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = &quot;#406880&quot;, high = &quot;darkgreen&quot;, mid = &quot;azure2&quot;) + #not keeping original green bc its too light
+  # viridis::scale_fill_viridis(option = &quot;E&quot;, direction = 1) +
+  theme_classic() 
+trans_score_legend</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-36-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>umapFileName &lt;- sprintf(&#39;%s/%s_UMAP_EMBO_transitionscore.pdf&#39;, save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_legend,
+       device=&quot;pdf&quot;,
+       width=7,
+       height=7)
+
+trans_score_nolegend &lt;- trans_score_legend + NoLegend() + NoAxes() + theme(plot.title = element_blank())
+umapFileName &lt;- sprintf(&#39;%s/%s_UMAP_EMBO_transitionscore_STRIPPED.pdf&#39;, save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_nolegend,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=5)</code></pre>
+</div>
+<div id="umaps---transition-scores-developmental"
+class="section level2">
+<h2>UMAPs - transition scores (developmental)</h2>
+<pre class="r"><code>p1 &lt;-   make_genescore_umap(seurat = level_03, 
+                  feature = &quot;LEC_dev_score_1&quot;,
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c(&quot;#d9d9d9&quot;, &quot;darkgreen&quot;),
+              name = name_current)
+
+p1 + p2 + plot_layout(ncol = 2)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-37-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>transition score:</p>
+<pre class="r"><code>md &lt;- level_03[[]]
+coords &lt;- Embeddings(level_03[[&quot;umap&quot;]])
+md &lt;- cbind(md, coords)
+
+midpoint &lt;- mean(range(md$EMBO_dev_transient_score))
+
+# Order by absolute difference from the midpoint
+md &lt;- md[order(abs(md$EMBO_dev_transient_score - midpoint)), ]
+
+# plot
+trans_score_legend &lt;- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = &quot;#406880&quot;, high = &quot;darkgreen&quot;, mid = &quot;azure2&quot;) + #not keeping original green bc its too light
+  # viridis::scale_fill_viridis(option = &quot;E&quot;, direction = 1) +
+  theme_classic() 
+trans_score_legend</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-38-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>umapFileName &lt;- sprintf(&#39;%s/%s_UMAP_EMBO_dev_transitionscore.pdf&#39;, save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_legend,
+       device=&quot;pdf&quot;,
+       width=7,
+       height=7)
+
+trans_score_nolegend &lt;- trans_score_legend + NoLegend() + NoAxes() + theme(plot.title = element_blank())
+umapFileName &lt;- sprintf(&#39;%s/%s_UMAP_EMBO_transitionscore_STRIPPED.pdf&#39;, save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_nolegend,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=5)</code></pre>
+</div>
+<div id="umaps---mixing-metric" class="section level2">
+<h2>UMAPs - mixing metric</h2>
+<pre class="r"><code># add to object
+mixing_metric &lt;- mixing_metric[names(mixing_metric) != &quot;iVEC&quot;] #this cluster is only mutant, no mixing
+new_meta &lt;- lapply(mixing_metric, mean) %&gt;% unlist() %&gt;% as.data.frame() %&gt;% 
+  rownames_to_column(&quot;L3_celltype&quot;) %&gt;% dplyr::rename(mixing_metric=&quot;.&quot;)  %&gt;% 
+  full_join(level_03@meta.data, .)</code></pre>
+<pre><code>Joining with `by = join_by(L3_celltype)`</code></pre>
+<pre class="r"><code>rownames(new_meta) &lt;- rownames(level_03@meta.data)
+level_03@meta.data &lt;- new_meta
+
+# on UMAP
+make_feature_umap(seurat = level_03, 
+                  feature = &quot;mixing_metric&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-39-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dotplot-2" class="section level2">
+<h2>Dotplot</h2>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = level_03_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_annotation.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=4)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-40-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Hippo genes</p>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = hippo_targets,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_hippo.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=4)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-41-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>Hippo gene split by genotype</p>
+<p>Add new order.</p>
+<pre class="r"><code>level_03_celltpe_genotype_order &lt;- c(
+  &quot;LEC_wildtype&quot;,
+  &quot;LEC_yap1_mutant&quot;,
+  &quot;preLEC_wildtype&quot;,
+  &quot;preLEC_yap1_mutant&quot;,
+  &quot;hmVEC_wildtype&quot;,
+  &quot;hmVEC_yap1_mutant&quot;,
+  &quot;mVEC_wildtype&quot;,
+  &quot;mVEC_yap1_mutant&quot;,
+  &quot;cVEC_wildtype&quot;,
+  &quot;cVEC_yap1_mutant&quot;,
+  &quot;iVEC_wildtype&quot;,
+  &quot;iVEC_yap1_mutant&quot;
+)</code></pre>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel$L3_celltype_genotype &lt;- paste0(level_03_relevel$L3_celltype, &quot;_&quot;, level_03_relevel$Genotype)
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype_genotype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
+
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = hippo_targets,
+                   cluster.idents = F, 
+                   cols = expression_colours)  + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_hippo.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=7,
+       height=4)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Selected other genes, split by genoptype</p>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel$L3_celltype_genotype &lt;- paste0(level_03_relevel$L3_celltype, &quot;_&quot;, level_03_relevel$Genotype)
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype_genotype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
+
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = c(&quot;prox1a&quot;, &quot;tbx1&quot;, &quot;cdh6&quot;, &quot;pcna&quot;, &quot;mki67&quot;),
+                   cluster.idents = F, 
+                   cols = expression_colours)  + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_cellcyclelec.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=4)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-44-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="dotplot---ratios" class="section level2">
+<h2>Dotplot - ratios</h2>
+<p>Just meox1</p>
+<pre class="r"><code>input_ratio &lt;- hippo_gene_degs %&gt;% 
+  filter(., Gene == &quot;meox1&quot;) %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order))
+
+make_ratio_dotplots(input_ratio,
+                    width = 5, height = 3, 
+                    name = paste0(name_current, &quot;_meox1&quot;), path = save_dir)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>All hippo genes:</p>
+<pre class="r"><code>input_ratio &lt;- hippo_gene_degs %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order))
+
+make_ratio_dotplots(input_ratio,
+                    width = 4, height = 4, 
+                    name = paste0(name_current, &quot;_hippogenes&quot;), path = save_dir)</code></pre>
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).
+Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="barplot-and-stats" class="section level2">
+<h2>Barplot (and stats)</h2>
+<div id="genotype-vs-celltype" class="section level3">
+<h3>Genotype vs celltype</h3>
+<pre class="r"><code>barplot &lt;- level_03@meta.data %&gt;% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%&gt;% 
+  group_by(Genotype, L3_celltype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=4)
+
+barplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Stats to support this:</p>
+<p>Using the chisq.posthoc.test package to perform a post-hoc analysis
+for this.</p>
+<pre class="r"><code>M &lt;-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
+
+global_test &lt;- chisq.test(M)
+global_test</code></pre>
+<pre><code>
+    Pearson&#39;s Chi-squared test
+
+data:  M
+X-squared = 211.64, df = 5, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>res &lt;- chisq.posthoc.test(M) %&gt;% as.data.frame() %&gt;% 
+    pivot_longer(., cols = level_03$L3_celltype %&gt;% unique(), names_to = &quot;L3_celltype&quot;, values_to = &quot;entry&quot;) %&gt;% 
+    pivot_wider(., names_from = &quot;Value&quot;, values_from = &quot;entry&quot;)
+  
+res &lt;- res %&gt;% 
+  distinct(., L3_celltype, .keep_all = T) %&gt;%  #residuals for 2 groups are mirrored 
+  mutate(., Residuals = abs(Residuals), 
+            is_sig = case_when(`p values` &gt; 0.05 ~ &quot;&quot;, 
+                              `p values` &lt;= 0.0001 ~ &quot;****&quot;,
+                               `p values` &lt;= 0.001 ~ &quot;***&quot;,
+                              `p values` &lt;= 0.01 ~ &quot;**&quot;,
+                                `p values` &lt;= 0.05 ~ &quot;*&quot;
+                                 )) %&gt;% 
+  select(., -Dimension)
+
+res</code></pre>
+<pre><code># A tibble: 6 × 4
+  L3_celltype Residuals `p values` is_sig
+  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
+1 mVEC            9.01    0        &quot;****&quot;
+2 preLEC          0.110   1        &quot;&quot;    
+3 LEC             3.24    0.0143   &quot;*&quot;   
+4 hmVEC           0.335   1        &quot;&quot;    
+5 cVEC            4.33    0.000177 &quot;***&quot; 
+6 iVEC           11.1     0        &quot;****&quot;</code></pre>
+<p>Add to barplot:</p>
+<pre class="r"><code>barplot &lt;- level_03@meta.data %&gt;% 
+  group_by(Genotype, L3_celltype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  full_join(., res) %&gt;% 
+    mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%&gt;% 
+  mutate(., is_sig = ifelse(Genotype == &quot;yap1_mutant&quot;, is_sig, NA)) %&gt;% 
+  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  geom_text(aes(label = is_sig, y = 1.05),size=6) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;) + 
+  ggtitle(paste0(&quot;chisq p-value: &quot;,global_test$p.value))</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.
+Joining with `by = join_by(L3_celltype)`</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_barplot_stats.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=4)</code></pre>
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre class="r"><code>barplot</code></pre>
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="genotype-vs-cell-cycle-stage-for-each-celltype"
+class="section level3">
+<h3>Genotype vs cell cycle stage (for each celltype)</h3>
+<pre class="r"><code>#cell cycle
+barplot &lt;- level_03@meta.data %&gt;% 
+  mutate(., tricycle_stage = factor(tricycle_stage, levels = names(cols_cellcycle)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order),
+            Genotype = factor(Genotype, levels = names(genotype_colours))) %&gt;% 
+  group_by(tricycle_stage, L3_celltype,Genotype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  group_by(., Genotype, L3_celltype) %&gt;% 
+  mutate(., perc_pos = count/sum(count),
+         perc_label = round(perc_pos, 2)*100) %&gt;% 
+  ggplot(., aes(x =Genotype, y = count, fill = tricycle_stage)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  geom_text(aes(label = perc_label, y = perc_pos), position = position_stack(vjust = 0.5), size=5)+ 
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = cols_cellcycle)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;) +
+  facet_wrap(~L3_celltype, nrow=1) + strip_fix</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;tricycle_stage&#39;, &#39;L3_celltype&#39;. You can
+override using the `.groups` argument.</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_tricycle_genotype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=12,
+       height=5)</code></pre>
+<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre class="r"><code>barplot</code></pre>
+<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-50-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Stats to support this:</p>
+<pre class="r"><code>global_stats &lt;- lapply(c(&quot;mVEC&quot;,&quot;preLEC&quot;, &quot;LEC&quot;,&quot;hmVEC&quot; ,&quot;cVEC&quot;), function(x){
+  filtered_seurat &lt;- level_03@meta.data %&gt;% 
+  filter(., L3_celltype == x) %&gt;% # for each cell type population
+  select(., Genotype, tricycle_stage) 
+  M &lt;-table(filtered_seurat$Genotype, filtered_seurat$tricycle_stage) + 0.001 #add very small number to deal with test sensitivity to zeros
+  Xsq &lt;- chisq.test(M)  # Prints test summary
+  df_return &lt;- data.frame(statistic = Xsq$statistic, 
+                          pvalue= Xsq$p.value)
+  return(df_return)
+})</code></pre>
+<pre><code>Warning in chisq.test(M): Chi-squared approximation may be incorrect
+Warning in chisq.test(M): Chi-squared approximation may be incorrect</code></pre>
+<pre class="r"><code>names(global_stats) &lt;- c(&quot;mVEC&quot;,&quot;preLEC&quot;, &quot;LEC&quot;,&quot;hmVEC&quot; ,&quot;cVEC&quot;)
+
+global_stats &lt;- global_stats %&gt;% bind_rows(., .id = &quot;L3_celltype&quot;)  %&gt;% 
+  mutate(., is_sig = case_when(pvalue &gt; 0.05 ~ &quot;&quot;, 
+                              pvalue &lt;= 0.0001 ~ &quot;****&quot;,
+                               pvalue &lt;= 0.001 ~ &quot;***&quot;,
+                              pvalue &lt;= 0.01 ~ &quot;**&quot;,
+                                pvalue&lt;= 0.05 ~ &quot;*&quot;
+                                 )) 
+
+global_stats</code></pre>
+<pre><code>              L3_celltype statistic       pvalue is_sig
+X-squared...1        mVEC  7.951571 1.876456e-02      *
+X-squared...2      preLEC 43.125726 4.318845e-10   ****
+X-squared...3         LEC  1.067595 5.863741e-01       
+X-squared...4       hmVEC 19.431034 6.033989e-05   ****
+X-squared...5        cVEC  2.907423 2.337013e-01       </code></pre>
+<p>Using the chisq.posthoc.test package to perform a post-hoc analysis
+for this. Residuals only end up being meaningful for the celltypes with
+global changes.</p>
+<pre class="r"><code>post_hoc_tests_to_run &lt;-global_stats %&gt;% filter(., pvalue &lt; 0.05) %&gt;% pull(L3_celltype)
+
+all_x_tests &lt;- lapply(post_hoc_tests_to_run, function(x){
+  filtered_seurat &lt;- level_03@meta.data %&gt;% 
+  filter(., L3_celltype == x) %&gt;% # for each cell type population
+  select(., Genotype, tricycle_stage) 
+  M &lt;-table(filtered_seurat$Genotype, filtered_seurat$tricycle_stage) + 0.001 #add very small number to deal with test sensitivity to zeros
+  res &lt;- chisq.posthoc.test(M) %&gt;% as.data.frame() %&gt;% 
+    pivot_longer(., cols = level_03$tricycle_stage %&gt;% unique(), names_to = &quot;tricycle_stage&quot;, values_to = &quot;entry&quot;) %&gt;% 
+    pivot_wider(., names_from = &quot;Value&quot;, values_from = &quot;entry&quot;)
+
+  return(res)
+})</code></pre>
+<pre><code>Warning in chisq.test(x, ...): Chi-squared approximation may be incorrect</code></pre>
+<pre class="r"><code>names(all_x_tests) &lt;- post_hoc_tests_to_run
+
+all_x_tests_df &lt;- all_x_tests %&gt;% bind_rows(., .id = &quot;L3_celltype&quot;) %&gt;% 
+  distinct(., L3_celltype, tricycle_stage, .keep_all = T) %&gt;%  #residuals for 2 groups are mirrored 
+  mutate(., Residuals = abs(Residuals), 
+            is_sig = case_when(`p values` &gt; 0.05 ~ &quot;&quot;, 
+                              `p values` &lt;= 0.0001 ~ &quot;****&quot;,
+                               `p values` &lt;= 0.001 ~ &quot;***&quot;,
+                              `p values` &lt;= 0.01 ~ &quot;**&quot;,
+                                `p values` &lt;= 0.05 ~ &quot;*&quot;
+                                 )) %&gt;% 
+  select(., -Dimension)
+
+all_x_tests_df</code></pre>
+<pre><code># A tibble: 9 × 5
+  L3_celltype tricycle_stage Residuals `p values` is_sig
+  &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
+1 mVEC        G1/G0              0.947   1        &quot;&quot;    
+2 mVEC        S                  2.81    0.0297   &quot;*&quot;   
+3 mVEC        G2M                0.130   1        &quot;&quot;    
+4 preLEC      G1/G0              6.34    0        &quot;****&quot;
+5 preLEC      S                  6.24    0        &quot;****&quot;
+6 preLEC      G2M                1.27    1        &quot;&quot;    
+7 hmVEC       G1/G0              2.96    0.0186   &quot;*&quot;   
+8 hmVEC       S                  4.36    0.000077 &quot;****&quot;
+9 hmVEC       G2M                0.893   1        &quot;&quot;    </code></pre>
+<p>Barplot with stats:</p>
+<pre class="r"><code>#cell cycle
+barplot &lt;- level_03@meta.data %&gt;% 
+  group_by(tricycle_stage, L3_celltype,Genotype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  group_by(., Genotype, L3_celltype) %&gt;% 
+  mutate(., perc_pos = count/sum(count),
+         perc_label = round(perc_pos, 2)*100) %&gt;% 
+  ungroup() %&gt;% 
+  full_join(., all_x_tests_df) %&gt;% 
+  full_join(., global_stats %&gt;% select(., is_sig, L3_celltype, pvalue) %&gt;% dplyr::rename(is_sig_global=is_sig, pvalue_global=pvalue)) %&gt;%  
+  mutate(., tricycle_stage = factor(tricycle_stage, levels = names(cols_cellcycle)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order),
+            Genotype = factor(Genotype, levels = names(genotype_colours)), 
+            is_sig = ifelse(Genotype == &quot;yap1_mutant&quot;, is_sig, NA), 
+            is_sig_global = ifelse(Genotype == &quot;yap1_mutant&quot;, is_sig_global, NA),
+            pvalue_global = ifelse(Genotype == &quot;yap1_mutant&quot; &amp; is_sig_global !=&quot;&quot;, pvalue_global, NA)) %&gt;% 
+  ggplot(., aes(x =Genotype, y = count, fill = tricycle_stage)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  geom_text(aes(label = perc_label, y = perc_pos), position = position_stack(vjust = 0.5), size=5)+ 
+  geom_text(aes(label = is_sig, y = perc_pos), position = position_stack(vjust = 0.9), size=5)+ 
+  geom_text(aes(label = is_sig_global, y = 1.1, x= 1.5), size=7)+ 
+  geom_text(aes(label = pvalue_global, y = 1.05, x= 1.5), size=3)+ 
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = cols_cellcycle)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;) +
+  facet_wrap(~L3_celltype, nrow=1) + strip_fix</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;tricycle_stage&#39;, &#39;L3_celltype&#39;. You can
+override using the `.groups` argument.
+Joining with `by = join_by(tricycle_stage, L3_celltype)`
+Joining with `by = join_by(L3_celltype)`</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_tricycle_genotype_barplot_stats.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=12,
+       height=5)</code></pre>
+<pre><code>Warning: Removed 24 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre><code>Warning: Removed 18 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre><code>Warning: Removed 24 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre class="r"><code>barplot</code></pre>
+<pre><code>Warning: Removed 24 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre><code>Warning: Removed 18 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<pre><code>Warning: Removed 24 rows containing missing values or values outside the scale range
+(`geom_text()`).</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-53-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="volcano-plot" class="section level2">
+<h2>Volcano plot</h2>
+<pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; p_val_adj &lt; 0.05) 
+
+hippo_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; Gene %in% hippo_targets)
+
+plot &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot;) %&gt;% 
+  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
+  geom_point(colour=&quot;#d9d9d9&quot;) +
+  geom_point(data = degs_mark, colour=&quot;#969696&quot;) +
+  geom_point(data = hippo_mark, colour=&quot;red&quot;, size=2) +
+  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
+  plot_sizing + ylab(&quot;-log10(p-value)&quot;) + xlab(&quot;log2FC&quot;)
+
+
+filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_adjpvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=5)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Just p-value</p>
+<pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; p_val &lt; 0.05) 
+
+hippo_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; Gene %in% hippo_targets)
+
+plot &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot;) %&gt;% 
+  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
+  geom_point(colour=&quot;#d9d9d9&quot;) +
+  geom_point(data = degs_mark, colour=&quot;#969696&quot;) +
+  geom_point(data = hippo_mark, colour=&quot;red&quot;, size=2) +
+  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
+  plot_sizing + ylab(&quot;-log10(p-value)&quot;) + xlab(&quot;log2FC&quot;)
+
+
+filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_pvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=5)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="deg-barplots" class="section level2">
+<h2>DEG barplots</h2>
+<p>p-value</p>
+<pre class="r"><code>plot &lt;- hippo_gene_degs %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order)) %&gt;% 
+  mutate(., label = case_when(p_val &gt; 0.05 ~ &quot;&quot;, 
+                              p_val &lt;= 0.0001 ~ &quot;****&quot;,
+                               p_val &lt;= 0.001 ~ &quot;***&quot;,
+                              p_val &lt;= 0.01 ~ &quot;**&quot;,
+                                 p_val &lt;= 0.05 ~ &quot;*&quot;
+                                 )) %&gt;% 
+  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
+  geom_bar(position = position_dodge2(), stat = &quot;identity&quot;) +
+  geom_text(aes(label=label)) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = level_03_celltype_colours) +
+  facet_wrap(~group, nrow=1) + strip_fix + ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
+
+
+filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_pvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=12,
+       height=4)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-56-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>adjusted</p>
+<pre class="r"><code>plot&lt;- hippo_gene_degs %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order)) %&gt;% 
+  mutate(., label = case_when(p_val_adj &gt; 0.05 ~ &quot;&quot;, 
+                              p_val_adj &lt;= 0.0001 ~ &quot;****&quot;,
+                               p_val_adj &lt;= 0.001 ~ &quot;***&quot;,
+                              p_val_adj &lt;= 0.01 ~ &quot;**&quot;,
+                                 p_val_adj &lt;= 0.05 ~ &quot;*&quot;
+                                 )) %&gt;% 
+  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
+  geom_bar(position = position_dodge2(), stat = &quot;identity&quot;) +
+  geom_text(aes(label=label)) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = level_03_celltype_colours) +
+  facet_wrap(~group, nrow=1) + strip_fix+ ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_adjustedpvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=12,
+       height=4)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-57-1.png" width="1440" style="display: block; margin: auto;" /></p>
+</div>
+<div id="go-plot-for-il_vec" class="section level2">
+<h2>GO plot for IL_VEC</h2>
+<pre class="r"><code>plot &lt;- go_terms %&gt;% 
+  mutate(., Term = gsub(&quot;_WP.*&quot;, &quot;&quot;, Term)) %&gt;% 
+  filter(., cluster == &quot;iVEC&quot; &amp; Adjusted.P.value &lt; 0.05) %&gt;% 
+  ggplot(., aes(y = Genes, x = Combined.Score)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;purple4&quot;) +
+  geom_text(aes(label = Term, x=0), colour = &quot;grey90&quot;, size = 6, hjust=-0.01) +
+  plot_sizing + xlab(&quot;enrichR score&quot;) 
+  
+filename &lt;- sprintf(&#39;%s/%s_ivec_barplot_GOterms.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=10,
+       height=4)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.0 (2025-04-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.7.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] chisq.posthoc.test_0.1.2    qs2_0.1.7                  
+ [3] scran_1.38.0                scater_1.38.0              
+ [5] scuttle_1.20.0              patchwork_1.3.2            
+ [7] clustree_0.5.1              ggraph_2.2.2               
+ [9] ggpubr_0.6.2                scDblFinder_1.24.0         
+[11] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0
+[13] Biobase_2.70.0              GenomicRanges_1.62.1       
+[15] Seqinfo_1.0.0               IRanges_2.44.0             
+[17] S4Vectors_0.48.0            BiocGenerics_0.56.0        
+[19] generics_0.1.4              MatrixGenerics_1.22.0      
+[21] matrixStats_1.5.0           Seurat_5.4.0               
+[23] SeuratObject_5.3.0          sp_2.2-0                   
+[25] here_1.0.2                  lubridate_1.9.4            
+[27] forcats_1.0.1               stringr_1.5.1              
+[29] dplyr_1.1.4                 purrr_1.2.1                
+[31] readr_2.1.6                 tidyr_1.3.2                
+[33] tibble_3.3.1                ggplot2_4.0.1              
+[35] tidyverse_2.0.0             workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
+  [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
+  [7] sctransform_0.4.3        backports_1.5.0          utf8_1.2.6              
+ [10] R6_2.6.1                 lazyeval_0.2.2           uwot_0.2.4              
+ [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
+ [16] textshaping_1.0.4        cli_3.6.5                spatstat.explore_3.7-0  
+ [19] fastDummies_1.7.5        labeling_0.4.3           sass_0.4.10             
+ [22] S7_0.2.1                 spatstat.data_3.1-9      ggridges_0.5.7          
+ [25] pbapply_1.7-4            systemfonts_1.3.1        Rsamtools_2.26.0        
+ [28] parallelly_1.46.1        limma_3.66.0             rstudioapi_0.17.1       
+ [31] BiocIO_1.20.0            vroom_1.6.7              ica_1.0-3               
+ [34] spatstat.random_3.4-4    car_3.1-3                Matrix_1.7-3            
+ [37] ggbeeswarm_0.7.3         abind_1.4-8              lifecycle_1.0.4         
+ [40] whisker_0.4.1            yaml_2.3.10              edgeR_4.8.2             
+ [43] carData_3.0-5            SparseArray_1.10.8       Rtsne_0.17              
+ [46] grid_4.5.0               promises_1.5.0           dqrng_0.4.1             
+ [49] crayon_1.5.3             miniUI_0.1.2             lattice_0.22-6          
+ [52] beachmat_2.26.0          cowplot_1.2.0            cigarillo_1.0.0         
+ [55] pillar_1.11.1            knitr_1.50               metapod_1.18.0          
+ [58] rjson_0.2.23             xgboost_3.1.3.1          future.apply_1.20.1     
+ [61] codetools_0.2-20         glue_1.8.0               getPass_0.2-4           
+ [64] spatstat.univar_3.1-6    data.table_1.18.0        vctrs_0.6.5             
+ [67] png_0.1-8                spam_2.11-3              gtable_0.3.6            
+ [70] cachem_1.1.0             xfun_0.52                S4Arrays_1.10.1         
+ [73] mime_0.13                tidygraph_1.3.1          survival_3.8-3          
+ [76] statmod_1.5.1            bluster_1.20.0           fitdistrplus_1.2-5      
+ [79] ROCR_1.0-11              nlme_3.1-168             bit64_4.6.0-1           
+ [82] RcppAnnoy_0.0.23         GenomeInfoDb_1.46.2      rprojroot_2.1.1         
+ [85] bslib_0.9.0              irlba_2.3.5.1            vipor_0.4.7             
+ [88] KernSmooth_2.23-26       otel_0.2.0               tidyselect_1.2.1        
+ [91] processx_3.8.6           bit_4.6.0                compiler_4.5.0          
+ [94] curl_7.0.0               git2r_0.36.2             BiocNeighbors_2.4.0     
+ [97] DelayedArray_0.36.0      plotly_4.11.0            stringfish_0.18.0       
+[100] rtracklayer_1.70.1       scales_1.4.0             lmtest_0.9-40           
+[103] callr_3.7.6              digest_0.6.37            goftest_1.2-3           
+[106] spatstat.utils_3.2-1     rmarkdown_2.29           XVector_0.50.0          
+[109] htmltools_0.5.8.1        pkgconfig_2.0.3          fastmap_1.2.0           
+[112] rlang_1.1.6              htmlwidgets_1.6.4        UCSC.utils_1.6.1        
+[115] shiny_1.12.1             farver_2.1.2             jquerylib_0.1.4         
+[118] zoo_1.8-15               jsonlite_2.0.0           BiocParallel_1.44.0     
+[121] BiocSingular_1.26.1      RCurl_1.98-1.17          magrittr_2.0.3          
+[124] Formula_1.2-5            dotCall64_1.2            Rcpp_1.0.14             
+[127] viridis_0.6.5            reticulate_1.44.1        stringi_1.8.7           
+[130] MASS_7.3-65              plyr_1.8.9               parallel_4.5.0          
+[133] listenv_0.10.0           ggrepel_0.9.6            deldir_2.0-4            
+[136] graphlayouts_1.2.2       Biostrings_2.78.0        splines_4.5.0           
+[139] tensor_1.5.1             hms_1.1.4                locfit_1.5-9.12         
+[142] ps_1.9.1                 igraph_2.2.1             spatstat.geom_3.7-0     
+[145] ggsignif_0.6.4           RcppHNSW_0.6.0           reshape2_1.4.5          
+[148] ScaledMatrix_1.18.0      XML_3.99-0.20            evaluate_1.0.5          
+[151] RcppParallel_5.1.11-1    renv_1.1.4               BiocManager_1.30.27     
+[154] tweenr_2.0.3             tzdb_0.5.0               httpuv_1.6.16           
+[157] RANN_2.6.2               polyclip_1.10-7          future_1.69.0           
+[160] scattermore_1.2          ggforce_0.5.0            rsvd_1.0.5              
+[163] broom_1.0.11             xtable_1.8-4             restfulr_0.0.16         
+[166] RSpectra_0.16-2          rstatix_0.7.3            later_1.4.2             
+[169] ragg_1.5.0               viridisLite_0.4.2        memoise_2.0.1           
+[172] beeswarm_0.4.0           GenomicAlignments_1.46.0 cluster_2.1.8.1         
+[175] timechange_0.3.0         globals_0.18.0          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
