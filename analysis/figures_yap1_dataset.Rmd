@@ -1,0 +1,1140 @@
+---
+title: "Make figures for yap1 dataset"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+# Introduction
+
+Make figures for all levels of the yap1 dataset. 
+
+## Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(chisq.posthoc.test)
+
+})
+```
+
+
+## Load data
+
+```{r}
+level_01 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_01_annotated.qs2'))
+level_02 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_02_annotated.qs2'))
+level_03 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2'))
+```
+
+load mixing metric as well
+
+```{r}
+mixing_metric <- qs_read(here('output/analysis/D10025_yap1_dataset/MixingMetric/D10025_yap1_dataset_Level_03_mixing_metric.qs2'))
+```
+
+load DEGs
+
+```{r}
+hippo_gene_degs <- read_csv(here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_hippo_targets_mutVSwt_L3_celltype_fc0.00_minpct_0.00.csv"), show_col_types = F)
+
+all_degs <- read_csv(here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"), show_col_types = F)
+
+```
+
+load GO
+
+```{r}
+go_terms <- qs_read(here("output/analysis/D10025_yap1_dataset/enrichR/D10025_yap1_dataset_markers_L3_celltype_top100_enrichR.qs2"))
+```
+
+
+## Load gene sets + paper settings 
+
+```{r}
+source(here("code/general_scripts/yap1_meox1_important_genes.R"))
+source(here("code/general_scripts/yap1_meox1_paper_settings.R"))
+
+names(genotype_colours) <- c("wildtype", "yap1_mutant")
+```
+
+## Plotting orders
+
+```{r}
+level_01_order <- c(
+  "Endothelial",
+  "Endocardium",
+  "Hematopoietic",
+  "Erythrocyte",
+  "Immune",
+  "Neuronal",
+  "Fibroblast",
+  "Epithelial_Fibroblast",
+  "Epithelial",
+  "Eye_lens",
+  "Chromatophore")
+
+level_02_id_order <- c(
+  "LEC_01",
+  "VEC_01",
+  "VEC_02",
+  "VEC_03",
+  "AEC_01",
+  "AEC_02",
+  "AEC_03",
+  "AEC_04",
+  "AEC_05",
+  "cycling_EC_01",
+  "Endocardium_01"
+)
+
+level_02_celltpe_order <- c(
+  "LEC",
+  "VEC",
+  "AEC",
+  "cycling_EC",
+  "Endocardium"
+)
+
+level_03_celltpe_order <- c(
+  "LEC",
+  "preLEC",
+  "hmVEC",
+  "mVEC",
+  "cVEC",
+  "iVEC"
+)
+
+
+
+```
+
+
+## Plotting colours 
+
+```{r}
+level_02_id_colours <- c(
+  "#a1d99b",
+  "#6baed6",
+  "#4292c6",
+  "#2171b5",
+  "#fee0d2",
+  "#fcbba1",
+  "#fc9272",
+  "#fb6a4a",
+  "#ef3b2c",
+  "#ffffd4",
+  "#d9d9d9")
+
+names(level_02_id_colours) <- level_02_id_order
+
+level_02_celltype_colours <- c(
+  "#a1d99b",
+  "#6baed6",
+  "#fc9272",
+  "#ffffd4",
+  "#d9d9d9")
+
+names(level_02_celltype_colours) <- level_02_celltpe_order
+
+level_03_celltype_colours <- c(
+  "#41ae76",
+  "#a1d99b",
+  "#9ecae1",
+  "#6baed6",
+  "#4292c6",
+  "#084594")
+
+names(level_03_celltype_colours) <- level_03_celltpe_order
+
+```
+
+
+## Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+## directories
+
+```{r}
+save_dir <- here("output/figures")
+name <- "yap1_dataset"
+```
+
+
+
+# LEVEL 01 - ALL CELLS{.tabset}
+
+```{r}
+name_current <- sprintf("%s_Level_01", name)
+```
+
+
+n cells 
+
+```{r}
+level_01 %>% ncol()
+```
+
+n cells per genotype
+
+```{r}
+level_01$Genotype %>% table()
+```
+
+
+## UMAPs
+
+Level 01 UMAPs don't have a colour scheme.
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+#clusterID
+make_dim_umap(seurat = level_01, 
+              group = "L1_cluster_id",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+#celltype
+make_dim_umap(seurat = level_01, 
+              group = "L1_celltype",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+```
+
+
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+#genotype
+make_dim_umap(seurat = level_01, 
+              group = "Genotype",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)
+```
+
+## Dotplot
+
+```{r, fig.align='center', fig.height=6, fig.width=6}
+level_01_relevel <- level_01
+level_01_relevel 		<- SetIdent(level_01_relevel, value="L1_celltype")
+Idents(level_01_relevel) <- factor(level_01_relevel@active.ident, level_01_order)
+
+dotplot <- DotPlot(object = level_01_relevel,
+                   features = level_01_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L1_celltype_annotation.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=5,
+       height=7 )
+
+dotplot
+```
+
+## Barplot
+
+```{r, fig.align='center'}
+barplot <- level_01@meta.data %>% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L1_celltype = factor(L1_celltype, levels =level_01_order) )%>% 
+  group_by(Genotype, L1_celltype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  ggplot(., aes(x =L1_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab("proportion") + xlab("")
+
+filename <- sprintf('%s/%s_L1_celltype_genotype_barplot.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=7,
+       height=4)
+
+barplot
+```
+
+
+
+
+
+
+# LEVEL 02 - ALL ENDOTHELIAL CELLS{.tabset}
+
+```{r}
+name_current <- sprintf("%s_Level_02", name)
+```
+
+
+n cells 
+
+```{r}
+level_02 %>% ncol()
+```
+
+n cells per genotype
+
+```{r}
+level_02$Genotype %>% table()
+```
+
+
+## UMAPs
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+level_02$L2_cluster_id <- factor(x = level_02$L2_cluster_id,levels = level_02_id_order)
+
+#clusterID
+make_dim_umap(seurat = level_02, 
+              group = "L2_cluster_id",
+              width = 5, height = 5,
+              path = save_dir,
+              colours = level_02_id_colours,
+              name = name_current)
+```
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+level_02$L2_celltype <- factor(x = level_02$L2_celltype,levels = level_02_celltpe_order)
+
+#celltype
+make_dim_umap(seurat = level_02, 
+              group = "L2_celltype",
+              width = 5, height = 5,
+              path = save_dir, 
+              colours = level_02_celltype_colours,
+              name = name_current)
+
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+#genotype
+make_dim_umap(seurat = level_02, 
+              group = "Genotype",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)
+```
+
+## Dotplot
+
+```{r, fig.align='center', fig.height=5, fig.width=5}
+level_02_relevel <- level_02
+level_02_relevel 		<- SetIdent(level_02_relevel, value="L2_cluster_id")
+Idents(level_02_relevel) <- factor(level_02_relevel@active.ident, level_02_id_order)
+
+dotplot <- DotPlot(object = level_02_relevel,
+                   features = level_02_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L2_cluster_id_annotation.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=5,
+       height=5)
+
+dotplot
+```
+
+## Barplot
+
+```{r, fig.align='center'}
+barplot <- level_02@meta.data %>% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L2_cluster_id = factor(L2_cluster_id, levels =level_02_id_order) )%>% 
+  group_by(Genotype, L2_cluster_id, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  ggplot(., aes(x =L2_cluster_id, y = count, fill = Genotype)) +
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab("proportion") + xlab("")
+
+filename <- sprintf('%s/%s_L2_cluster_id_genotype_barplot.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=7,
+       height=4)
+
+barplot
+```
+
+
+
+
+
+
+
+# LEVEL 03 - VEC AND LEC{.tabset}
+
+```{r}
+name_current <- sprintf("%s_Level_03", name)
+```
+
+
+n cells 
+
+```{r}
+level_03 %>% ncol()
+```
+
+n cells per genotype
+
+```{r}
+level_03$Genotype %>% table()
+```
+
+
+## UMAPs
+
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+level_03$L3_celltype <- factor(x = level_03$L3_celltype,levels = level_03_celltpe_order)
+
+#celltype
+make_dim_umap(seurat = level_03, 
+              group = "L3_celltype",
+              width = 5, height = 5,
+              path = save_dir, 
+              colours = level_03_celltype_colours,
+              name = name_current)
+
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+#genotype
+make_dim_umap(seurat = level_03, 
+              group = "Genotype",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current, 
+              colours = genotype_colours)
+```
+
+## UMAPs - gene expression
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+genes_to_plot <-c("pcna", "mki67", "cdh6", "ccn2a", "ccn1", "prox1a")
+
+plot_list <- lapply(genes_to_plot, function(gene){
+  make_feature_umap(seurat = level_03, 
+                  feature = gene,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 3)
+
+```
+
+## UMAPs - gene scores 
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+genescores_to_plot <-c("hippo_1", "mapk_1", "wnt_1", "ap1_1")
+
+plot_list <- lapply(genescores_to_plot, function(genescore){
+  make_genescore_umap(seurat = level_03, 
+                  feature = genescore,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 2)
+
+```
+
+Split by genotype
+
+```{r, fig.align='center', fig.height=10, fig.width=15}
+genescores_to_plot <-c("hippo_1", "mapk_1", "wnt_1", "ap1_1")
+
+plot_list <- lapply(genescores_to_plot, function(genescore){
+  make_genescore_split_umap(seurat = level_03, 
+                  feature = genescore,
+              width = 5, height = 5,
+              path = save_dir,  
+              split = "Genotype",
+              name = name_current)
+})
+
+wrap_plots(plot_list, ncol = 2)
+
+```
+
+## UMAPs - transition scores (mature)
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+p1 <-   make_genescore_umap(seurat = level_03, 
+                  feature = "EMBO_LEC_score_1",
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c("#d9d9d9", "darkgreen"),
+              name = name_current)
+
+p2 <- make_genescore_umap(seurat = level_03, 
+                  feature = "EMBO_VEC_score_1",
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c("#d9d9d9", "#406880"),
+              name = name_current)
+
+p1 + p2 + plot_layout(ncol = 2)
+```
+
+transition score with midpoint:
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+md <- level_03[[]]
+coords <- Embeddings(level_03[["umap"]])
+md <- cbind(md, coords)
+
+midpoint <- mean(range(md$EMBO_transient_score))
+
+# Order by absolute difference from the midpoint
+md <- md[order(abs(md$EMBO_transient_score - midpoint)), ]
+
+# plot
+trans_score_legend <- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + #not keeping original green bc its too light
+  # viridis::scale_fill_viridis(option = "E", direction = 1) +
+  theme_classic() 
+trans_score_legend
+
+umapFileName <- sprintf('%s/%s_UMAP_EMBO_transitionscore.pdf', save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_legend,
+       device="pdf",
+       width=7,
+       height=7)
+
+trans_score_nolegend <- trans_score_legend + NoLegend() + NoAxes() + theme(plot.title = element_blank())
+umapFileName <- sprintf('%s/%s_UMAP_EMBO_transitionscore_STRIPPED.pdf', save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_nolegend,
+       device="pdf",
+       width=5,
+       height=5)
+```
+
+
+## UMAPs - transition scores (developmental)
+
+```{r, fig.align='center', fig.height=5, fig.width=10}
+p1 <-   make_genescore_umap(seurat = level_03, 
+                  feature = "LEC_dev_score_1",
+              width = 5, height = 5,
+              path = save_dir,  
+              colours = c("#d9d9d9", "darkgreen"),
+              name = name_current)
+
+p1 + p2 + plot_layout(ncol = 2)
+```
+
+transition score:
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+md <- level_03[[]]
+coords <- Embeddings(level_03[["umap"]])
+md <- cbind(md, coords)
+
+midpoint <- mean(range(md$EMBO_dev_transient_score))
+
+# Order by absolute difference from the midpoint
+md <- md[order(abs(md$EMBO_dev_transient_score - midpoint)), ]
+
+# plot
+trans_score_legend <- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + #not keeping original green bc its too light
+  # viridis::scale_fill_viridis(option = "E", direction = 1) +
+  theme_classic() 
+trans_score_legend
+
+umapFileName <- sprintf('%s/%s_UMAP_EMBO_dev_transitionscore.pdf', save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_legend,
+       device="pdf",
+       width=7,
+       height=7)
+
+trans_score_nolegend <- trans_score_legend + NoLegend() + NoAxes() + theme(plot.title = element_blank())
+umapFileName <- sprintf('%s/%s_UMAP_EMBO_transitionscore_STRIPPED.pdf', save_dir, name_current)
+ggsave(umapFileName,
+       trans_score_nolegend,
+       device="pdf",
+       width=5,
+       height=5)
+```
+
+
+## UMAPs - mixing metric
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+# add to object
+mixing_metric <- mixing_metric[names(mixing_metric) != "iVEC"] #this cluster is only mutant, no mixing
+new_meta <- lapply(mixing_metric, mean) %>% unlist() %>% as.data.frame() %>% 
+  rownames_to_column("L3_celltype") %>% dplyr::rename(mixing_metric=".")  %>% 
+  full_join(level_03@meta.data, .)
+rownames(new_meta) <- rownames(level_03@meta.data)
+level_03@meta.data <- new_meta
+
+# on UMAP
+make_feature_umap(seurat = level_03, 
+                  feature = "mixing_metric",
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)
+  
+```
+
+
+## Dotplot
+
+```{r, fig.align='center', fig.height=5, fig.width=5}
+level_03_relevel <- level_03
+level_03_relevel 		<- SetIdent(level_03_relevel, value="L3_celltype")
+Idents(level_03_relevel) <- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+
+dotplot <- DotPlot(object = level_03_relevel,
+                   features = level_03_annotation_genes,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L3_celltype_annotation.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=5,
+       height=4)
+
+dotplot
+```
+
+Hippo genes
+
+
+```{r, fig.align='center', fig.height=5, fig.width=5}
+level_03_relevel <- level_03
+level_03_relevel 		<- SetIdent(level_03_relevel, value="L3_celltype")
+Idents(level_03_relevel) <- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+
+dotplot <- DotPlot(object = level_03_relevel,
+                   features = hippo_targets,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L3_celltype_hippo.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=5,
+       height=4)
+
+dotplot
+```
+
+
+Hippo gene split by genotype
+
+Add new order.
+
+```{r}
+level_03_celltpe_genotype_order <- c(
+  "LEC_wildtype",
+  "LEC_yap1_mutant",
+  "preLEC_wildtype",
+  "preLEC_yap1_mutant",
+  "hmVEC_wildtype",
+  "hmVEC_yap1_mutant",
+  "mVEC_wildtype",
+  "mVEC_yap1_mutant",
+  "cVEC_wildtype",
+  "cVEC_yap1_mutant",
+  "iVEC_wildtype",
+  "iVEC_yap1_mutant"
+)
+```
+
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+level_03_relevel <- level_03
+level_03_relevel$L3_celltype_genotype <- paste0(level_03_relevel$L3_celltype, "_", level_03_relevel$Genotype)
+level_03_relevel 		<- SetIdent(level_03_relevel, value="L3_celltype_genotype")
+Idents(level_03_relevel) <- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
+
+dotplot <- DotPlot(object = level_03_relevel,
+                   features = hippo_targets,
+                   cluster.idents = F, 
+                   cols = expression_colours)  + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L3_celltype_genotype_hippo.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=7,
+       height=4)
+
+dotplot
+```
+
+Selected other genes, split by genoptype
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+level_03_relevel <- level_03
+level_03_relevel$L3_celltype_genotype <- paste0(level_03_relevel$L3_celltype, "_", level_03_relevel$Genotype)
+level_03_relevel 		<- SetIdent(level_03_relevel, value="L3_celltype_genotype")
+Idents(level_03_relevel) <- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
+
+dotplot <- DotPlot(object = level_03_relevel,
+                   features = c("prox1a", "tbx1", "cdh6", "pcna", "mki67"),
+                   cluster.idents = F, 
+                   cols = expression_colours)  + rotate_x + ylab("") + xlab("")
+
+filename <- sprintf('%s/%s_L3_celltype_genotype_cellcyclelec.pdf', save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device="pdf",
+       width=6,
+       height=4)
+
+dotplot
+```
+
+## Dotplot - ratios
+
+Just meox1
+
+```{r, fig.align='center'}
+input_ratio <- hippo_gene_degs %>% 
+  filter(., Gene == "meox1") %>% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order))
+
+make_ratio_dotplots(input_ratio,
+                    width = 5, height = 3, 
+                    name = paste0(name_current, "_meox1"), path = save_dir)
+```
+
+All hippo genes:
+
+
+```{r, fig.align='center'}
+input_ratio <- hippo_gene_degs %>% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order))
+
+make_ratio_dotplots(input_ratio,
+                    width = 4, height = 4, 
+                    name = paste0(name_current, "_hippogenes"), path = save_dir)
+```
+
+
+## Barplot (and stats)
+
+### Genotype vs celltype
+
+```{r, fig.align='center'}
+barplot <- level_03@meta.data %>% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%>% 
+  group_by(Genotype, L3_celltype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab("proportion") + xlab("")
+
+filename <- sprintf('%s/%s_L3_celltype_genotype_barplot.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=6,
+       height=4)
+
+barplot
+```
+
+Stats to support this:
+
+Using the chisq.posthoc.test package to perform a post-hoc analysis for this.
+
+```{r}
+M <-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
+
+global_test <- chisq.test(M)
+global_test
+
+res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
+    pivot_longer(., cols = level_03$L3_celltype %>% unique(), names_to = "L3_celltype", values_to = "entry") %>% 
+    pivot_wider(., names_from = "Value", values_from = "entry")
+  
+res <- res %>% 
+  distinct(., L3_celltype, .keep_all = T) %>%  #residuals for 2 groups are mirrored 
+  mutate(., Residuals = abs(Residuals), 
+            is_sig = case_when(`p values` > 0.05 ~ "", 
+                              `p values` <= 0.0001 ~ "****",
+                               `p values` <= 0.001 ~ "***",
+                              `p values` <= 0.01 ~ "**",
+                                `p values` <= 0.05 ~ "*"
+                                 )) %>% 
+  select(., -Dimension)
+
+res
+
+```
+
+
+Add to barplot:
+
+```{r, fig.align='center'}
+barplot <- level_03@meta.data %>% 
+  group_by(Genotype, L3_celltype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  full_join(., res) %>% 
+    mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%>% 
+  mutate(., is_sig = ifelse(Genotype == "yap1_mutant", is_sig, NA)) %>% 
+  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat="identity", position = "fill") +
+  geom_text(aes(label = is_sig, y = 1.05),size=6) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab("proportion") + xlab("") + 
+  ggtitle(paste0("chisq p-value: ",global_test$p.value))
+
+filename <- sprintf('%s/%s_L3_celltype_genotype_barplot_stats.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=6,
+       height=4)
+
+barplot
+```
+
+
+### Genotype vs cell cycle stage (for each celltype)
+
+
+```{r, fig.align='center', fig.height=5, fig.width=12}
+#cell cycle
+barplot <- level_03@meta.data %>% 
+  mutate(., tricycle_stage = factor(tricycle_stage, levels = names(cols_cellcycle)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order),
+            Genotype = factor(Genotype, levels = names(genotype_colours))) %>% 
+  group_by(tricycle_stage, L3_celltype,Genotype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  group_by(., Genotype, L3_celltype) %>% 
+  mutate(., perc_pos = count/sum(count),
+         perc_label = round(perc_pos, 2)*100) %>% 
+  ggplot(., aes(x =Genotype, y = count, fill = tricycle_stage)) +
+  geom_bar(stat="identity", position = "fill") +
+  geom_text(aes(label = perc_label, y = perc_pos), position = position_stack(vjust = 0.5), size=5)+ 
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = cols_cellcycle)+
+  ylab("proportion") + xlab("") +
+  facet_wrap(~L3_celltype, nrow=1) + strip_fix
+
+filename <- sprintf('%s/%s_L3_celltype_tricycle_genotype_barplot.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=12,
+       height=5)
+
+barplot
+```
+
+
+Stats to support this:
+
+```{r}
+global_stats <- lapply(c("mVEC","preLEC", "LEC","hmVEC" ,"cVEC"), function(x){
+  filtered_seurat <- level_03@meta.data %>% 
+  filter(., L3_celltype == x) %>% # for each cell type population
+  select(., Genotype, tricycle_stage) 
+  M <-table(filtered_seurat$Genotype, filtered_seurat$tricycle_stage) + 0.001 #add very small number to deal with test sensitivity to zeros
+  Xsq <- chisq.test(M)  # Prints test summary
+  df_return <- data.frame(statistic = Xsq$statistic, 
+                          pvalue= Xsq$p.value)
+  return(df_return)
+})
+
+names(global_stats) <- c("mVEC","preLEC", "LEC","hmVEC" ,"cVEC")
+
+global_stats <- global_stats %>% bind_rows(., .id = "L3_celltype")  %>% 
+  mutate(., is_sig = case_when(pvalue > 0.05 ~ "", 
+                              pvalue <= 0.0001 ~ "****",
+                               pvalue <= 0.001 ~ "***",
+                              pvalue <= 0.01 ~ "**",
+                                pvalue<= 0.05 ~ "*"
+                                 )) 
+
+global_stats
+```
+
+Using the chisq.posthoc.test package to perform a post-hoc analysis for this. Residuals only end up being meaningful for the celltypes with global changes. 
+
+```{r}
+post_hoc_tests_to_run <-global_stats %>% filter(., pvalue < 0.05) %>% pull(L3_celltype)
+
+all_x_tests <- lapply(post_hoc_tests_to_run, function(x){
+  filtered_seurat <- level_03@meta.data %>% 
+  filter(., L3_celltype == x) %>% # for each cell type population
+  select(., Genotype, tricycle_stage) 
+  M <-table(filtered_seurat$Genotype, filtered_seurat$tricycle_stage) + 0.001 #add very small number to deal with test sensitivity to zeros
+  res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
+    pivot_longer(., cols = level_03$tricycle_stage %>% unique(), names_to = "tricycle_stage", values_to = "entry") %>% 
+    pivot_wider(., names_from = "Value", values_from = "entry")
+
+  return(res)
+})
+
+names(all_x_tests) <- post_hoc_tests_to_run
+
+all_x_tests_df <- all_x_tests %>% bind_rows(., .id = "L3_celltype") %>% 
+  distinct(., L3_celltype, tricycle_stage, .keep_all = T) %>%  #residuals for 2 groups are mirrored 
+  mutate(., Residuals = abs(Residuals), 
+            is_sig = case_when(`p values` > 0.05 ~ "", 
+                              `p values` <= 0.0001 ~ "****",
+                               `p values` <= 0.001 ~ "***",
+                              `p values` <= 0.01 ~ "**",
+                                `p values` <= 0.05 ~ "*"
+                                 )) %>% 
+  select(., -Dimension)
+
+all_x_tests_df
+
+```
+
+Barplot with stats:
+
+```{r, fig.align='center', fig.height=5, fig.width=12}
+#cell cycle
+barplot <- level_03@meta.data %>% 
+  group_by(tricycle_stage, L3_celltype,Genotype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  group_by(., Genotype, L3_celltype) %>% 
+  mutate(., perc_pos = count/sum(count),
+         perc_label = round(perc_pos, 2)*100) %>% 
+  ungroup() %>% 
+  full_join(., all_x_tests_df) %>% 
+  full_join(., global_stats %>% select(., is_sig, L3_celltype, pvalue) %>% dplyr::rename(is_sig_global=is_sig, pvalue_global=pvalue)) %>%  
+  mutate(., tricycle_stage = factor(tricycle_stage, levels = names(cols_cellcycle)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order),
+            Genotype = factor(Genotype, levels = names(genotype_colours)), 
+            is_sig = ifelse(Genotype == "yap1_mutant", is_sig, NA), 
+            is_sig_global = ifelse(Genotype == "yap1_mutant", is_sig_global, NA),
+            pvalue_global = ifelse(Genotype == "yap1_mutant" & is_sig_global !="", pvalue_global, NA)) %>% 
+  ggplot(., aes(x =Genotype, y = count, fill = tricycle_stage)) +
+  geom_bar(stat="identity", position = "fill") +
+  geom_text(aes(label = perc_label, y = perc_pos), position = position_stack(vjust = 0.5), size=5)+ 
+  geom_text(aes(label = is_sig, y = perc_pos), position = position_stack(vjust = 0.9), size=5)+ 
+  geom_text(aes(label = is_sig_global, y = 1.1, x= 1.5), size=7)+ 
+  geom_text(aes(label = pvalue_global, y = 1.05, x= 1.5), size=3)+ 
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = cols_cellcycle)+
+  ylab("proportion") + xlab("") +
+  facet_wrap(~L3_celltype, nrow=1) + strip_fix
+
+filename <- sprintf('%s/%s_L3_celltype_tricycle_genotype_barplot_stats.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device="pdf",
+       width=12,
+       height=5)
+
+barplot
+```
+
+
+
+## Volcano plot
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+degs_mark <- all_degs %>% 
+  filter(., group == "hmVEC" & p_val_adj < 0.05) 
+
+hippo_mark <- all_degs %>% 
+  filter(., group == "hmVEC" & Gene %in% hippo_targets)
+
+plot <- all_degs %>% 
+  filter(., group == "hmVEC") %>% 
+  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
+  geom_point(colour="#d9d9d9") +
+  geom_point(data = degs_mark, colour="#969696") +
+  geom_point(data = hippo_mark, colour="red", size=2) +
+  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
+  plot_sizing + ylab("-log10(p-value)") + xlab("log2FC")
+
+
+filename <- sprintf('%s/%s_hmVEC_volcano_adjpvalue.pdf', save_dir, name_current)
+ggsave(filename,
+       plot,
+       device="pdf",
+       width=6,
+       height=5)
+
+plot
+```
+
+Just p-value
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+degs_mark <- all_degs %>% 
+  filter(., group == "hmVEC" & p_val < 0.05) 
+
+hippo_mark <- all_degs %>% 
+  filter(., group == "hmVEC" & Gene %in% hippo_targets)
+
+plot <- all_degs %>% 
+  filter(., group == "hmVEC") %>% 
+  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
+  geom_point(colour="#d9d9d9") +
+  geom_point(data = degs_mark, colour="#969696") +
+  geom_point(data = hippo_mark, colour="red", size=2) +
+  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
+  plot_sizing + ylab("-log10(p-value)") + xlab("log2FC")
+
+
+filename <- sprintf('%s/%s_hmVEC_volcano_pvalue.pdf', save_dir, name_current)
+ggsave(filename,
+       plot,
+       device="pdf",
+       width=6,
+       height=5)
+
+plot
+```
+
+
+## DEG barplots
+
+p-value
+
+```{r, fig.align='center', fig.height=4, fig.width=15}
+plot <- hippo_gene_degs %>% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order)) %>% 
+  mutate(., label = case_when(p_val > 0.05 ~ "", 
+                              p_val <= 0.0001 ~ "****",
+                               p_val <= 0.001 ~ "***",
+                              p_val <= 0.01 ~ "**",
+                                 p_val <= 0.05 ~ "*"
+                                 )) %>% 
+  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
+  geom_bar(position = position_dodge2(), stat = "identity") +
+  geom_text(aes(label=label)) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = level_03_celltype_colours) +
+  facet_wrap(~group, nrow=1) + strip_fix + ylab("log2FC") + xlab("")
+
+
+filename <- sprintf('%s/%s_DEG_hippo_barplot_pvalue.pdf', save_dir, name_current)
+ggsave(filename,
+       plot,
+       device="pdf",
+       width=12,
+       height=4)
+
+plot
+```
+
+adjusted
+
+```{r, fig.align='center', fig.height=4, fig.width=15}
+plot<- hippo_gene_degs %>% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order)) %>% 
+  mutate(., label = case_when(p_val_adj > 0.05 ~ "", 
+                              p_val_adj <= 0.0001 ~ "****",
+                               p_val_adj <= 0.001 ~ "***",
+                              p_val_adj <= 0.01 ~ "**",
+                                 p_val_adj <= 0.05 ~ "*"
+                                 )) %>% 
+  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
+  geom_bar(position = position_dodge2(), stat = "identity") +
+  geom_text(aes(label=label)) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = level_03_celltype_colours) +
+  facet_wrap(~group, nrow=1) + strip_fix+ ylab("log2FC") + xlab("")
+
+filename <- sprintf('%s/%s_DEG_hippo_barplot_adjustedpvalue.pdf', save_dir, name_current)
+ggsave(filename,
+       plot,
+       device="pdf",
+       width=12,
+       height=4)
+
+plot
+```
+
+
+## GO plot for IL_VEC
+
+```{r, fig.align='center', fig.height=5, fig.width=7}
+plot <- go_terms %>% 
+  mutate(., Term = gsub("_WP.*", "", Term)) %>% 
+  filter(., cluster == "iVEC" & Adjusted.P.value < 0.05) %>% 
+  ggplot(., aes(y = Genes, x = Combined.Score)) +
+  geom_bar(stat="identity", fill = "purple4") +
+  geom_text(aes(label = Term, x=0), colour = "grey90", size = 6, hjust=-0.01) +
+  plot_sizing + xlab("enrichR score") 
+  
+filename <- sprintf('%s/%s_ivec_barplot_GOterms.pdf', save_dir, name_current)
+ggsave(filename,
+       plot,
+       device="pdf",
+       width=10,
+       height=4)
+
+plot
+
+```
+
+
+
+
