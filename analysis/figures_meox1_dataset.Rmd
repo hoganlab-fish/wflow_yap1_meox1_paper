@@ -957,7 +957,6 @@ ggsave(filename,
 barplot
 ```
 
-
 ## GO plot for hmVEC
 
 Note, no upregulated terms with gene set size >1. Just make plot for downregulated
@@ -1010,5 +1009,244 @@ plot
 
 ```
 
+
+## Boxplot for scores
+
+Normality tests: Shapiro + KS. For both, if the p-value is > 0.05 then distribution is significantly different from normal. 
+
+Which means:
+
+for pvalue < 0.05 -> non-parametric test (KW+wilcox)
+
+for pvalue > 0.05 -> parametric test (ANOVA+ttest)
+
+Check for normality for all scores:
+
+```{r}
+all_scores <- c("hippo_1", "mapk_1", "wnt_1", "ap1_1", "EMBO_LEC_score_1", "LEC_dev_score_1", 
+                "EMBO_VEC_score_1", "EMBO_transient_score", "EMBO_dev_transient_score")
+
+all_res <- lapply(all_scores, function(score){
+  data_in <- level_03@meta.data %>% pull(score)
+  df_out <- data.frame(shapiro_res = shapiro.test(data_in)$p.value,
+                       ks_res = ks.test(data_in, "pnorm")$p.value)
+  plots_out <- ggdensity(data_in) + ggqqplot(data_in) + plot_layout(ncol =1)+ plot_annotation(title = score)
+  
+  return(list(plot= plots_out, stats=df_out))
+  
+})
+names(all_res) <- all_scores
+```
+
+Show normality plots
+
+```{r, fig.align='center', fig.height=10, fig.width=10}
+plot_list <- lapply(all_res, function(item) wrap_elements(item$plot))
+wrap_plots(plot_list)
+```
+
+Show stats results
+
+```{r}
+lapply(all_res, function(item) item$stats) %>% bind_rows(., .id="score")
+```
+
+All are significant, so everything will be non-parametric! 
+
+
+Make boxplots with stats for everything:
+
+```{r}
+run_boxplot_stats_adjusted_pval <- function(df_in= level_03@meta.data,
+                              score, 
+                              celltype_order){
+  
+  #new labels for x axis
+  new_labels <- df_in %>% 
+  select(., score, L3_celltype, Genotype) %>% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+  group_by(Genotype, L3_celltype) %>% 
+  summarise(., count = n()) %>% 
+  group_by(L3_celltype) %>% 
+  summarise(., label = paste0(L3_celltype,"\nwt=", count[1] , ", mut=",count[2])) %>% 
+  pull(label) %>% unique()
+  
+
+  #rename
+  colnames(df_in)[colnames(df_in) == score] <- "score"
+  
+  #y limits for test
+  y_max <- df_in$score %>% max()
+  y_pairwise <- y_max + (y_max*0.2)
+  y_global <- y_max + (y_max*0.4)
+  
+  #get stats
+  stat_list <- list()
+  stat_list[["global"]] <- compare_means(score ~ Genotype,
+                               data = df_in, 
+                               method = "kruskal.test")
+  stat_list[["pairwise"]] <- compare_means(score ~ Genotype,
+                                 data =df_in, 
+                                 group.by = "L3_celltype", 
+                                 method = "wilcox.test") %>% 
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                 p.adj <= 0.05 ~ "*",
+                                 p.adj <= 0.01 ~ "**",
+                                 p.adj <= 0.001 ~ "***",
+                                 p.adj <= 0.0001 ~ "****"))
+  
+  plot <- df_in %>% 
+    select(., score, L3_celltype, Genotype) %>% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order),
+            Genotype = factor(Genotype, levels = c("wildtype", "meox1_mutant"))) %>% 
+  ggplot(.) +
+  geom_boxplot(aes(x = L3_celltype, y = score, fill = Genotype), 
+               position = position_dodge2(),outlier.shape = NA) +
+  scale_fill_manual(values = genotype_colours) +
+  theme_bw(base_size = 14)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+  xlab("") + ylab(paste0(score, " score")) +
+  geom_jitter(aes(x = L3_celltype, y = score, fill = Genotype),
+              size = 0.1, alpha = 0.5, 
+              position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  geom_text(data = stat_list$pairwise, aes(x = L3_celltype, y = y_pairwise, label = sig_sign)) +
+  geom_text(data = stat_list$global, aes(x = 1.7, y = y_global, label = paste0(method, ", p = ", p.adj))) +
+  scale_x_discrete(labels= new_labels) +
+  ggtitle(score)
+  
+  
+  df_stats <- bind_rows(stat_list)
+  
+  return(list(plot=plot, stat=df_stats))
+
+}
+
+
+```
+
+
+Run for all scores:
+
+```{r, warning=FALSE, message=FALSE}
+results <- lapply(all_scores, function(score_input) run_boxplot_stats_adjusted_pval(score = score_input, 
+                                                                        celltype_order = level_03_celltpe_order))
+```
+
+```{r, fig.align='center', fig.height=15, fig.width=15}
+plot_list <- lapply(results, function(item) item$plot)
+
+patch <- wrap_plots(plot_list, guides = "collect")
+
+filename <- sprintf('%s/%s_module_scores_boxplots.pdf', save_dir, name_current)
+ggsave(filename,
+       patch,
+       device="pdf",
+       width=15,
+       height=15)
+
+patch
+
+```
+
+
+Show stats details:
+
+```{r}
+names(results) <- all_scores
+stats_DF <- lapply(results, function(item) item$stat) %>% bind_rows(., .id="score")
+
+#also export 
+filename <- sprintf("%s/meox1_dataset_Level_03_module_scores_boxplots_stats.csv", save_dir)
+write.csv(x = stats_DF, file = filename, row.names = FALSE)
+
+DT::datatable(stats_DF, class = 'cell-border stripe', rownames = FALSE)
+
+```
+
+
+Make plots with raw pvalue:
+
+```{r}
+run_boxplot_stats_RAW_pval <- function(df_in= level_03@meta.data,
+                              score, 
+                              celltype_order){
+  
+  #new labels for x axis
+  new_labels <- df_in %>% 
+  select(., score, L3_celltype, Genotype) %>% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+  group_by(Genotype, L3_celltype) %>% 
+  summarise(., count = n()) %>% 
+  group_by(L3_celltype) %>% 
+  summarise(., label = paste0(L3_celltype,"\nwt=", count[1] , ", mut=",count[2])) %>% 
+  pull(label) %>% unique()
+  
+
+  #rename
+  colnames(df_in)[colnames(df_in) == score] <- "score"
+  
+  #y limits for test
+  y_max <- df_in$score %>% max()
+  y_pairwise <- y_max + (y_max*0.2)
+  y_global <- y_max + (y_max*0.4)
+  
+  #get stats
+  stat_list <- list()
+  stat_list[["global"]] <- compare_means(score ~ Genotype,
+                               data = df_in, 
+                               method = "kruskal.test")
+  stat_list[["pairwise"]] <- compare_means(score ~ Genotype,
+                                 data =df_in, 
+                                 group.by = "L3_celltype", 
+                                 method = "wilcox.test")
+  
+  plot <- df_in %>% 
+    select(., score, L3_celltype, Genotype) %>% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order),
+            Genotype = factor(Genotype, levels = c("wildtype", "meox1_mutant"))) %>% 
+  ggplot(.) +
+  geom_boxplot(aes(x = L3_celltype, y = score, fill = Genotype), 
+               position = position_dodge2(),outlier.shape = NA) +
+  scale_fill_manual(values = genotype_colours) +
+  theme_bw(base_size = 14)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+  xlab("") + ylab(paste0(score, " score")) +
+  geom_jitter(aes(x = L3_celltype, y = score, fill = Genotype),
+              size = 0.1, alpha = 0.5, 
+              position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  geom_text(data = stat_list$pairwise, aes(x = L3_celltype, y = y_pairwise, label = p.signif)) +
+  geom_text(data = stat_list$global, aes(x = 1.7, y = y_global, label = paste0(method, ", p = ", p.adj))) +
+  scale_x_discrete(labels= new_labels) +
+  ggtitle(paste0(score, ", RAW PVALUE"))
+  
+  
+  return(plot)
+
+}
+
+
+```
+
+
+Run for all scores:
+
+```{r, warning=FALSE, message=FALSE}
+plot_list <- lapply(all_scores, function(score_input) run_boxplot_stats_RAW_pval(score = score_input, 
+                                                                        celltype_order = level_03_celltpe_order))
+```
+
+```{r, fig.align='center', fig.height=15, fig.width=15}
+patch <- wrap_plots(plot_list, guides = "collect")
+
+filename <- sprintf('%s/%s_module_scores_boxplots_RAWpvalue.pdf', save_dir, name_current)
+ggsave(filename,
+       patch,
+       device="pdf",
+       width=15,
+       height=15)
+
+patch
+
+```
 
 
