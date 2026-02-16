@@ -8,156 +8,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-# **FIGURES FOR PAPER**
 
-[yap1 dataset, all levels](figures_yap1_dataset.html)
+# Welcome
 
-[meox1 dataset, all levels](figures_meox1_dataset.html)
+This workflowR website contains the scRNAseq analysis for the yap1/meox1 paper
 
+# Tab Paper
 
-# **ANNOTATION FOR PAPER**
+This tab contains all information for the paper
 
-[yap1 dataset, all levels](pre_processing_D10025_yap1_dataset_paper_annotations_allLevels.html)
+# Tab other analysis
 
-[meox1 dataset, all levels](pre_processing_D10051_meox1_dataset_paper_annotations_allLevels.html)
-
-
-# **Pre-processing - yap1 dataset**
-
-## Levels{.tabset}
-
-### Level 01 (all cells)
-
-All cells captured in sequencing
-
-[Level 01](pre_processing_D10025_yap1_dataset_makeObject_Level01.html)
-
-[Level 01; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.html)
-
-
-[Level 01, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html), using SCT and regressing out %mito
-
-[Level 01; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level01_SCT_annotation.html), using SCT and regressing out %mito + adding annotation
-
-
-### Level 02 (all endothelial cells; kdrl+)
-
-Endothelial cell subclusters; >95% endothelial cell purity.
-
-[Level 02; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
-
-[Level 02; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level02_regressCC.html), regressing out %mito and cell cycle position
-
-[Level 02; annotation, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level02_SCT_annotation.html), using SCT and regressing out %mito and cell cycle position
-
-### Level 03 (VEC + LEC cells)
-
-Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
-
-Cycling cells contain a mix of all endothelial cells, which is why we are not selecting them. 
-
-[Level 03](pre_processing_D10025_yap1_dataset_makeObject_Level03.html) only making object
-
-[Level 03; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level03_annotation.html) - not definitive labels yet, just exploration 
-
-[Level 03, SCT](pre_processing_D10025_yap1_dataset_makeObject_Level03_SCT.html) only making object
-
-
-# **Pre-processing - meox1 dataset**
-
-## Levels - stringent threshold{.tabset}
-
-### Level 01 (all cells)
-
-[Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
-
-[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation_stringent.html)- added a second nFeature filter to try to clean up more
-
-### Level 02 (all endothelial cells; kdrl+)
-
-Endothelial cell subclusters; >95% endothelial cell purity.
-
-[Level 02; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level02_stringent_annotation.html): both making object + annotation in the same doc
-
-### Level 03 (VEC + LEC cells)
-
-Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
-
-[Level 03](pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent.html) only making object
-
-[Level 03; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.html) 
-
-
-## Levels - lenient threshold{.tabset}
-
-Keeping these for documentation to show that we really should enforce very strict thresholds as the cells form clusters downstream that don't really seem to capture any biology. 
-
-### Level 01 (all cells)
-
-[Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
-
-[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation.html)- added a second nFeature filter to try to clean up more
-
-### Level 02 (all endothelial cells; kdrl+)
-
-Endothelial cell subclusters; >95% endothelial cell purity.
-
-[Level 02; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
-
-### Level 03 (VEC + LEC cells)
-
-Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
-
-[Level 03](pre_processing_D10051_meox1_dataset_makeObject_Level03.html) - highlights low quality clusters, objects not exported.
-
-
-# **yap1 vs meox1 LEC-VEC - correlations**
-
-Correlate GEX between clusters of the different datasets to see similarities and differences
-
-[yap1 vs meox1 correlations](pre_processing_correlation_yap1_vs_meox1_dataset_Level03.html)
-
-# **Pre-processing - wildtype only yap + meox1 dataset**
-
-## Levels{.tabset}
-
-### Level 01 (all cells)
-
-[Level 01; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level01_stringent_annotation.html): both making object + annotation in the same doc 
-
-### Level 02 (all endothelial cells; kdrl+)
-
-[Level 02; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level02_stringent_annotation.html): both making object + annotation in the same doc
-
-### Level 03 (VEC + LEC cells)
-
-Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
-
-[Level 03](pre_processing_combining_wildtypes_dataset_makeObject_Level03_stringent.html) only making object
-
-
-# **Pre-processing - wildtype only yap + meox1 dataset**
-
-## Levels - lenient threshold{.tabset}
-
-Keeping these for documentation to show that we really should enforce very strict thresholds as the cells form clusters downstream that don't really seem to capture any biology. 
-
-### Level 01 (all cells)
-
-[Level 01; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level01_annotation.html): both making object + annotation in the same doc 
-
-### Level 02 (all endothelial cells; kdrl+)
-
-[Level 02; annotation](pre_processing_combining_wildtypes_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
-
-### Level 03 (VEC + LEC cells)
-
-Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
-
-[Level 03](pre_processing_combining_wildtypes_dataset_makeObject_Level03.html) only making object
-
--> note there's a weird small library size meox1 batch hippo responsive cluster, will likely need to be reanalysed
-
-
+This contain tab contains the rest of the analysis, like different thresholds or combining the wildtype samples to inspect the time difference. Contains ALL processing docs.
 
 

@@ -1,0 +1,82 @@
+---
+title: "yap1/meox1 paper"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+# **FIGURES FOR PAPER**
+
+[yap1 dataset, all levels](figures_yap1_dataset.html)
+
+[meox1 dataset, all levels](figures_meox1_dataset.html)
+
+
+# **ANNOTATION FOR PAPER**
+
+This contains the final annotations for the paper
+
+[yap1 dataset, all levels](pre_processing_D10025_yap1_dataset_paper_annotations_allLevels.html)
+
+[meox1 dataset, all levels](pre_processing_D10051_meox1_dataset_paper_annotations_allLevels.html)
+
+
+# **Pre-processing - yap1 dataset**
+
+## Levels{.tabset}
+
+### Level 01 (all cells)
+
+All cells captured in sequencing
+
+[Level 01](pre_processing_D10025_yap1_dataset_makeObject_Level01.html)
+
+[Level 01; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level01_annotation.html)
+
+
+### Level 02 (all endothelial cells; kdrl+)
+
+Endothelial cell subclusters; >95% endothelial cell purity.
+
+[Level 02; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
+
+
+### Level 03 (VEC + LEC cells)
+
+Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
+
+Cycling cells contain a mix of all endothelial cells, which is why we are not selecting them. 
+
+[Level 03](pre_processing_D10025_yap1_dataset_makeObject_Level03.html) only making object
+
+
+# **Pre-processing - meox1 dataset**
+
+## Levels 
+
+### Level 01 (all cells)
+
+[Level 01](pre_processing_D10051_meox1_dataset_makeObject_Level01.html)
+
+[Level 01; annotation + refiltering](pre_processing_D10051_meox1_dataset_makeObject_Level01_annotation_stringent.html)- added a second nFeature filter to try to clean up more
+
+### Level 02 (all endothelial cells; kdrl+)
+
+Endothelial cell subclusters; >95% endothelial cell purity.
+
+[Level 02; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level02_stringent_annotation.html): both making object + annotation in the same doc
+
+### Level 03 (VEC + LEC cells)
+
+Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cells and endocardium. 
+
+[Level 03](pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent.html) only making object
+
+[Level 03; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.html) 
+
+
+
+
