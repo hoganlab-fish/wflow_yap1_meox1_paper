@@ -36,6 +36,15 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -352,7 +361,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Make figures for yap1 dataset</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">09. February 2026</h4>
+<h4 class="date">16. February 2026</h4>
 
 </div>
 
@@ -381,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-02-09
+<strong>Last updated:</strong> 2026-02-16
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7643fa0e3095a39db5910ede34bb950acddbda17targetblank7643fa0a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree06f2cdaf301b53140c373d4a33c7df9ac29a05ddtargetblank06f2cdaa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7643fa0e3095a39db5910ede34bb950acddbda17" target="_blank">7643fa0</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/06f2cdaf301b53140c373d4a33c7df9ac29a05dd" target="_blank">06f2cda</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7643fa0e3095a39db5910ede34bb950acddbda17targetblank7643fa0a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree06f2cdaf301b53140c373d4a33c7df9ac29a05ddtargetblank06f2cdaa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7643fa0e3095a39db5910ede34bb950acddbda17" target="_blank">7643fa0</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/06f2cdaf301b53140c373d4a33c7df9ac29a05dd" target="_blank">06f2cda</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -616,6 +625,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/06f2cdaf301b53140c373d4a33c7df9ac29a05dd/analysis/figures_yap1_dataset.Rmd" target="_blank">06f2cda</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-16
+</td>
+<td>
+wflow_publish(c("analysis/figures_meox1_dataset.Rmd",
+"analysis/figures_yap1_dataset.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/a82bb26f15f49efa36e52996b4cdc54f12aee3a7/docs/figures_yap1_dataset.html" target="_blank">a82bb26</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-02-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2979,6 +3023,210 @@ Michelle Meier
 </table>
 </div>
 </div>
+</div>
+<div id="boxplot-for-scores" class="section level2">
+<h2>Boxplot for scores</h2>
+<p>Normality test: KS only, shapiro can’t handle &gt; 5000 sample size.
+If the p-value is &gt; 0.05 then distribution is significantly different
+from normal.</p>
+<p>Which means:</p>
+<p>for pvalue &lt; 0.05 -&gt; non-parametric test (KW+wilcox)</p>
+<p>for pvalue &gt; 0.05 -&gt; parametric test (ANOVA+ttest)</p>
+<p>Check for normality for all scores:</p>
+<pre class="r"><code>all_scores &lt;- c(&quot;hippo_1&quot;, &quot;mapk_1&quot;, &quot;wnt_1&quot;, &quot;ap1_1&quot;, &quot;EMBO_LEC_score_1&quot;, &quot;LEC_dev_score_1&quot;, 
+                &quot;EMBO_VEC_score_1&quot;, &quot;EMBO_transient_score&quot;, &quot;EMBO_dev_transient_score&quot;)
+
+all_res &lt;- lapply(all_scores, function(score){
+  data_in &lt;- level_03@meta.data %&gt;% pull(score)
+  df_out &lt;- data.frame(ks_res = ks.test(data_in, &quot;pnorm&quot;)$p.value)
+  plots_out &lt;- ggdensity(data_in) + ggqqplot(data_in) + plot_layout(ncol =1)+ plot_annotation(title = score)
+  
+  return(list(plot= plots_out, stats=df_out))
+  
+})</code></pre>
+<pre><code>Warning in ks.test.default(data_in, &quot;pnorm&quot;): ties should not be present for
+the one-sample Kolmogorov-Smirnov test</code></pre>
+<pre class="r"><code>names(all_res) &lt;- all_scores</code></pre>
+<p>Show normality plots</p>
+<pre class="r"><code>plot_list &lt;- lapply(all_res, function(item) wrap_elements(item$plot))
+wrap_plots(plot_list)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-60-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Show stats results</p>
+<pre class="r"><code>lapply(all_res, function(item) item$stats) %&gt;% bind_rows(., .id=&quot;score&quot;)</code></pre>
+<pre><code>                     score ks_res
+1                  hippo_1      0
+2                   mapk_1      0
+3                    wnt_1      0
+4                    ap1_1      0
+5         EMBO_LEC_score_1      0
+6          LEC_dev_score_1      0
+7         EMBO_VEC_score_1      0
+8     EMBO_transient_score      0
+9 EMBO_dev_transient_score      0</code></pre>
+<p>All are significant, so everything will be non-parametric! I think
+this is also related to the large number of cells..</p>
+<p>Make boxplots with stats for everything:</p>
+<pre class="r"><code>run_boxplot_stats_adjusted_pval &lt;- function(df_in= level_03@meta.data,
+                              score, 
+                              celltype_order){
+  
+  #new labels for x axis
+  new_labels &lt;- df_in %&gt;% 
+  select(., score, L3_celltype, Genotype) %&gt;% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+  group_by(Genotype, L3_celltype) %&gt;% 
+  summarise(., count = n()) %&gt;% 
+  group_by(L3_celltype) %&gt;% 
+  summarise(., label = paste0(L3_celltype,&quot;\nwt=&quot;, count[1] , &quot;, mut=&quot;,count[2])) %&gt;% 
+  pull(label) %&gt;% unique()
+  
+
+  #rename
+  colnames(df_in)[colnames(df_in) == score] &lt;- &quot;score&quot;
+  
+  #y limits for test
+  y_max &lt;- df_in$score %&gt;% max()
+  y_pairwise &lt;- y_max + (y_max*0.2)
+  y_global &lt;- y_max + (y_max*0.4)
+  
+  #get stats
+  stat_list &lt;- list()
+  stat_list[[&quot;global&quot;]] &lt;- compare_means(score ~ Genotype,
+                               data = df_in, 
+                               method = &quot;kruskal.test&quot;)
+  stat_list[[&quot;pairwise&quot;]] &lt;- compare_means(score ~ Genotype,
+                                 data =df_in, 
+                                 group.by = &quot;L3_celltype&quot;, 
+                                 method = &quot;wilcox.test&quot;) %&gt;% 
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                 p.adj &lt;= 0.05 ~ &quot;*&quot;,
+                                 p.adj &lt;= 0.01 ~ &quot;**&quot;,
+                                 p.adj &lt;= 0.001 ~ &quot;***&quot;,
+                                 p.adj &lt;= 0.0001 ~ &quot;****&quot;))
+  
+  plot &lt;- df_in %&gt;% 
+    select(., score, L3_celltype, Genotype) %&gt;% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order),
+            Genotype = factor(Genotype, levels = c(&quot;wildtype&quot;, &quot;yap1_mutant&quot;))) %&gt;% 
+  ggplot(.) +
+  geom_boxplot(aes(x = L3_celltype, y = score, fill = Genotype), 
+               position = position_dodge2(),outlier.shape = NA) +
+  scale_fill_manual(values = genotype_colours) +
+  theme_bw(base_size = 14)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+  xlab(&quot;&quot;) + ylab(paste0(score, &quot; score&quot;)) +
+  geom_jitter(aes(x = L3_celltype, y = score, fill = Genotype),
+              size = 0.1, alpha = 0.5, 
+              position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  geom_text(data = stat_list$pairwise, aes(x = L3_celltype, y = y_pairwise, label = sig_sign)) +
+  geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, &quot;, p = &quot;, p.adj))) +
+  scale_x_discrete(labels= new_labels) +
+  ggtitle(score)
+  
+  
+  df_stats &lt;- bind_rows(stat_list)
+  
+  return(list(plot=plot, stat=df_stats))
+
+}</code></pre>
+<p>Run for all scores:</p>
+<pre class="r"><code>results &lt;- lapply(all_scores, function(score_input) run_boxplot_stats_adjusted_pval(score = score_input, 
+                                                                        celltype_order = level_03_celltpe_order))</code></pre>
+<pre class="r"><code>plot_list &lt;- lapply(results, function(item) item$plot)
+
+patch &lt;- wrap_plots(plot_list, guides = &quot;collect&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_module_scores_boxplots.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       patch,
+       device=&quot;pdf&quot;,
+       width=15,
+       height=15)
+
+patch</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-64-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Show stats details:</p>
+<pre class="r"><code>names(results) &lt;- all_scores
+stats_DF &lt;- lapply(results, function(item) item$stat) %&gt;% bind_rows(., .id=&quot;score&quot;)
+
+#also export 
+filename &lt;- sprintf(&quot;%s/%s_module_scores_boxplots_stats.csv&quot;, save_dir, name_current)
+write.csv(x = stats_DF, file = filename, row.names = FALSE)
+
+DT::datatable(stats_DF, class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ee3c56b05325339bc7e6" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ee3c56b05325339bc7e6">{"x":{"filter":"none","vertical":false,"data":[["hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score"],["score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score"],[1.122536510321699e-52,2.588440190320556e-07,4.528165300459197e-26,1.387551760703361e-08,3.097808094177831e-30,0.0008329222206980714,0.6354101083280594,0.301607419884963,0.06933823478291994,0.1199127739177106,0.0347070056653561,0.9857021974818786,0.9552827560295499,0.1782443519900262,0.7347357104780439,0.8987663259943143,0.03682977131659008,0.8106836821029819,0.1717145014453828,0.405620086305636,0.07006796999458255,0.4830772167214306,0.1485238206138458,0.001912129563134937,0.0003978926489907449,0.00371647785033202,1.159477934501807e-06,0.4450265647475098,2.388223215529216e-05,0.2542123826006701,1.263813126703713e-40,1.098657165565407e-18,8.101376137711564e-25,0.6088112110780569,1.241895683670128e-23,0.0003329309605872614,4.341741185679816e-17,0.001267422203766027,1.817637090682983e-05,0.4776818442643403,1.643705586924598e-08,0.6627079724914422,7.713058502047786e-09,0.2473412512652775,0.1210894400862528,0.9802279674577253,0.01854374669084439,0.2516193467863975,3.963103963942821e-15,0.00496814838878854,0.0001992267630141432,0.3219307259610908,2.479990149939012e-07,0.6696402908710868],[1.1e-52,5.2e-07,1.8e-25,4.2e-08,1.5e-29,0.00083,0.64,0.6,0.28,0.36,0.17,0.99,0.96,0.71,1,1,0.18,1,0.17,0.8100000000000001,0.28,0.8100000000000001,0.45,0.009599999999999999,0.0004,0.011,5.8e-06,0.51,9.6e-05,0.51,1.3e-40,3.3e-18,4.099999999999999e-24,0.61,5e-23,0.00067,4.3e-17,0.0038,7.3e-05,0.96,8.200000000000001e-08,0.96,7.699999999999999e-09,0.74,0.48,0.98,0.093,0.74,4e-15,0.015,0.0008,0.64,1.2e-06,0.67],["&lt;2e-16","2.6e-07","&lt; 2e-16","1.4e-08","&lt; 2e-16","0.00083","0.64","0.302","0.069","0.120","0.035","0.986","0.96","0.178","0.735","0.899","0.037","0.811","0.17","0.4056","0.0701","0.4831","0.1485","0.0019","4e-04","0.0037","1.2e-06","0.4450","2.4e-05","0.2542","&lt;2e-16","&lt; 2e-16","&lt; 2e-16","0.60881","&lt; 2e-16","0.00033","&lt;2e-16","0.0013","1.8e-05","0.4777","1.6e-08","0.6627","7.7e-09","0.247","0.121","0.980","0.019","0.252","4e-15","0.0050","0.0002","0.3219","2.5e-07","0.6696"],["****","****","****","****","****","***","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","ns","**","***","**","****","ns","****","ns","****","****","****","ns","****","***","****","**","****","ns","****","ns","****","ns","ns","ns","*","ns","****","**","***","ns","****","ns"],["Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon"],[null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC"],[null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant"],[null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype"],[null,"*","*","*","*","*",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","*",null,"*","*","ns","*","ns",null,"*","*","ns","*","*",null,"*","*","ns","*","ns",null,"ns","ns","ns","ns","ns",null,"*","*","ns","*","ns"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>score<\/th>\n      <th>.y.<\/th>\n      <th>p<\/th>\n      <th>p.adj<\/th>\n      <th>p.format<\/th>\n      <th>p.signif<\/th>\n      <th>method<\/th>\n      <th>L3_celltype<\/th>\n      <th>group1<\/th>\n      <th>group2<\/th>\n      <th>sig_sign<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"score","targets":0},{"name":".y.","targets":1},{"name":"p","targets":2},{"name":"p.adj","targets":3},{"name":"p.format","targets":4},{"name":"p.signif","targets":5},{"name":"method","targets":6},{"name":"L3_celltype","targets":7},{"name":"group1","targets":8},{"name":"group2","targets":9},{"name":"sig_sign","targets":10}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<p>Make plots with raw pvalue:</p>
+<pre class="r"><code>run_boxplot_stats_RAW_pval &lt;- function(df_in= level_03@meta.data,
+                              score, 
+                              celltype_order){
+  
+  #new labels for x axis
+  new_labels &lt;- df_in %&gt;% 
+  select(., score, L3_celltype, Genotype) %&gt;% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+  group_by(Genotype, L3_celltype) %&gt;% 
+  summarise(., count = n()) %&gt;% 
+  group_by(L3_celltype) %&gt;% 
+  summarise(., label = paste0(L3_celltype,&quot;\nwt=&quot;, count[1] , &quot;, mut=&quot;,count[2])) %&gt;% 
+  pull(label) %&gt;% unique()
+  
+
+  #rename
+  colnames(df_in)[colnames(df_in) == score] &lt;- &quot;score&quot;
+  
+  #y limits for test
+  y_max &lt;- df_in$score %&gt;% max()
+  y_pairwise &lt;- y_max + (y_max*0.2)
+  y_global &lt;- y_max + (y_max*0.4)
+  
+  #get stats
+  stat_list &lt;- list()
+  stat_list[[&quot;global&quot;]] &lt;- compare_means(score ~ Genotype,
+                               data = df_in, 
+                               method = &quot;kruskal.test&quot;)
+  stat_list[[&quot;pairwise&quot;]] &lt;- compare_means(score ~ Genotype,
+                                 data =df_in, 
+                                 group.by = &quot;L3_celltype&quot;, 
+                                 method = &quot;wilcox.test&quot;)
+  
+  plot &lt;- df_in %&gt;% 
+    select(., score, L3_celltype, Genotype) %&gt;% 
+  mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order),
+            Genotype = factor(Genotype, levels = c(&quot;wildtype&quot;, &quot;yap1_mutant&quot;))) %&gt;% 
+  ggplot(.) +
+  geom_boxplot(aes(x = L3_celltype, y = score, fill = Genotype), 
+               position = position_dodge2(),outlier.shape = NA) +
+  scale_fill_manual(values = genotype_colours) +
+  theme_bw(base_size = 14)+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+  xlab(&quot;&quot;) + ylab(paste0(score, &quot; score&quot;)) +
+  geom_jitter(aes(x = L3_celltype, y = score, fill = Genotype),
+              size = 0.1, alpha = 0.5, 
+              position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  geom_text(data = stat_list$pairwise, aes(x = L3_celltype, y = y_pairwise, label = p.signif)) +
+  geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, &quot;, p = &quot;, p.adj))) +
+  scale_x_discrete(labels= new_labels) +
+  ggtitle(paste0(score, &quot;, RAW PVALUE&quot;))
+  
+  
+  return(plot)
+
+}</code></pre>
+<p>Run for all scores:</p>
+<pre class="r"><code>plot_list &lt;- lapply(all_scores, function(score_input) run_boxplot_stats_RAW_pval(score = score_input, 
+                                                                        celltype_order = level_03_celltpe_order))</code></pre>
+<pre class="r"><code>patch &lt;- wrap_plots(plot_list, guides = &quot;collect&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_module_scores_boxplots_RAWpvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       patch,
+       device=&quot;pdf&quot;,
+       width=15,
+       height=15)
+
+patch</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-68-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3029,63 +3277,64 @@ other attached packages:
 loaded via a namespace (and not attached):
   [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
   [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
-  [7] sctransform_0.4.3        backports_1.5.0          utf8_1.2.6              
- [10] R6_2.6.1                 lazyeval_0.2.2           uwot_0.2.4              
- [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
- [16] textshaping_1.0.4        cli_3.6.5                spatstat.explore_3.7-0  
- [19] fastDummies_1.7.5        labeling_0.4.3           sass_0.4.10             
- [22] S7_0.2.1                 spatstat.data_3.1-9      ggridges_0.5.7          
- [25] pbapply_1.7-4            systemfonts_1.3.1        Rsamtools_2.26.0        
- [28] parallelly_1.46.1        limma_3.66.0             rstudioapi_0.17.1       
- [31] BiocIO_1.20.0            vroom_1.6.7              ica_1.0-3               
- [34] spatstat.random_3.4-4    car_3.1-3                Matrix_1.7-3            
- [37] ggbeeswarm_0.7.3         abind_1.4-8              lifecycle_1.0.4         
- [40] whisker_0.4.1            yaml_2.3.10              edgeR_4.8.2             
- [43] carData_3.0-5            SparseArray_1.10.8       Rtsne_0.17              
- [46] grid_4.5.0               promises_1.5.0           dqrng_0.4.1             
- [49] crayon_1.5.3             miniUI_0.1.2             lattice_0.22-6          
- [52] beachmat_2.26.0          cowplot_1.2.0            cigarillo_1.0.0         
- [55] pillar_1.11.1            knitr_1.50               metapod_1.18.0          
- [58] rjson_0.2.23             xgboost_3.1.3.1          future.apply_1.20.1     
- [61] codetools_0.2-20         glue_1.8.0               getPass_0.2-4           
- [64] spatstat.univar_3.1-6    data.table_1.18.0        vctrs_0.6.5             
- [67] png_0.1-8                spam_2.11-3              gtable_0.3.6            
- [70] cachem_1.1.0             xfun_0.52                S4Arrays_1.10.1         
- [73] mime_0.13                tidygraph_1.3.1          survival_3.8-3          
- [76] statmod_1.5.1            bluster_1.20.0           fitdistrplus_1.2-5      
- [79] ROCR_1.0-11              nlme_3.1-168             bit64_4.6.0-1           
- [82] RcppAnnoy_0.0.23         GenomeInfoDb_1.46.2      rprojroot_2.1.1         
- [85] bslib_0.9.0              irlba_2.3.5.1            vipor_0.4.7             
- [88] KernSmooth_2.23-26       otel_0.2.0               tidyselect_1.2.1        
- [91] processx_3.8.6           bit_4.6.0                compiler_4.5.0          
- [94] curl_7.0.0               git2r_0.36.2             BiocNeighbors_2.4.0     
- [97] DelayedArray_0.36.0      plotly_4.11.0            stringfish_0.18.0       
-[100] rtracklayer_1.70.1       scales_1.4.0             lmtest_0.9-40           
-[103] callr_3.7.6              digest_0.6.37            goftest_1.2-3           
-[106] spatstat.utils_3.2-1     rmarkdown_2.29           XVector_0.50.0          
-[109] htmltools_0.5.8.1        pkgconfig_2.0.3          fastmap_1.2.0           
-[112] rlang_1.1.6              htmlwidgets_1.6.4        UCSC.utils_1.6.1        
-[115] shiny_1.12.1             farver_2.1.2             jquerylib_0.1.4         
-[118] zoo_1.8-15               jsonlite_2.0.0           BiocParallel_1.44.0     
-[121] BiocSingular_1.26.1      RCurl_1.98-1.17          magrittr_2.0.3          
-[124] Formula_1.2-5            dotCall64_1.2            Rcpp_1.0.14             
-[127] viridis_0.6.5            reticulate_1.44.1        stringi_1.8.7           
-[130] MASS_7.3-65              plyr_1.8.9               parallel_4.5.0          
-[133] listenv_0.10.0           ggrepel_0.9.6            deldir_2.0-4            
-[136] graphlayouts_1.2.2       Biostrings_2.78.0        splines_4.5.0           
-[139] tensor_1.5.1             hms_1.1.4                locfit_1.5-9.12         
-[142] ps_1.9.1                 igraph_2.2.1             spatstat.geom_3.7-0     
-[145] ggsignif_0.6.4           RcppHNSW_0.6.0           reshape2_1.4.5          
-[148] ScaledMatrix_1.18.0      XML_3.99-0.20            evaluate_1.0.5          
-[151] RcppParallel_5.1.11-1    renv_1.1.4               BiocManager_1.30.27     
-[154] tweenr_2.0.3             tzdb_0.5.0               httpuv_1.6.16           
-[157] RANN_2.6.2               polyclip_1.10-7          future_1.69.0           
-[160] scattermore_1.2          ggforce_0.5.0            rsvd_1.0.5              
-[163] broom_1.0.11             xtable_1.8-4             restfulr_0.0.16         
-[166] RSpectra_0.16-2          rstatix_0.7.3            later_1.4.2             
-[169] ragg_1.5.0               viridisLite_0.4.2        memoise_2.0.1           
-[172] beeswarm_0.4.0           GenomicAlignments_1.46.0 cluster_2.1.8.1         
-[175] timechange_0.3.0         globals_0.18.0          </code></pre>
+  [7] sctransform_0.4.3        backports_1.5.0          DT_0.34.0               
+ [10] utf8_1.2.6               R6_2.6.1                 lazyeval_0.2.2          
+ [13] uwot_0.2.4               withr_3.0.2              gridExtra_2.3           
+ [16] progressr_0.18.0         textshaping_1.0.4        cli_3.6.5               
+ [19] spatstat.explore_3.7-0   fastDummies_1.7.5        labeling_0.4.3          
+ [22] sass_0.4.10              S7_0.2.1                 spatstat.data_3.1-9     
+ [25] ggridges_0.5.7           pbapply_1.7-4            systemfonts_1.3.1       
+ [28] Rsamtools_2.26.0         parallelly_1.46.1        limma_3.66.0            
+ [31] rstudioapi_0.17.1        BiocIO_1.20.0            crosstalk_1.2.2         
+ [34] vroom_1.6.7              ica_1.0-3                spatstat.random_3.4-4   
+ [37] car_3.1-3                Matrix_1.7-3             ggbeeswarm_0.7.3        
+ [40] abind_1.4-8              lifecycle_1.0.4          whisker_0.4.1           
+ [43] yaml_2.3.10              edgeR_4.8.2              carData_3.0-5           
+ [46] SparseArray_1.10.8       Rtsne_0.17               grid_4.5.0              
+ [49] promises_1.5.0           dqrng_0.4.1              crayon_1.5.3            
+ [52] miniUI_0.1.2             lattice_0.22-6           beachmat_2.26.0         
+ [55] cowplot_1.2.0            cigarillo_1.0.0          pillar_1.11.1           
+ [58] knitr_1.50               metapod_1.18.0           rjson_0.2.23            
+ [61] xgboost_3.1.3.1          future.apply_1.20.1      codetools_0.2-20        
+ [64] glue_1.8.0               getPass_0.2-4            spatstat.univar_3.1-6   
+ [67] data.table_1.18.0        vctrs_0.6.5              png_0.1-8               
+ [70] spam_2.11-3              gtable_0.3.6             cachem_1.1.0            
+ [73] xfun_0.52                S4Arrays_1.10.1          mime_0.13               
+ [76] tidygraph_1.3.1          survival_3.8-3           statmod_1.5.1           
+ [79] bluster_1.20.0           fitdistrplus_1.2-5       ROCR_1.0-11             
+ [82] nlme_3.1-168             bit64_4.6.0-1            RcppAnnoy_0.0.23        
+ [85] GenomeInfoDb_1.46.2      rprojroot_2.1.1          bslib_0.9.0             
+ [88] irlba_2.3.5.1            vipor_0.4.7              KernSmooth_2.23-26      
+ [91] otel_0.2.0               tidyselect_1.2.1         processx_3.8.6          
+ [94] bit_4.6.0                compiler_4.5.0           curl_7.0.0              
+ [97] git2r_0.36.2             BiocNeighbors_2.4.0      DelayedArray_0.36.0     
+[100] plotly_4.11.0            stringfish_0.18.0        rtracklayer_1.70.1      
+[103] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
+[106] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
+[109] rmarkdown_2.29           XVector_0.50.0           htmltools_0.5.8.1       
+[112] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
+[115] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
+[118] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
+[121] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
+[124] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
+[127] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
+[130] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
+[133] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
+[136] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
+[139] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
+[142] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
+[145] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
+[148] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
+[151] XML_3.99-0.20            evaluate_1.0.5           RcppParallel_5.1.11-1   
+[154] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
+[157] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
+[160] polyclip_1.10-7          future_1.69.0            scattermore_1.2         
+[163] ggforce_0.5.0            rsvd_1.0.5               broom_1.0.11            
+[166] xtable_1.8-4             restfulr_0.0.16          RSpectra_0.16-2         
+[169] rstatix_0.7.3            later_1.4.2              ragg_1.5.0              
+[172] viridisLite_0.4.2        memoise_2.0.1            beeswarm_0.4.0          
+[175] GenomicAlignments_1.46.0 cluster_2.1.8.1          timechange_0.3.0        
+[178] globals_0.18.0          </code></pre>
 </div>
 </div>
 </div>
