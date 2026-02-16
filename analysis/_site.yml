@@ -5,6 +5,10 @@ navbar:
   left:
   - text: Home
     href: index.html
+  - text: Paper
+    href: index_paper.html
+  - text: Other analysis
+    href: index_other_analysis.html
   - text: About
     href: about.html
   - text: License
