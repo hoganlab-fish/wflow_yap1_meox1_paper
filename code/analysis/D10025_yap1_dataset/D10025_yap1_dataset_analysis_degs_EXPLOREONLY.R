@@ -68,10 +68,10 @@ run_degs_mut_wt <- function(seurat,
 }
 
 run_degs_mut_wt_sct <- function(seurat, #don't run this for real
-                            group,
-                            save_dir,
-                            log2_t =0,
-                            min_pct = 0.01){
+                                group,
+                                save_dir,
+                                log2_t =0,
+                                min_pct = 0.01){
   #all idents for the group
   all_results <- lapply(seurat@meta.data[,group] %>% unique(), function(unit){
     seurat_subset <- subset(seurat, cells = colnames(seurat)[seurat@meta.data[,group] == unit])
