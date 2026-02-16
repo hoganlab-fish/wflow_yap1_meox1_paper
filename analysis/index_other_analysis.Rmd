@@ -32,7 +32,7 @@ All cells captured in sequencing
 
 ### Level 02 (all endothelial cells; kdrl+)
 
-Endothelial cell subclusters; >95% endothelial cell purity.
+Endothelial cell subclusters
 
 [Level 02; annotation](pre_processing_D10025_yap1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
 
@@ -65,7 +65,7 @@ Cycling cells contain a mix of all endothelial cells, which is why we are not se
 
 ### Level 02 (all endothelial cells; kdrl+)
 
-Endothelial cell subclusters; >95% endothelial cell purity.
+Endothelial cell subclusters
 
 [Level 02; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level02_stringent_annotation.html): both making object + annotation in the same doc
 
@@ -90,7 +90,7 @@ Keeping these for documentation to show that we really should enforce very stric
 
 ### Level 02 (all endothelial cells; kdrl+)
 
-Endothelial cell subclusters; >95% endothelial cell purity.
+Endothelial cell subclusters
 
 [Level 02; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level02_annotation.html): both making object + annotation in the same doc
 
