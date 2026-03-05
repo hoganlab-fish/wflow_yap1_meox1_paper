@@ -1090,9 +1090,9 @@ run_boxplot_stats_adjusted_pval <- function(df_in= level_03@meta.data,
                                  group.by = "L3_celltype", 
                                  method = "wilcox.test") %>% 
     mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
-                                 p.adj <= 0.05 ~ "*",
-                                 p.adj <= 0.01 ~ "**",
-                                 p.adj <= 0.001 ~ "***",
+                                 p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                 p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                 p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
                                  p.adj <= 0.0001 ~ "****"))
   
   plot <- df_in %>% 
