@@ -54,39 +54,9 @@ plot_sizing <- theme_bw() + theme(
     legend.justification = "left"
 )
 
-# degs_mark <- all_degs %>% 
-#     filter(., group == "hmVEC" & p_val < 0.05) 
-
-# hippo_mark <- all_degs %>% 
-#     filter(., group == "hmVEC" & Gene %in% hippo_targets)
-
-# old volcano for ref
-# plot <- all_degs %>% 
-#     filter(., group == "hmVEC") %>% 
-#     ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
-#     geom_point(colour="#d9d9d9") +
-#     geom_point(data = degs_mark, colour="#969696") +
-#     geom_point(data = hippo_mark, colour="red", size=2) +
-#     ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
-#     plot_sizing + ylab("-log10(p-value)") + xlab("log2FC")
-
-# vis adj p val as categorical variable 
-
-# ggsave(
-#     outfile_path_con,
-#     plot_continuous,
-#     device="pdf",
-#     width=6,
-#     height=5
-#     )
-
-# hmvec_data <- all_degs %>% 
-#     filter(group == "hmVEC") %>%
-#     mutate(sig = ifelse(p_val_adj < 0.05, "DEG (AdjPVal<0.05)", "non-DEG"))
-
-# hippo_mark <- all_degs %>% 
-#     filter(group == "hmVEC" & Gene %in% hippo_targets) %>%
-#     mutate(sig = ifelse(p_val_adj < 0.05, "DEG (AdjPVal<0.05)", "non-DEG"))
+# add expression ratios
+all_degs$ExpnRatio <- all_degs$pct.1 / all_degs$pct.2
+all_degs$LogExpnRatio <- log10(all_degs$ExpnRatio)
 
 hmvec_data <- all_degs %>% 
     filter(group == "hmVEC") %>%
@@ -98,7 +68,7 @@ hippo_mark <- all_degs %>%
 
 # colour="#525252"
 plot_discrete <- hmvec_data %>%
-    ggplot(., aes(x = avg_log2FC, y = -log10(p_val), colour = sig)) +
+    ggplot(., aes(x = LogExpnRatio, y = -log10(p_val), colour = sig)) +
     geom_point(size=1) +
     geom_point(data = hippo_mark, colour="red", size=2, show.legend=FALSE) +
     ggrepel::geom_text_repel(
@@ -114,7 +84,7 @@ plot_discrete <- hmvec_data %>%
         ),
         breaks = c("known Hippo target gene", "DEG (RawPVal<0.05)", "non-DEG")
     ) +
-    geom_point(data=data.frame(avg_log2FC=NA_real_, p_val=NA_real_, 
+    geom_point(data=data.frame(LogExpnRatio=NA_real_, p_val=NA_real_, 
                                sig="known Hippo target gene"), aes(colour=sig)) +
     guides(colour = guide_legend(override.aes = list(shape=16, size=5), ncol=1)) +
     geom_text(
