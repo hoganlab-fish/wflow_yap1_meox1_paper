@@ -2,9 +2,13 @@
 # shared drive: /Revision_analysis/queue_plots/
 #   meox1_UMAP_cdh5_split_Genotype.pdf
 #   meox1_UMAP_STRIPPED_cdh5_split_Genotype.pdf
+#   meox1_UMAP_LEGEND_cdh5_split_Genotype.pdf
+#   meox1_UMAP_LEGEND_ONLY_cdh5_split_Genotype.pdf
+
 libraries <- c(
     "chisq.posthoc.test",
     "clustree",
+    "cowplot",
     "ggpubr",
     "ggplot2",   
     "pagoda2",
@@ -31,11 +35,7 @@ load_packages(libraries)
 expression_colours <- c("#d9d9d9", "#40004b")
 
 infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
-outfile_dir <- "../Revision_analysis/queue_plots/"
-
-# shared drive: /Revision_analysis/queue_plots/
-#   meox1_UMAP_cdh5_split_Genotype.pdf
-#   meox1_UMAP_STRIPPED_cdh5_split_Genotype.pdf
+outfile_dir <- "../../wflow_yap1_meox1_paper/Revision_analysis/queue_plots/"
 
 data <- qs_read(infile_path)
 table(data@meta.data$Genotype)
@@ -82,6 +82,33 @@ make_feature_split_umap <- function(seurat,
                               split,
                               point_size = 0.5,
                               colours = expression_colours) {
+  # prioritise legend
+  plot_legend <- FeaturePlot(seurat,
+                      features = feature,
+                      cols = colours,
+                      split.by = split,
+                      pt.size = point_size) & 
+                      theme(legend.position="right")
+  
+  filename <- paste0(name, "_UMAP_LEGEND_", feature, "_split_", split ,".pdf")
+  cat(filename, "\n")
+  ggsave(plot = plot_legend,
+         filename = filename,
+         path = path,
+         device = "pdf",
+         height = height,
+         width = width + 2)
+
+  filename <- paste0(name, "_UMAP_LEGEND_ONLY_", feature, "_split_", split ,".pdf")
+  cat(filename, "\n")
+  legend <- get_legend(plot_legend)
+  ggsave(plot = legend, 
+        filename = filename, 
+        path = path, 
+        device = "pdf",
+        width = 1, 
+        height = 2)
+
   plot <- FeaturePlot(seurat,
                       features = feature,
                       cols = colours,
@@ -90,6 +117,7 @@ make_feature_split_umap <- function(seurat,
 
   #with everything
   filename <- paste0(name, "_UMAP_", feature, "_split_", split ,".pdf")
+  cat(filename, "\n")
   ggsave(plot = plot,
          filename = filename,
          path = path,
@@ -100,6 +128,7 @@ make_feature_split_umap <- function(seurat,
   #stipped
   plot_strip <- plot & NoAxes() & NoLegend() & theme(plot.title = element_blank())
   filename <- paste0(name, "_UMAP_STRIPPED_", feature, "_split_", split ,".pdf")
+  cat(filename, "\n")
   ggsave(plot = plot_strip,
          filename = filename,
          path = path,
@@ -115,7 +144,7 @@ make_feature_split_umap(
     feature="cdh5",
     width=10,
     height=5,
-    path="../Revision_analysis/queue_plots/", # meox1_umap_cdh5_genotype.pdf
+    path=outfile_dir,
     name="meox1",
     split="Genotype",
     point_size=0.5,
