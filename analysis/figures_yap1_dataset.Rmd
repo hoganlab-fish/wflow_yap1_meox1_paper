@@ -1470,3 +1470,114 @@ write.csv(x = stats_DF, file = filename, row.names = FALSE)
 DT::datatable(stats_DF, class = 'cell-border stripe', rownames = FALSE)
 
 ```
+
+
+Try to scale LEC and VEC scores separately before subtracting?
+
+
+```{r}
+level_03$LEC_dev_score_scale <- scales::rescale(level_03$LEC_dev_score_1)
+level_03$EMBO_VEC_score_scale <- scales::rescale(level_03$EMBO_VEC_score_1)
+level_03$EMBO_dev_transient_score_scale <- level_03$LEC_dev_score_scale - level_03$EMBO_VEC_score_scale
+
+level_03$EMBO_dev_transient_score_scale_after <- scales::rescale(level_03$EMBO_dev_transient_score, to = c(-1, 1))
+
+
+```
+
+Check UMAP
+
+```{r}
+md <- level_03[[]]
+coords <- Embeddings(level_03[["umap"]])
+md <- cbind(md, coords)
+
+midpoint <- mean(range(md$EMBO_dev_transient_score_scale_after))
+
+# Order by absolute difference from the midpoint
+md <- md[order(abs(md$EMBO_dev_transient_score_scale_after - midpoint)), ]
+
+# plot
+trans_score_legend <- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score_scale)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + #not keeping original green bc its too light
+  # viridis::scale_fill_viridis(option = "E", direction = 1) +
+  theme_classic() 
+trans_score_legend
+
+```
+
+
+
+```{r}
+#copied out from function above, 
+df_in <- level_03@meta.data
+score = "EMBO_dev_transient_score_scale_after"
+celltype_order=level_03_celltpe_order
+
+new_labels <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    group_by(L3_celltype) %>% 
+    summarise(., count = n()) %>% 
+    summarise(., label = paste0(L3_celltype, "\nn=", count)) %>% 
+    pull(label) %>% unique()
+  
+  
+#rename
+colnames(df_in)[colnames(df_in) == score] <- "score"
+  
+#y limits for test
+y_max <- df_in$score %>% max()
+y_pairwise <- y_max + (y_max*0.2)
+y_global <- y_max + (y_max*0.4)
+  
+#get stats
+stat_list <- list()
+stat_list[["global"]] <- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = "kruskal.test")
+stat_list[["pairwise"]] <- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = "hmVEC",
+                                           data =df_in,
+                                           method = "wilcox.test") %>%
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                   p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                   p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                   p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
+                                   p.adj <= 0.0001 ~ "****"))
+  
+plot <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab("") + ylab(paste0(score, " score")) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, ", p = ", p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot 
+
+# filename <- sprintf('%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf', save_dir, name_current)
+# ggsave(filename,
+#        plot,
+#        device="pdf",
+#        width=8,
+#        height=5)
+```
+
+
+
+
+
+
