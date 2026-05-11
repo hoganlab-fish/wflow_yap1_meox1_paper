@@ -70,8 +70,8 @@ go_terms <- rbind(go_up, go_down)
 ## Load gene sets + paper settings 
 
 ```{r}
-source(here("code/general_scripts/yap1_meox1_important_genes.R"))
-source(here("code/general_scripts/yap1_meox1_paper_settings.R"))
+source(here("code/scRNAseq/general_scripts/yap1_meox1_important_genes.R"))
+source(here("code/scRNAseq/general_scripts/yap1_meox1_paper_settings.R"))
 
 names(genotype_colours) <- c("wildtype", "meox1_mutant")
 ```
