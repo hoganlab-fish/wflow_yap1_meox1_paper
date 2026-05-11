@@ -367,7 +367,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Make figures for yap1 dataset</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">05. March 2026</h4>
+<h4 class="date">11. May 2026</h4>
 
 </div>
 
@@ -396,7 +396,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-03-05
+<strong>Last updated:</strong> 2026-05-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7c06b8389f587b79f21a9a2150d19165455dedaatargetblank7c06b83a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree5941a6b141bba12232ce95435631dbabc0579fbctargetblank5941a6ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7c06b8389f587b79f21a9a2150d19165455dedaa" target="_blank">7c06b83</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/5941a6b141bba12232ce95435631dbabc0579fbc" target="_blank">5941a6b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree7c06b8389f587b79f21a9a2150d19165455dedaatargetblank7c06b83a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree5941a6b141bba12232ce95435631dbabc0579fbctargetblank5941a6ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/7c06b8389f587b79f21a9a2150d19165455dedaa" target="_blank">7c06b83</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/5941a6b141bba12232ce95435631dbabc0579fbc" target="_blank">5941a6b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -563,8 +563,13 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/site_libs/
     Ignored:    code/.DS_Store
-    Ignored:    code/analysis/.DS_Store
+    Ignored:    code/scRNAseq/.DS_Store
+    Ignored:    code/scRNAseq/analysis/.DS_Store
+    Ignored:    code/scRNAseq/pre_processing/.DS_Store
+    Ignored:    code/snATACseq/
     Ignored:    data/.DS_Store
     Ignored:    data/genesets/
     Ignored:    data/input/
@@ -618,6 +623,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/5941a6b141bba12232ce95435631dbabc0579fbc/analysis/figures_yap1_dataset.Rmd" target="_blank">5941a6b</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-11
+</td>
+<td>
+wflow_publish("analysis/figures_yap1_dataset.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/627327dbe1c5a044b43c71d14095a1dfb8d996cd/docs/figures_yap1_dataset.html" target="_blank">627327d</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-03-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -783,8 +822,8 @@ all_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Leve
 </div>
 <div id="load-gene-sets-paper-settings" class="section level2">
 <h2>Load gene sets + paper settings</h2>
-<pre class="r"><code>source(here(&quot;code/general_scripts/yap1_meox1_important_genes.R&quot;))
-source(here(&quot;code/general_scripts/yap1_meox1_paper_settings.R&quot;))
+<pre class="r"><code>source(here(&quot;code/scRNAseq/general_scripts/yap1_meox1_important_genes.R&quot;))
+source(here(&quot;code/scRNAseq/general_scripts/yap1_meox1_paper_settings.R&quot;))
 
 names(genotype_colours) &lt;- c(&quot;wildtype&quot;, &quot;yap1_mutant&quot;)</code></pre>
 </div>
@@ -1940,21 +1979,9 @@ ggsave(umapFileName,
        device=&quot;pdf&quot;,
        width=5,
        height=5)</code></pre>
-</div>
-<div id="umaps---mixing-metric" class="section level2">
-<h2>UMAPs - mixing metric</h2>
-<pre class="r"><code># add to object
-mixing_metric &lt;- mixing_metric[names(mixing_metric) != &quot;iVEC&quot;] #this cluster is only mutant, no mixing
-new_meta &lt;- lapply(mixing_metric, mean) %&gt;% unlist() %&gt;% as.data.frame() %&gt;% 
-  rownames_to_column(&quot;L3_celltype&quot;) %&gt;% dplyr::rename(mixing_metric=&quot;.&quot;)  %&gt;% 
-  full_join(level_03@meta.data, .)</code></pre>
-<pre><code>Joining with `by = join_by(L3_celltype)`</code></pre>
-<pre class="r"><code>rownames(new_meta) &lt;- rownames(level_03@meta.data)
-level_03@meta.data &lt;- new_meta
-
-# on UMAP
-make_feature_umap(seurat = level_03, 
-                  feature = &quot;mixing_metric&quot;,
+<p>Alternatively, just highlight the transitions score.</p>
+<pre class="r"><code>make_genescore_umap(seurat = level_03, 
+                  feature = &quot;EMBO_dev_transient_score&quot;,
               width = 5, height = 5,
               path = save_dir, 
               name = name_current)</code></pre>
@@ -1997,26 +2024,24 @@ Michelle Meier
 </div>
 </div>
 </div>
-<div id="dotplot-2" class="section level2">
-<h2>Dotplot</h2>
-<pre class="r"><code>level_03_relevel &lt;- level_03
-level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype&quot;)
-Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+<div id="umaps---mixing-metric" class="section level2">
+<h2>UMAPs - mixing metric</h2>
+<pre class="r"><code># add to object
+mixing_metric &lt;- mixing_metric[names(mixing_metric) != &quot;iVEC&quot;] #this cluster is only mutant, no mixing
+new_meta &lt;- lapply(mixing_metric, mean) %&gt;% unlist() %&gt;% as.data.frame() %&gt;% 
+  rownames_to_column(&quot;L3_celltype&quot;) %&gt;% dplyr::rename(mixing_metric=&quot;.&quot;)  %&gt;% 
+  full_join(level_03@meta.data, .)</code></pre>
+<pre><code>Joining with `by = join_by(L3_celltype)`</code></pre>
+<pre class="r"><code>rownames(new_meta) &lt;- rownames(level_03@meta.data)
+level_03@meta.data &lt;- new_meta
 
-dotplot &lt;- DotPlot(object = level_03_relevel,
-                   features = level_03_annotation_genes,
-                   cluster.idents = F, 
-                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
-
-filename &lt;- sprintf(&#39;%s/%s_L3_celltype_annotation.pdf&#39;, save_dir, name_current)
-ggsave(filename,
-       dotplot,
-       device=&quot;pdf&quot;,
-       width=5,
-       height=4)
-
-dotplot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-40-1.png" width="480" style="display: block; margin: auto;" /></p>
+# on UMAP
+make_feature_umap(seurat = level_03, 
+                  feature = &quot;mixing_metric&quot;,
+              width = 5, height = 5,
+              path = save_dir, 
+              name = name_current)</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-40-1">
 Past versions of unnamed-chunk-40-1.png
@@ -2054,17 +2079,19 @@ Michelle Meier
 </table>
 </div>
 </div>
-<p>Hippo genes</p>
+</div>
+<div id="dotplot-2" class="section level2">
+<h2>Dotplot</h2>
 <pre class="r"><code>level_03_relevel &lt;- level_03
 level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype&quot;)
 Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, level_03_celltpe_order)
 
 dotplot &lt;- DotPlot(object = level_03_relevel,
-                   features = hippo_targets,
+                   features = level_03_annotation_genes,
                    cluster.idents = F, 
                    cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
 
-filename &lt;- sprintf(&#39;%s/%s_L3_celltype_hippo.pdf&#39;, save_dir, name_current)
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_annotation.pdf&#39;, save_dir, name_current)
 ggsave(filename,
        dotplot,
        device=&quot;pdf&quot;,
@@ -2110,6 +2137,25 @@ Michelle Meier
 </table>
 </div>
 </div>
+<p>Hippo genes</p>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, level_03_celltpe_order)
+
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = hippo_targets,
+                   cluster.idents = F, 
+                   cols = expression_colours) + RotatedAxis() + coord_flip() + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_hippo.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=4)
+
+dotplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-42-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>Hippo gene split by genotype</p>
 <p>Add new order.</p>
 <pre class="r"><code>level_03_celltpe_genotype_order &lt;- c(
@@ -2141,63 +2187,6 @@ ggsave(filename,
        dotplot,
        device=&quot;pdf&quot;,
        width=7,
-       height=4)
-
-dotplot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-43-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-43-1">
-Past versions of unnamed-chunk-43-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-43-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/68b5a8900161a338455822f22b949f9ee170b9f0/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-43-1.png" target="_blank">68b5a89</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<p>Selected other genes, split by genoptype</p>
-<pre class="r"><code>level_03_relevel &lt;- level_03
-level_03_relevel$L3_celltype_genotype &lt;- paste0(level_03_relevel$L3_celltype, &quot;_&quot;, level_03_relevel$Genotype)
-level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype_genotype&quot;)
-Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
-
-dotplot &lt;- DotPlot(object = level_03_relevel,
-                   features = c(&quot;prox1a&quot;, &quot;tbx1&quot;, &quot;cdh6&quot;, &quot;pcna&quot;, &quot;mki67&quot;),
-                   cluster.idents = F, 
-                   cols = expression_colours)  + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
-
-filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_cellcyclelec.pdf&#39;, save_dir, name_current)
-ggsave(filename,
-       dotplot,
-       device=&quot;pdf&quot;,
-       width=6,
        height=4)
 
 dotplot</code></pre>
@@ -2239,17 +2228,25 @@ Michelle Meier
 </table>
 </div>
 </div>
-</div>
-<div id="dotplot---ratios" class="section level2">
-<h2>Dotplot - ratios</h2>
-<p>Just meox1</p>
-<pre class="r"><code>input_ratio &lt;- hippo_gene_degs %&gt;% 
-  filter(., Gene == &quot;meox1&quot;) %&gt;% 
-  mutate(., group = factor(group, levels = level_03_celltpe_order))
+<p>Selected other genes, split by genoptype</p>
+<pre class="r"><code>level_03_relevel &lt;- level_03
+level_03_relevel$L3_celltype_genotype &lt;- paste0(level_03_relevel$L3_celltype, &quot;_&quot;, level_03_relevel$Genotype)
+level_03_relevel        &lt;- SetIdent(level_03_relevel, value=&quot;L3_celltype_genotype&quot;)
+Idents(level_03_relevel) &lt;- factor(level_03_relevel@active.ident, rev(level_03_celltpe_genotype_order))
 
-make_ratio_dotplots(input_ratio,
-                    width = 5, height = 3, 
-                    name = paste0(name_current, &quot;_meox1&quot;), path = save_dir)</code></pre>
+dotplot &lt;- DotPlot(object = level_03_relevel,
+                   features = c(&quot;prox1a&quot;, &quot;tbx1&quot;, &quot;cdh6&quot;, &quot;pcna&quot;, &quot;mki67&quot;),
+                   cluster.idents = F, 
+                   cols = expression_colours)  + rotate_x + ylab(&quot;&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_cellcyclelec.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       dotplot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=4)
+
+dotplot</code></pre>
 <p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-45-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-45-1">
@@ -2288,17 +2285,17 @@ Michelle Meier
 </table>
 </div>
 </div>
-<p>All hippo genes:</p>
+</div>
+<div id="dotplot---ratios" class="section level2">
+<h2>Dotplot - ratios</h2>
+<p>Just meox1</p>
 <pre class="r"><code>input_ratio &lt;- hippo_gene_degs %&gt;% 
+  filter(., Gene == &quot;meox1&quot;) %&gt;% 
   mutate(., group = factor(group, levels = level_03_celltpe_order))
 
 make_ratio_dotplots(input_ratio,
-                    width = 4, height = 4, 
-                    name = paste0(name_current, &quot;_hippogenes&quot;), path = save_dir)</code></pre>
-<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
-(`geom_point()`).
-Removed 4 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
+                    width = 5, height = 3, 
+                    name = paste0(name_current, &quot;_meox1&quot;), path = save_dir)</code></pre>
 <p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-46-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-46-1">
@@ -2337,31 +2334,17 @@ Michelle Meier
 </table>
 </div>
 </div>
-</div>
-<div id="barplot-and-stats" class="section level2">
-<h2>Barplot (and stats)</h2>
-<div id="genotype-vs-celltype" class="section level3">
-<h3>Genotype vs celltype</h3>
-<pre class="r"><code>barplot &lt;- level_03@meta.data %&gt;% 
-  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
-            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%&gt;% 
-  group_by(Genotype, L3_celltype, .drop=FALSE) %&gt;% 
-  summarise(., count =n()) %&gt;% 
-  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
-  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
-  plot_sizing + rotate_x +
-  scale_fill_manual(values = genotype_colours)+
-  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
-<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
-`.groups` argument.</code></pre>
-<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_barplot.pdf&#39;, save_dir, name_current)
-ggsave(filename,
-       barplot,
-       device=&quot;pdf&quot;,
-       width=6,
-       height=4)
+<p>All hippo genes:</p>
+<pre class="r"><code>input_ratio &lt;- hippo_gene_degs %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order))
 
-barplot</code></pre>
+make_ratio_dotplots(input_ratio,
+                    width = 4, height = 4, 
+                    name = paste0(name_current, &quot;_hippogenes&quot;), path = save_dir)</code></pre>
+<pre><code>Warning: Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).
+Removed 4 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
 <p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-47-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-47-1">
@@ -2400,6 +2383,32 @@ Michelle Meier
 </table>
 </div>
 </div>
+</div>
+<div id="barplot-and-stats" class="section level2">
+<h2>Barplot (and stats)</h2>
+<div id="genotype-vs-celltype" class="section level3">
+<h3>Genotype vs celltype</h3>
+<pre class="r"><code>barplot &lt;- level_03@meta.data %&gt;% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L3_celltype = factor(L3_celltype, levels =level_03_celltpe_order) )%&gt;% 
+  group_by(Genotype, L3_celltype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  ggplot(., aes(x =L3_celltype, y = count, fill = Genotype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = genotype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_L3_celltype_genotype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot,
+       device=&quot;pdf&quot;,
+       width=6,
+       height=4)
+
+barplot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-48-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Stats to support this:</p>
 <p>Using the chisq.posthoc.test package to perform a post-hoc analysis
 for this.</p>
@@ -2466,13 +2475,13 @@ ggsave(filename,
 <pre class="r"><code>barplot</code></pre>
 <pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
 (`geom_text()`).</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-49-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-50-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-49-1">
-Past versions of unnamed-chunk-49-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-50-1">
+Past versions of unnamed-chunk-50-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-49-1" class="collapse">
+<div id="fig-unnamed-chunk-50-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -2491,7 +2500,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/68b5a8900161a338455822f22b949f9ee170b9f0/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-49-1.png" target="_blank">68b5a89</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/68b5a8900161a338455822f22b949f9ee170b9f0/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-50-1.png" target="_blank">68b5a89</a>
 </td>
 <td>
 Michelle Meier
@@ -2538,44 +2547,7 @@ ggsave(filename,
 <pre class="r"><code>barplot</code></pre>
 <pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
 (`geom_text()`).</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-50-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-50-1">
-Past versions of unnamed-chunk-50-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-50-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/68b5a8900161a338455822f22b949f9ee170b9f0/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-50-1.png" target="_blank">68b5a89</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-51-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>Stats to support this:</p>
 <pre class="r"><code>global_stats &lt;- lapply(c(&quot;mVEC&quot;,&quot;preLEC&quot;, &quot;LEC&quot;,&quot;hmVEC&quot; ,&quot;cVEC&quot;), function(x){
   filtered_seurat &lt;- level_03@meta.data %&gt;% 
@@ -2699,73 +2671,7 @@ ggsave(filename,
 (`geom_text()`).</code></pre>
 <pre><code>Warning: Removed 24 rows containing missing values or values outside the scale range
 (`geom_text()`).</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-53-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-53-1">
-Past versions of unnamed-chunk-53-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-53-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/68b5a8900161a338455822f22b949f9ee170b9f0/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-53-1.png" target="_blank">68b5a89</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-09
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div id="volcano-plot" class="section level2">
-<h2>Volcano plot</h2>
-<pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
-  filter(., group == &quot;hmVEC&quot; &amp; p_val_adj &lt; 0.05) 
-
-hippo_mark &lt;- all_degs %&gt;% 
-  filter(., group == &quot;hmVEC&quot; &amp; Gene %in% hippo_targets)
-
-plot &lt;- all_degs %&gt;% 
-  filter(., group == &quot;hmVEC&quot;) %&gt;% 
-  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
-  geom_point(colour=&quot;#d9d9d9&quot;) +
-  geom_point(data = degs_mark, colour=&quot;#969696&quot;) +
-  geom_point(data = hippo_mark, colour=&quot;red&quot;, size=2) +
-  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
-  plot_sizing + ylab(&quot;-log10(p-value)&quot;) + xlab(&quot;log2FC&quot;)
-
-
-filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_adjpvalue.pdf&#39;, save_dir, name_current)
-ggsave(filename,
-       plot,
-       device=&quot;pdf&quot;,
-       width=6,
-       height=5)
-
-plot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-54-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-54-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-54-1">
 Past versions of unnamed-chunk-54-1.png
@@ -2803,9 +2709,12 @@ Michelle Meier
 </table>
 </div>
 </div>
-<p>Just p-value</p>
+</div>
+</div>
+<div id="volcano-plot" class="section level2">
+<h2>Volcano plot</h2>
 <pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
-  filter(., group == &quot;hmVEC&quot; &amp; p_val &lt; 0.05) 
+  filter(., group == &quot;hmVEC&quot; &amp; p_val_adj &lt; 0.05) 
 
 hippo_mark &lt;- all_degs %&gt;% 
   filter(., group == &quot;hmVEC&quot; &amp; Gene %in% hippo_targets)
@@ -2820,7 +2729,7 @@ plot &lt;- all_degs %&gt;%
   plot_sizing + ylab(&quot;-log10(p-value)&quot;) + xlab(&quot;log2FC&quot;)
 
 
-filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_pvalue.pdf&#39;, save_dir, name_current)
+filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_adjpvalue.pdf&#39;, save_dir, name_current)
 ggsave(filename,
        plot,
        device=&quot;pdf&quot;,
@@ -2866,35 +2775,32 @@ Michelle Meier
 </table>
 </div>
 </div>
-</div>
-<div id="deg-barplots" class="section level2">
-<h2>DEG barplots</h2>
-<p>p-value</p>
-<pre class="r"><code>plot &lt;- hippo_gene_degs %&gt;% 
-  mutate(., group = factor(group, levels = level_03_celltpe_order)) %&gt;% 
-  mutate(., label = case_when(p_val &gt; 0.05 ~ &quot;&quot;, 
-                              p_val &lt;= 0.0001 ~ &quot;****&quot;,
-                               p_val &lt;= 0.001 ~ &quot;***&quot;,
-                              p_val &lt;= 0.01 ~ &quot;**&quot;,
-                                 p_val &lt;= 0.05 ~ &quot;*&quot;
-                                 )) %&gt;% 
-  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
-  geom_bar(position = position_dodge2(), stat = &quot;identity&quot;) +
-  geom_text(aes(label=label)) +
-  plot_sizing + rotate_x +
-  scale_fill_manual(values = level_03_celltype_colours) +
-  facet_wrap(~group, nrow=1) + strip_fix + ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
+<p>Just p-value</p>
+<pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; p_val &lt; 0.05) 
+
+hippo_mark &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot; &amp; Gene %in% hippo_targets)
+
+plot &lt;- all_degs %&gt;% 
+  filter(., group == &quot;hmVEC&quot;) %&gt;% 
+  ggplot(., aes(x = avg_log2FC, y = -log10(p_val))) +
+  geom_point(colour=&quot;#d9d9d9&quot;) +
+  geom_point(data = degs_mark, colour=&quot;#969696&quot;) +
+  geom_point(data = hippo_mark, colour=&quot;red&quot;, size=2) +
+  ggrepel::geom_text_repel(data = hippo_mark, aes(label= Gene), size =5) +
+  plot_sizing + ylab(&quot;-log10(p-value)&quot;) + xlab(&quot;log2FC&quot;)
 
 
-filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_pvalue.pdf&#39;, save_dir, name_current)
+filename &lt;- sprintf(&#39;%s/%s_hmVEC_volcano_pvalue.pdf&#39;, save_dir, name_current)
 ggsave(filename,
        plot,
        device=&quot;pdf&quot;,
-       width=12,
-       height=4)
+       width=6,
+       height=5)
 
 plot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-56-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-56-1">
 Past versions of unnamed-chunk-56-1.png
@@ -2932,23 +2838,27 @@ Michelle Meier
 </table>
 </div>
 </div>
-<p>adjusted</p>
-<pre class="r"><code>plot&lt;- hippo_gene_degs %&gt;% 
+</div>
+<div id="deg-barplots" class="section level2">
+<h2>DEG barplots</h2>
+<p>p-value</p>
+<pre class="r"><code>plot &lt;- hippo_gene_degs %&gt;% 
   mutate(., group = factor(group, levels = level_03_celltpe_order)) %&gt;% 
-  mutate(., label = case_when(p_val_adj &gt; 0.05 ~ &quot;&quot;, 
-                              p_val_adj &lt;= 0.0001 ~ &quot;****&quot;,
-                               p_val_adj &lt;= 0.001 ~ &quot;***&quot;,
-                              p_val_adj &lt;= 0.01 ~ &quot;**&quot;,
-                                 p_val_adj &lt;= 0.05 ~ &quot;*&quot;
+  mutate(., label = case_when(p_val &gt; 0.05 ~ &quot;&quot;, 
+                              p_val &lt;= 0.0001 ~ &quot;****&quot;,
+                               p_val &lt;= 0.001 ~ &quot;***&quot;,
+                              p_val &lt;= 0.01 ~ &quot;**&quot;,
+                                 p_val &lt;= 0.05 ~ &quot;*&quot;
                                  )) %&gt;% 
   ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
   geom_bar(position = position_dodge2(), stat = &quot;identity&quot;) +
   geom_text(aes(label=label)) +
   plot_sizing + rotate_x +
   scale_fill_manual(values = level_03_celltype_colours) +
-  facet_wrap(~group, nrow=1) + strip_fix+ ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
+  facet_wrap(~group, nrow=1) + strip_fix + ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
 
-filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_adjustedpvalue.pdf&#39;, save_dir, name_current)
+
+filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_pvalue.pdf&#39;, save_dir, name_current)
 ggsave(filename,
        plot,
        device=&quot;pdf&quot;,
@@ -2994,26 +2904,31 @@ Michelle Meier
 </table>
 </div>
 </div>
-</div>
-<div id="go-plot-for-il_vec" class="section level2">
-<h2>GO plot for IL_VEC</h2>
-<pre class="r"><code>plot &lt;- go_terms %&gt;% 
-  mutate(., Term = gsub(&quot;_WP.*&quot;, &quot;&quot;, Term)) %&gt;% 
-  filter(., cluster == &quot;iVEC&quot; &amp; Adjusted.P.value &lt; 0.05) %&gt;% 
-  ggplot(., aes(y = Genes, x = Combined.Score)) +
-  geom_bar(stat=&quot;identity&quot;, fill = &quot;purple4&quot;) +
-  geom_text(aes(label = Term, x=0), colour = &quot;grey90&quot;, size = 6, hjust=-0.01) +
-  plot_sizing + xlab(&quot;enrichR score&quot;) 
-  
-filename &lt;- sprintf(&#39;%s/%s_ivec_barplot_GOterms.pdf&#39;, save_dir, name_current)
+<p>adjusted</p>
+<pre class="r"><code>plot&lt;- hippo_gene_degs %&gt;% 
+  mutate(., group = factor(group, levels = level_03_celltpe_order)) %&gt;% 
+  mutate(., label = case_when(p_val_adj &gt; 0.05 ~ &quot;&quot;, 
+                              p_val_adj &lt;= 0.0001 ~ &quot;****&quot;,
+                               p_val_adj &lt;= 0.001 ~ &quot;***&quot;,
+                              p_val_adj &lt;= 0.01 ~ &quot;**&quot;,
+                                 p_val_adj &lt;= 0.05 ~ &quot;*&quot;
+                                 )) %&gt;% 
+  ggplot(., aes(x = Gene, y = avg_log2FC, fill = group)) +
+  geom_bar(position = position_dodge2(), stat = &quot;identity&quot;) +
+  geom_text(aes(label=label)) +
+  plot_sizing + rotate_x +
+  scale_fill_manual(values = level_03_celltype_colours) +
+  facet_wrap(~group, nrow=1) + strip_fix+ ylab(&quot;log2FC&quot;) + xlab(&quot;&quot;)
+
+filename &lt;- sprintf(&#39;%s/%s_DEG_hippo_barplot_adjustedpvalue.pdf&#39;, save_dir, name_current)
 ggsave(filename,
        plot,
        device=&quot;pdf&quot;,
-       width=10,
+       width=12,
        height=4)
 
 plot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-58-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-58-1">
 Past versions of unnamed-chunk-58-1.png
@@ -3052,6 +2967,26 @@ Michelle Meier
 </div>
 </div>
 </div>
+<div id="go-plot-for-il_vec" class="section level2">
+<h2>GO plot for IL_VEC</h2>
+<pre class="r"><code>plot &lt;- go_terms %&gt;% 
+  mutate(., Term = gsub(&quot;_WP.*&quot;, &quot;&quot;, Term)) %&gt;% 
+  filter(., cluster == &quot;iVEC&quot; &amp; Adjusted.P.value &lt; 0.05) %&gt;% 
+  ggplot(., aes(y = Genes, x = Combined.Score)) +
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;purple4&quot;) +
+  geom_text(aes(label = Term, x=0), colour = &quot;grey90&quot;, size = 6, hjust=-0.01) +
+  plot_sizing + xlab(&quot;enrichR score&quot;) 
+  
+filename &lt;- sprintf(&#39;%s/%s_ivec_barplot_GOterms.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=10,
+       height=4)
+
+plot</code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 <div id="boxplot-for-scores" class="section level2">
 <h2>Boxplot for scores</h2>
 <p>Normality test: KS only, shapiro can’t handle &gt; 5000 sample size.
@@ -3078,44 +3013,7 @@ the one-sample Kolmogorov-Smirnov test</code></pre>
 <p>Show normality plots</p>
 <pre class="r"><code>plot_list &lt;- lapply(all_res, function(item) wrap_elements(item$plot))
 wrap_plots(plot_list)</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-60-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-60-1">
-Past versions of unnamed-chunk-60-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-60-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/a90cc778d13babb36a13a30e39c838e184f20d4c/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-60-1.png" target="_blank">a90cc77</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-61-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Show stats results</p>
 <pre class="r"><code>lapply(all_res, function(item) item$stats) %&gt;% bind_rows(., .id=&quot;score&quot;)</code></pre>
 <pre><code>                     score ks_res
@@ -3209,44 +3107,7 @@ ggsave(filename,
        height=15)
 
 patch</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-64-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-64-1">
-Past versions of unnamed-chunk-64-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-64-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/a90cc778d13babb36a13a30e39c838e184f20d4c/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-64-1.png" target="_blank">a90cc77</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-65-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <p>Show stats details:</p>
 <pre class="r"><code>names(results) &lt;- all_scores
 stats_DF &lt;- lapply(results, function(item) item$stat) %&gt;% bind_rows(., .id=&quot;score&quot;)
@@ -3256,8 +3117,8 @@ filename &lt;- sprintf(&quot;%s/%s_module_scores_boxplots_stats.csv&quot;, save_
 write.csv(x = stats_DF, file = filename, row.names = FALSE)
 
 DT::datatable(stats_DF, class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
-<div class="datatables html-widget html-fill-item" id="htmlwidget-ee3c56b05325339bc7e6" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-ee3c56b05325339bc7e6">{"x":{"filter":"none","vertical":false,"data":[["hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score"],["score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score"],[1.122536510321699e-52,2.588440190320556e-07,4.528165300459197e-26,1.387551760703361e-08,3.097808094177831e-30,0.0008329222206980714,0.6354101083280594,0.301607419884963,0.06933823478291994,0.1199127739177106,0.0347070056653561,0.9857021974818786,0.9552827560295499,0.1782443519900262,0.7347357104780439,0.8987663259943143,0.03682977131659008,0.8106836821029819,0.1717145014453828,0.405620086305636,0.07006796999458255,0.4830772167214306,0.1485238206138458,0.001912129563134937,0.0003978926489907449,0.00371647785033202,1.159477934501807e-06,0.4450265647475098,2.388223215529216e-05,0.2542123826006701,1.263813126703713e-40,1.098657165565407e-18,8.101376137711564e-25,0.6088112110780569,1.241895683670128e-23,0.0003329309605872614,4.341741185679816e-17,0.001267422203766027,1.817637090682983e-05,0.4776818442643403,1.643705586924598e-08,0.6627079724914422,7.713058502047786e-09,0.2473412512652775,0.1210894400862528,0.9802279674577253,0.01854374669084439,0.2516193467863975,3.963103963942821e-15,0.00496814838878854,0.0001992267630141432,0.3219307259610908,2.479990149939012e-07,0.6696402908710868],[1.1e-52,5.2e-07,1.8e-25,4.2e-08,1.5e-29,0.00083,0.64,0.6,0.28,0.36,0.17,0.99,0.96,0.71,1,1,0.18,1,0.17,0.8100000000000001,0.28,0.8100000000000001,0.45,0.009599999999999999,0.0004,0.011,5.8e-06,0.51,9.6e-05,0.51,1.3e-40,3.3e-18,4.099999999999999e-24,0.61,5e-23,0.00067,4.3e-17,0.0038,7.3e-05,0.96,8.200000000000001e-08,0.96,7.699999999999999e-09,0.74,0.48,0.98,0.093,0.74,4e-15,0.015,0.0008,0.64,1.2e-06,0.67],["&lt;2e-16","2.6e-07","&lt; 2e-16","1.4e-08","&lt; 2e-16","0.00083","0.64","0.302","0.069","0.120","0.035","0.986","0.96","0.178","0.735","0.899","0.037","0.811","0.17","0.4056","0.0701","0.4831","0.1485","0.0019","4e-04","0.0037","1.2e-06","0.4450","2.4e-05","0.2542","&lt;2e-16","&lt; 2e-16","&lt; 2e-16","0.60881","&lt; 2e-16","0.00033","&lt;2e-16","0.0013","1.8e-05","0.4777","1.6e-08","0.6627","7.7e-09","0.247","0.121","0.980","0.019","0.252","4e-15","0.0050","0.0002","0.3219","2.5e-07","0.6696"],["****","****","****","****","****","***","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","ns","**","***","**","****","ns","****","ns","****","****","****","ns","****","***","****","**","****","ns","****","ns","****","ns","ns","ns","*","ns","****","**","***","ns","****","ns"],["Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon"],[null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC"],[null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant"],[null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype"],[null,"****","****","****","****","***",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","**",null,"*","****","ns","****","ns",null,"****","****","ns","****","***",null,"**","****","ns","****","ns",null,"ns","ns","ns","ns","ns",null,"*","***","ns","****","ns"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>score<\/th>\n      <th>.y.<\/th>\n      <th>p<\/th>\n      <th>p.adj<\/th>\n      <th>p.format<\/th>\n      <th>p.signif<\/th>\n      <th>method<\/th>\n      <th>L3_celltype<\/th>\n      <th>group1<\/th>\n      <th>group2<\/th>\n      <th>sig_sign<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"score","targets":0},{"name":".y.","targets":1},{"name":"p","targets":2},{"name":"p.adj","targets":3},{"name":"p.format","targets":4},{"name":"p.signif","targets":5},{"name":"method","targets":6},{"name":"L3_celltype","targets":7},{"name":"group1","targets":8},{"name":"group2","targets":9},{"name":"sig_sign","targets":10}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-9bc7e6fd295b0e79fb27" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9bc7e6fd295b0e79fb27">{"x":{"filter":"none","vertical":false,"data":[["hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","hippo_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","mapk_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","wnt_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","ap1_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","EMBO_LEC_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","LEC_dev_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_VEC_score_1","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score","EMBO_dev_transient_score"],["score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score","score"],[1.122536510321699e-52,2.588440190320556e-07,4.528165300459197e-26,1.387551760703361e-08,3.097808094177831e-30,0.0008329222206980714,0.6354101083280594,0.301607419884963,0.06933823478291994,0.1199127739177106,0.0347070056653561,0.9857021974818786,0.9552827560295499,0.1782443519900262,0.7347357104780439,0.8987663259943143,0.03682977131659008,0.8106836821029819,0.1717145014453828,0.405620086305636,0.07006796999458255,0.4830772167214306,0.1485238206138458,0.001912129563134937,0.0003978926489907449,0.00371647785033202,1.159477934501807e-06,0.4450265647475098,2.388223215529216e-05,0.2542123826006701,1.263813126703713e-40,1.098657165565407e-18,8.101376137711564e-25,0.6088112110780569,1.241895683670128e-23,0.0003329309605872614,4.341741185679816e-17,0.001267422203766027,1.817637090682983e-05,0.4776818442643403,1.643705586924598e-08,0.6627079724914422,7.713058502047786e-09,0.2473412512652775,0.1210894400862528,0.9802279674577253,0.01854374669084439,0.2516193467863975,3.963103963942821e-15,0.00496814838878854,0.0001992267630141432,0.3219307259610908,2.479990149939012e-07,0.6696402908710868],[1.1e-52,5.2e-07,1.8e-25,4.2e-08,1.5e-29,0.00083,0.64,0.6,0.28,0.36,0.17,0.99,0.96,0.71,1,1,0.18,1,0.17,0.8100000000000001,0.28,0.8100000000000001,0.45,0.009599999999999999,0.0004,0.011,5.8e-06,0.51,9.6e-05,0.51,1.3e-40,3.3e-18,4.099999999999999e-24,0.61,5e-23,0.00067,4.3e-17,0.0038,7.3e-05,0.96,8.200000000000001e-08,0.96,7.699999999999999e-09,0.74,0.48,0.98,0.093,0.74,4e-15,0.015,0.0008,0.64,1.2e-06,0.67],["&lt;2e-16","2.6e-07","&lt; 2e-16","1.4e-08","&lt; 2e-16","0.00083","0.64","0.302","0.069","0.120","0.035","0.986","0.96","0.178","0.735","0.899","0.037","0.811","0.17","0.4056","0.0701","0.4831","0.1485","0.0019","4e-04","0.0037","1.2e-06","0.4450","2.4e-05","0.2542","&lt;2e-16","&lt; 2e-16","&lt; 2e-16","0.60881","&lt; 2e-16","0.00033","&lt;2e-16","0.0013","1.8e-05","0.4777","1.6e-08","0.6627","7.7e-09","0.247","0.121","0.980","0.019","0.252","4e-15","0.0050","0.0002","0.3219","2.5e-07","0.6696"],["****","****","****","****","****","***","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","*","ns","ns","ns","ns","ns","ns","**","***","**","****","ns","****","ns","****","****","****","ns","****","***","****","**","****","ns","****","ns","****","ns","ns","ns","*","ns","****","**","***","ns","****","ns"],["Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon"],[null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC",null,"mVEC","preLEC","LEC","hmVEC","cVEC"],[null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant",null,"yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant","yap1_mutant"],[null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype",null,"wildtype","wildtype","wildtype","wildtype","wildtype"],[null,"****","****","****","****","***",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","ns",null,"ns","ns","ns","ns","**",null,"*","****","ns","****","ns",null,"****","****","ns","****","***",null,"**","****","ns","****","ns",null,"ns","ns","ns","ns","ns",null,"*","***","ns","****","ns"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>score<\/th>\n      <th>.y.<\/th>\n      <th>p<\/th>\n      <th>p.adj<\/th>\n      <th>p.format<\/th>\n      <th>p.signif<\/th>\n      <th>method<\/th>\n      <th>L3_celltype<\/th>\n      <th>group1<\/th>\n      <th>group2<\/th>\n      <th>sig_sign<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"score","targets":0},{"name":".y.","targets":1},{"name":"p","targets":2},{"name":"p.adj","targets":3},{"name":"p.format","targets":4},{"name":"p.signif","targets":5},{"name":"method","targets":6},{"name":"L3_celltype","targets":7},{"name":"group1","targets":8},{"name":"group2","targets":9},{"name":"sig_sign","targets":10}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 <p>Make plots with raw pvalue:</p>
 <pre class="r"><code>run_boxplot_stats_RAW_pval &lt;- function(df_in= level_03@meta.data,
                               score, 
@@ -3328,44 +3189,89 @@ ggsave(filename,
        height=15)
 
 patch</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-68-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-68-1">
-Past versions of unnamed-chunk-68-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-68-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/a90cc778d13babb36a13a30e39c838e184f20d4c/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-68-1.png" target="_blank">a90cc77</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-02-16
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-69-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>Boxplot for developmental transition score split into only clusters
+this time.</p>
+<pre class="r"><code>#copied out from function above, 
+df_in &lt;- level_03@meta.data
+score = &quot;EMBO_dev_transient_score&quot;
+celltype_order=level_03_celltpe_order
+
+
+new_labels &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    group_by(L3_celltype) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    summarise(., label = paste0(L3_celltype, &quot;\nn=&quot;, count)) %&gt;% 
+    pull(label) %&gt;% unique()</code></pre>
+<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+dplyr 1.1.0.
+ℹ Please use `reframe()` instead.
+ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+  always returns an ungrouped data frame and adjust accordingly.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre class="r"><code>#rename
+colnames(df_in)[colnames(df_in) == score] &lt;- &quot;score&quot;
+  
+#y limits for test
+y_max &lt;- df_in$score %&gt;% max()
+y_pairwise &lt;- y_max + (y_max*0.2)
+y_global &lt;- y_max + (y_max*0.4)
+  
+#get stats
+stat_list &lt;- list()
+stat_list[[&quot;global&quot;]] &lt;- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = &quot;kruskal.test&quot;)
+stat_list[[&quot;pairwise&quot;]] &lt;- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = &quot;hmVEC&quot;,
+                                           data =df_in,
+                                           method = &quot;wilcox.test&quot;) %&gt;%
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                   p.adj &lt;= 0.05 &amp; p.adj &gt; 0.01 ~ &quot;*&quot;,
+                                   p.adj &lt;= 0.01 &amp; p.adj &gt; 0.001 ~ &quot;**&quot;,
+                                   p.adj &lt;= 0.001 &amp; p.adj &gt; 0.0001 ~ &quot;***&quot;,
+                                   p.adj &lt;= 0.0001 ~ &quot;****&quot;))
+  
+plot &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab(&quot;&quot;) + ylab(paste0(score, &quot; score&quot;)) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, &quot;, p = &quot;, p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot </code></pre>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-70-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>filename &lt;- sprintf(&#39;%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       plot,
+       device=&quot;pdf&quot;,
+       width=8,
+       height=5)</code></pre>
+<p>And save stats as well.</p>
+<pre class="r"><code>stats_DF &lt;- stat_list %&gt;% bind_rows(., .id=&quot;score&quot;)
+
+#also export 
+filename &lt;- sprintf(&quot;%s/%s_module_score_dev_transition_celltype_boxplots_stats.csv&quot;, save_dir, name_current)
+write.csv(x = stats_DF, file = filename, row.names = FALSE)
+
+DT::datatable(stats_DF, class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-27b1cab04013f6212105" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-27b1cab04013f6212105">{"x":{"filter":"none","vertical":false,"data":[["global","pairwise","pairwise","pairwise","pairwise","pairwise"],["score","score","score","score","score","score"],[0,3.804312419196371e-116,1.384421428247411e-55,3.711649787400719e-235,1.674477577057147e-12,5.165130928439615e-09],[0,1.5e-115,4.2e-55,1.899999999999999e-234,3.3e-12,5.2e-09],["&lt;2e-16","&lt; 2e-16","&lt; 2e-16","&lt; 2e-16","1.7e-12","5.2e-09"],["****","****","****","****","****","****"],["Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon"],[null,"hmVEC","hmVEC","hmVEC","hmVEC","hmVEC"],[null,"mVEC","preLEC","LEC","cVEC","iVEC"],[null,"****","****","****","****","****"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>score<\/th>\n      <th>.y.<\/th>\n      <th>p<\/th>\n      <th>p.adj<\/th>\n      <th>p.format<\/th>\n      <th>p.signif<\/th>\n      <th>method<\/th>\n      <th>group1<\/th>\n      <th>group2<\/th>\n      <th>sig_sign<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"score","targets":0},{"name":".y.","targets":1},{"name":"p","targets":2},{"name":"p.adj","targets":3},{"name":"p.format","targets":4},{"name":"p.signif","targets":5},{"name":"method","targets":6},{"name":"group1","targets":7},{"name":"group2","targets":8},{"name":"sig_sign","targets":9}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
