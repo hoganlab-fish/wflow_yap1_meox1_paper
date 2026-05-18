@@ -56,6 +56,8 @@ Cycling cells contain a mix of all endothelial cells, which is why we are not se
 
 [Visualisation transition score](exploration_D10025_yap1_dataset_transition_scores.html)
 
+[DEG explorations](exploration_D10025_yap1_dataset_new_deg_trials.html)
+
 
 # **Pre-processing - meox1 dataset**
 
