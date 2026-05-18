@@ -1,0 +1,464 @@
+---
+title: "Explore transition score options for yap1 dataset"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+# Introduction
+
+Explore other options to visualise the VEC -> LEC transition score. 
+
+## Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(chisq.posthoc.test)
+
+})
+```
+
+
+## Load data
+
+```{r}
+# level_01 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_01_annotated.qs2'))
+# level_02 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_02_annotated.qs2'))
+level_03 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2'))
+```
+
+
+## Load gene sets + paper settings 
+
+```{r}
+source(here("code/scRNAseq/general_scripts/yap1_meox1_important_genes.R"))
+source(here("code/scRNAseq/general_scripts/yap1_meox1_paper_settings.R"))
+
+names(genotype_colours) <- c("wildtype", "yap1_mutant")
+```
+
+## Plotting orders
+
+```{r}
+
+level_03_celltpe_order <- c(
+  "LEC",
+  "preLEC",
+  "hmVEC",
+  "mVEC",
+  "cVEC",
+  "iVEC"
+)
+
+
+```
+
+
+## Plotting colours 
+
+```{r}
+
+level_03_celltype_colours <- c(
+  "#41ae76",
+  "#a1d99b",
+  "#9ecae1",
+  "#6baed6",
+  "#4292c6",
+  "#084594")
+
+names(level_03_celltype_colours) <- level_03_celltpe_order
+
+```
+
+
+## Plotting themes
+
+```{r}
+plot_sizing <- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat <- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = "black"),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix <- theme(strip.background = element_rect(fill = "white"), 
+                   strip.text = element_text(size = 14))
+```
+
+
+## directories
+
+```{r}
+save_dir <- here("output/explorations")
+name <- "yap1_dataset"
+```
+
+
+# Boxplots for transition score
+
+Focusing only on developmental transition score. This time the focus is not on split by mutant vs wildtype, but just per cluster. 
+
+
+Note, the way we visualise this transition score is inspired by this paper [here](https://www.cell.com/cell/fulltext/S0092-8674(24)00534-8) - we actually use their code. 
+
+The way this works is not by scaling the values themselves, but by ordering the scores for colouring:
+
+
+```{r}
+md <- level_03[[]]
+coords <- Embeddings(level_03[["umap"]])
+md <- cbind(md, coords)
+
+midpoint <- mean(range(md$EMBO_dev_transient_score)) #-0.2513305
+
+# Order by absolute difference from the midpoint
+md_ordered <- md[order(abs(md$EMBO_dev_transient_score - midpoint)), ]
+
+```
+
+The midpoint is `{r} midpoint` - which means that overall the VEC scores are larger than the LEC scores. This makes sense considering we're looking at mostly VECs at this timepoint and only very few LECs. 
+
+The data is then reordered based on absolute difference from midpoint, but the underlying data is unchanged. This just ensures that the extreme points are plotted last, so they're visible and not burried. 
+
+```{r, fig.align='center', fig.height=6, fig.width=9}
+# plot ordered
+p1 <- ggplot(md_ordered, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + #not keeping original green bc its too light
+  theme_classic()  + ggtitle("ordered")
+
+# plot unordered
+p2 <- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + #not keeping original green bc its too light
+  theme_classic()  + ggtitle("unordered")
+
+p1+p2 + plot_layout(guides="collect") & theme(legend.position = "bottom")
+
+```
+
+
+## No scaling
+
+This is how we visualise the data on the UMAPs. 
+
+```{r, fig.align='center', fig.height=5, fig.width=8}
+#copied out from function above, 
+df_in <- level_03@meta.data
+score = "EMBO_dev_transient_score"
+celltype_order=level_03_celltpe_order
+
+
+new_labels <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    group_by(L3_celltype) %>% 
+    summarise(., count = n()) %>% 
+    summarise(., label = paste0(L3_celltype, "\nn=", count)) %>% 
+    pull(label) %>% unique()
+  
+  
+#rename
+colnames(df_in)[colnames(df_in) == score] <- "score"
+  
+#y limits for test
+y_max <- df_in$score %>% max()
+y_pairwise <- y_max + (y_max*0.2)
+y_global <- y_max + (y_max*0.4)
+  
+#get stats
+stat_list <- list()
+stat_list[["global"]] <- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = "kruskal.test")
+stat_list[["pairwise"]] <- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = "hmVEC",
+                                           data =df_in,
+                                           method = "wilcox.test") %>%
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                   p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                   p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                   p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
+                                   p.adj <= 0.0001 ~ "****"))
+  
+plot <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab("") + ylab(paste0(score, " score")) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, ", p = ", p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot 
+
+# filename <- sprintf('%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf', save_dir, name_current)
+# ggsave(filename,
+#        plot,
+#        device="pdf",
+#        width=8,
+#        height=5)
+
+```
+
+Stats as well.
+
+```{r}
+stats_DF <- stat_list %>% bind_rows(., .id="score")
+
+# #also export 
+# filename <- sprintf("%s/%s_module_score_dev_transition_celltype_boxplots_stats.csv", save_dir, name_current)
+# write.csv(x = stats_DF, file = filename, row.names = FALSE)
+
+DT::datatable(stats_DF, class = 'cell-border stripe', rownames = FALSE)
+
+```
+
+
+Make this plot for each score separately? No stats for now. 
+
+
+```{r, fig.align='center'}
+df_in <- level_03@meta.data
+celltype_order=level_03_celltpe_order
+
+df_in %>% 
+    select(., LEC_dev_score_1,EMBO_VEC_score_1, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    pivot_longer(cols = c("EMBO_VEC_score_1", "LEC_dev_score_1"), names_to = "score", values_to = "value") %>% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = value, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab("") + ylab("score") +
+    geom_jitter(aes(x = L3_celltype, y = value),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  facet_wrap(~score) + strip_fix + theme(legend.position = "none")
+
+
+```
+
+Not sure we can make any great statements about the distribution of the LEC scores... They're all pretty low.
+
+Run stats anyway?
+
+```{r}
+mean_lec_dev_scores <- df_in %>% 
+  group_by(L3_celltype) %>% 
+  summarise(., mean_celltype = mean(LEC_dev_score_1))
+
+pairwise <- compare_means(LEC_dev_score_1 ~ L3_celltype, 
+                                           # ref.group = "hmVEC",
+                                           data =df_in,
+                                           method = "wilcox.test") %>%
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                   p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                   p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                   p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
+                                   p.adj <= 0.0001 ~ "****")) %>% 
+  left_join(
+    mean_lec_dev_scores %>%
+      dplyr::rename(group1 = L3_celltype,
+             group1_mean = mean_celltype),
+    by = "group1"
+  ) %>%
+  left_join(
+    mean_lec_dev_scores %>%
+      dplyr::rename(group2 = L3_celltype,
+             group2_mean = mean_celltype),
+    by = "group2"
+  ) %>%
+  relocate(group1_mean, .after = group1) %>%
+  relocate(group2_mean, .after = group2) %>% 
+  mutate(., direction = ifelse(group1_mean > group2_mean, "up", "down")) %>% 
+  select(., -c(".y.", "p", "p.format", "p.signif", "method"))
+  
+```
+
+
+Show stats for significant entries that are not LEC, because we know that score is higher.
+
+```{r}
+DT::datatable(pairwise %>% filter(., p.adj < 0.05 & group1 != "LEC" & group2 != "LEC"), class = 'cell-border stripe', rownames = FALSE)
+```
+
+It actually doesn't really look like the LEC score is higher in hmVEC clusters compared to other non-LEC clusters. 
+
+## Scale each score before subtracting
+
+The main motivator for this is that the scores are pretty arbitrary and the midpoint isn't 0. This makes it hard to make sense of the numbers. While we probably shouldn't put too much weight on this anyway, we could explore whether we can scale the LEC and VEC scores to go from 0 to 1 independently. Then, when subtracting, the midpoint around 0 would actually be a proper intermediate. It would also mean that everything >0 had a larger LEC than VEC score, and everything <0 had a larger VEC than LEC score. 
+
+
+```{r}
+level_03$LEC_dev_score_scale <- scales::rescale(level_03$LEC_dev_score_1, to = c(0,1))
+level_03$EMBO_VEC_score_scale <- scales::rescale(level_03$EMBO_VEC_score_1, to = c(0,1))
+level_03$EMBO_dev_transient_score_scale <- level_03$LEC_dev_score_scale - level_03$EMBO_VEC_score_scale
+```
+
+Check what these look on UMAP for each score sep as well as transition. 
+
+```{r, fig.align='center', fig.height=6, fig.width=15}
+vec <- FeaturePlot(level_03,
+                   features = "EMBO_VEC_score_scale",
+                      cols = c("#d9d9d9", "#406880"), pt.size = 1,
+                      min.cutoff = "q1",
+                      max.cutoff =  "q99",
+                      order = T)
+
+lec <- FeaturePlot(level_03,
+                   features = "LEC_dev_score_scale",
+                      cols = c("#d9d9d9", "darkgreen"),pt.size = 1,
+                      min.cutoff = "q1",
+                      max.cutoff =  "q99",
+                      order = T)
+
+md <- level_03[[]]
+coords <- Embeddings(level_03[["umap"]])
+md <- cbind(md, coords)
+
+midpoint <- mean(range(md$EMBO_dev_transient_score_scale))
+
+# Order by absolute difference from the midpoint
+md <- md[order(abs(md$EMBO_dev_transient_score_scale - midpoint)), ]
+
+# plot
+trans <- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score_scale)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = "#406880", high = "darkgreen", mid = "azure2") + 
+  theme_classic() + ggtitle("each scaled")
+
+
+vec + lec + trans + plot_layout(ncol=3, guides = "collect", axes="collect") & theme(legend.position = "bottom")
+
+```
+
+I think one of the issues is that almost all cells have a VEC signature, but only very few have a LEC signature- but the ones that do have a very strong one. 
+
+Make boxplot
+
+```{r}
+#copied out from function above, 
+df_in <- level_03@meta.data
+score = "EMBO_dev_transient_score_scale"
+celltype_order=level_03_celltpe_order
+
+new_labels <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    group_by(L3_celltype) %>% 
+    summarise(., count = n()) %>% 
+    summarise(., label = paste0(L3_celltype, "\nn=", count)) %>% 
+    pull(label) %>% unique()
+  
+  
+#rename
+colnames(df_in)[colnames(df_in) == score] <- "score"
+  
+#y limits for test
+y_max <- df_in$score %>% max()
+y_pairwise <- y_max + (y_max*0.2)
+y_global <- y_max + (y_max*0.4)
+  
+#get stats
+stat_list <- list()
+stat_list[["global"]] <- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = "kruskal.test")
+stat_list[["pairwise"]] <- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = "hmVEC",
+                                           data =df_in,
+                                           method = "wilcox.test") %>%
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                   p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                   p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                   p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
+                                   p.adj <= 0.0001 ~ "****"))
+  
+plot <- df_in %>% 
+    select(., score, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab("") + ylab(paste0(score, " score")) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, ", p = ", p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot 
+
+# filename <- sprintf('%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf', save_dir, name_current)
+# ggsave(filename,
+#        plot,
+#        device="pdf",
+#        width=8,
+#        height=5)
+```
+
+Even the LECs don't really have a high mean score for this transition score... probably because they all also have a relatively high VEC score. 
+
+Plot boxplots without stats for LEC and VEC scores separately. 
+
+```{r, fig.align='center'}
+df_in <- level_03@meta.data
+celltype_order=level_03_celltpe_order
+
+df_in %>% 
+    select(., LEC_dev_score_scale,EMBO_VEC_score_scale, L3_celltype) %>% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %>% 
+    pivot_longer(cols = c("EMBO_VEC_score_scale", "LEC_dev_score_scale"), names_to = "score", values_to = "value") %>% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = value, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab("") + ylab("score") +
+    geom_jitter(aes(x = L3_celltype, y = value),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  facet_wrap(~score) + strip_fix + theme(legend.position = "none")
+
+
+```
+
+
