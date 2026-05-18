@@ -1,0 +1,206 @@
+---
+title: "Explore new DEG approaches for yap1 dataset (Level 03)"
+author: "Michelle Meier"
+date: "`r format(Sys.time(), '%d. %B %Y')`"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: inline
+---
+
+# Introduction
+
+Explore two key DEG options (mutant vs wildtype ):
+
+- all VEC 
+
+- combine iVECs with mVEC + combine iVEC with hmVEC
+
+## Load libraries
+
+```{r, warning=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+
+})
+```
+
+
+## Load data
+
+```{r}
+level_03 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2'))
+```
+
+
+## Load gene sets + paper settings 
+
+```{r}
+source(here("code/scRNAseq/general_scripts/yap1_meox1_important_genes.R"))
+source(here("code/scRNAseq/general_scripts/yap1_meox1_paper_settings.R"))
+
+names(genotype_colours) <- c("wildtype", "yap1_mutant")
+```
+
+## Plotting orders
+
+```{r}
+
+level_03_celltpe_order <- c(
+  "LEC",
+  "preLEC",
+  "hmVEC",
+  "mVEC",
+  "cVEC",
+  "iVEC"
+)
+
+```
+
+
+
+# mutant vs WT in all VECs
+
+
+```{r}
+Idents(level_03) <- "L3_celltype"
+seurat_subset <- subset(level_03, idents = c("mVEC", "hmVEC", "cVEC", "iVEC"))
+seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
+Idents(seurat_subset) <- "Genotype"
+
+all_vec <- FindMarkers(object = seurat_subset,
+                  group.by = "Genotype",
+                  ident.1 = "yap1_mutant",
+                  ident.2 = "wildtype",
+                  min.pct = 0.1,
+                  assay = "RNA",
+                  logfc.threshold = 0) %>%
+        rownames_to_column("Gene")
+  
+
+all_vec %>% filter( Gene == "meox1")
+
+```
+
+meox1 is not significant. 
+
+
+# mutant vs WT in all LECs
+
+
+```{r}
+Idents(level_03) <- "L3_celltype"
+seurat_subset <- subset(level_03, idents = c("LEC", "preLEC"))
+seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
+Idents(seurat_subset) <- "Genotype"
+
+all_lec <- FindMarkers(object = seurat_subset,
+                  group.by = "Genotype",
+                  ident.1 = "yap1_mutant",
+                  ident.2 = "wildtype",
+                  min.pct = 0.1,
+                  assay = "RNA",
+                  logfc.threshold = 0) %>%
+        rownames_to_column("Gene")
+  
+
+all_lec %>% filter( Gene == "meox1")
+
+```
+
+
+
+# mutant vs WT in iVEC+hmVEC
+
+
+```{r}
+Idents(level_03) <- "L3_celltype"
+seurat_subset <- subset(level_03, idents = c("hmVEC", "iVEC"))
+seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
+Idents(seurat_subset) <- "Genotype"
+
+ivec_hmVEC <- FindMarkers(object = seurat_subset,
+                  group.by = "Genotype",
+                  ident.1 = "yap1_mutant",
+                  ident.2 = "wildtype",
+                  min.pct = 0.1,
+                  assay = "RNA",
+                  logfc.threshold = 0) %>%
+        rownames_to_column("Gene")
+  
+
+ivec_hmVEC %>% filter( Gene == "meox1")
+
+```
+
+meox1 is not significant. Not even raw p-value.
+
+
+# mutant vs WT in iVEC+mVEC
+
+
+```{r}
+Idents(level_03) <- "L3_celltype"
+seurat_subset <- subset(level_03, idents = c("mVEC", "iVEC"))
+seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
+Idents(seurat_subset) <- "Genotype"
+
+ivec_mVEC <- FindMarkers(object = seurat_subset,
+                  group.by = "Genotype",
+                  ident.1 = "yap1_mutant",
+                  ident.2 = "wildtype",
+                  min.pct = 0.1,
+                  assay = "RNA",
+                  logfc.threshold = 0) %>%
+        rownames_to_column("Gene")
+  
+
+ivec_mVEC %>% filter( Gene == "meox1")
+
+```
+
+meox1 is not significant. Not even raw p-value.
+
+
+# reference - old DEG results
+
+```{r}
+all_degs <- read_csv(here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"), show_col_types = F)
+
+#add new column names to avoid confusion
+all_degs <- all_degs %>% 
+  mutate(., `exp_wildtype[%]` = pct.2*100,
+            `exp_mutant[%]` = pct.1*100)
+  
+  
+```
+
+
+```{r}
+DT::datatable(all_degs %>% filter(., Gene=="meox1") %>% select(-c("pct.1", "pct.2")), rownames = FALSE)
+```
+
+
+Make a dotplot (to get info) for meox1 split by both celltype and genotype.
+
+
+```{r, fig.align='center'}
+level_03$L3_celltype_genotype <- paste0(level_03$L3_celltype, "_", level_03$Genotype)
+
+dotplot <- DotPlot(level_03, features = "meox1", scale = F, group.by = "L3_celltype_genotype")
+
+dotplot
+```
+
+
+
+
+
