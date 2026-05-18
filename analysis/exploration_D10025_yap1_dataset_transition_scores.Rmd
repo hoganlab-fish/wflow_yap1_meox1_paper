@@ -332,15 +332,15 @@ Check what these look on UMAP for each score sep as well as transition.
 vec <- FeaturePlot(level_03,
                    features = "EMBO_VEC_score_scale",
                       cols = c("#d9d9d9", "#406880"), pt.size = 1,
-                      min.cutoff = "q1",
-                      max.cutoff =  "q99",
+                      min.cutoff = 0,
+                      max.cutoff =  1,
                       order = T)
 
 lec <- FeaturePlot(level_03,
                    features = "LEC_dev_score_scale",
                       cols = c("#d9d9d9", "darkgreen"),pt.size = 1,
-                      min.cutoff = "q1",
-                      max.cutoff =  "q99",
+                      min.cutoff = 0,
+                      max.cutoff =  1,
                       order = T)
 
 md <- level_03[[]]
