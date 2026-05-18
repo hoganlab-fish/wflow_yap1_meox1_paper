@@ -528,15 +528,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreed6cf8936c0a8ba2f8e07a0d5eddda729df96978btargetblankd6cf893a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee1499935aabe1d78f49ce137bcf7ae99dca3b0cctargetblanke149993a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/d6cf8936c0a8ba2f8e07a0d5eddda729df96978b" target="_blank">d6cf893</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e1499935aabe1d78f49ce137bcf7ae99dca3b0cc" target="_blank">e149993</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreed6cf8936c0a8ba2f8e07a0d5eddda729df96978btargetblankd6cf893a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreee1499935aabe1d78f49ce137bcf7ae99dca3b0cctargetblanke149993a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -546,7 +546,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/d6cf8936c0a8ba2f8e07a0d5eddda729df96978b" target="_blank">d6cf893</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/e1499935aabe1d78f49ce137bcf7ae99dca3b0cc" target="_blank">e149993</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -625,6 +625,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/e1499935aabe1d78f49ce137bcf7ae99dca3b0cc/analysis/exploration_D10025_yap1_dataset_transition_scores.Rmd" target="_blank">e149993</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-18
+</td>
+<td>
+wflow_publish("analysis/exploration_D10025_yap1_dataset_transition_scores.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/f5eec0f5d0a5328acf8f7603c19ebead5f61c6bd/docs/exploration_D10025_yap1_dataset_transition_scores.html" target="_blank">f5eec0f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1141,6 +1175,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/f5eec0f5d0a5328acf8f7603c19ebead5f61c6bd/docs/figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-16-1.png" target="_blank">f5eec0f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-18
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/eaa3ac0e55d7777a054030fe26664e422e67616c/docs/figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-16-1.png" target="_blank">eaa3ac0</a>
 </td>
 <td>
@@ -1324,6 +1369,43 @@ Michelle Meier
 </table>
 </div>
 </div>
+<p>Not sure we can make any great statements about the distribution of
+the LEC scores… They’re all pretty low.</p>
+<p>Run stats anyway?</p>
+<pre class="r"><code>mean_lec_dev_scores &lt;- df_in %&gt;% 
+  group_by(L3_celltype) %&gt;% 
+  summarise(., mean_celltype = mean(LEC_dev_score_scale))
+
+pairwise &lt;- compare_means(LEC_dev_score_scale ~ L3_celltype, 
+                                           # ref.group = &quot;hmVEC&quot;,
+                                           data =df_in,
+                                           method = &quot;wilcox.test&quot;) %&gt;%
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                   p.adj &lt;= 0.05 &amp; p.adj &gt; 0.01 ~ &quot;*&quot;,
+                                   p.adj &lt;= 0.01 &amp; p.adj &gt; 0.001 ~ &quot;**&quot;,
+                                   p.adj &lt;= 0.001 &amp; p.adj &gt; 0.0001 ~ &quot;***&quot;,
+                                   p.adj &lt;= 0.0001 ~ &quot;****&quot;)) %&gt;% 
+  left_join(
+    mean_lec_dev_scores %&gt;%
+      dplyr::rename(group1 = L3_celltype,
+             group1_mean = mean_celltype),
+    by = &quot;group1&quot;
+  ) %&gt;%
+  left_join(
+    mean_lec_dev_scores %&gt;%
+      dplyr::rename(group2 = L3_celltype,
+             group2_mean = mean_celltype),
+    by = &quot;group2&quot;
+  ) %&gt;%
+  relocate(group1_mean, .after = group1) %&gt;%
+  relocate(group2_mean, .after = group2) %&gt;% 
+  mutate(., direction = ifelse(group1_mean &gt; group2_mean, &quot;up&quot;, &quot;down&quot;)) %&gt;% 
+  select(., -c(&quot;.y.&quot;, &quot;p&quot;, &quot;p.format&quot;, &quot;p.signif&quot;, &quot;method&quot;))</code></pre>
+<p>Show stats for significant entries that are not LEC, because we know
+that score is higher.</p>
+<pre class="r"><code>DT::datatable(pairwise %&gt;% filter(., p.adj &lt; 0.05 &amp; group1 != &quot;LEC&quot; &amp; group2 != &quot;LEC&quot;), class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-dd2947364b1a5843df84" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-dd2947364b1a5843df84">{"x":{"filter":"none","vertical":false,"data":[["preLEC","preLEC","mVEC","mVEC","hmVEC","cVEC"],[0.09063281659150428,0.09063281659150428,0.07600787922704165,0.07600787922704165,0.06683103970516321,0.07667714866526873],["hmVEC","iVEC","hmVEC","iVEC","cVEC","iVEC"],[0.06683103970516321,0.07181896890354843,0.06683103970516321,0.07181896890354843,0.07667714866526873,0.07181896890354843],[1.3e-19,4.9e-05,2.1e-20,8e-06,9e-11,0.0002],["****","****","****","****","****","***"],["up","up","up","up","down","up"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>group1<\/th>\n      <th>group1_mean<\/th>\n      <th>group2<\/th>\n      <th>group2_mean<\/th>\n      <th>p.adj<\/th>\n      <th>sig_sign<\/th>\n      <th>direction<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,3,4]},{"name":"group1","targets":0},{"name":"group1_mean","targets":1},{"name":"group2","targets":2},{"name":"group2_mean","targets":3},{"name":"p.adj","targets":4},{"name":"sig_sign","targets":5},{"name":"direction","targets":6}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
