@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michelle Meier" />
+
+
+<title>Explore transition score options for yap1 dataset</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.34.0/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">yap1_meox1_paper</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="index_paper.html">Paper</a>
+</li>
+<li>
+  <a href="index_other_analysis.html">Other analysis</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Explore transition score options for yap1
+dataset</h1>
+<h4 class="author">Michelle Meier</h4>
+<h4 class="date">18. May 2026</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2026-05-18
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>yap1_meox1_paper/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20260119code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20260119)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20260119code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20260119)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree27ec953de81e7f73925a90fb972334a59e62b94btargetblank27ec953a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/27ec953de81e7f73925a90fb972334a59e62b94b" target="_blank">27ec953</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree27ec953de81e7f73925a90fb972334a59e62b94btargetblank27ec953a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/27ec953de81e7f73925a90fb972334a59e62b94b" target="_blank">27ec953</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    analysis/figure/
+    Ignored:    code/.DS_Store
+    Ignored:    code/scRNAseq/.DS_Store
+    Ignored:    code/scRNAseq/analysis/.DS_Store
+    Ignored:    code/scRNAseq/pre_processing/.DS_Store
+    Ignored:    code/snATACseq/
+    Ignored:    data/.DS_Store
+    Ignored:    data/genesets/
+    Ignored:    data/input/
+    Ignored:    output/.DS_Store
+    Ignored:    output/analysis/
+    Ignored:    output/data/
+    Ignored:    output/figures/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/exploration_D10025_yap1_dataset_transition_scores.Rmd</code>)
+and HTML
+(<code>docs/exploration_D10025_yap1_dataset_transition_scores.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/27ec953de81e7f73925a90fb972334a59e62b94b/analysis/exploration_D10025_yap1_dataset_transition_scores.Rmd" target="_blank">27ec953</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-18
+</td>
+<td>
+wflow_publish(c("analysis/exploration_D10025_yap1_dataset_transition_scores.Rmd",
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Explore other options to visualise the VEC -&gt; LEC transition
+score.</p>
+<div id="load-libraries" class="section level2">
+<h2>Load libraries</h2>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(tidyverse)
+  library(here)
+  library(Seurat)
+  library(scDblFinder)
+  library(ggpubr)
+  library(clustree)
+  library(patchwork)
+  library(scater)
+  library(scran)
+  library(qs2)
+  library(chisq.posthoc.test)
+
+})</code></pre>
+</div>
+<div id="load-data" class="section level2">
+<h2>Load data</h2>
+<pre class="r"><code># level_01 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_01_annotated.qs2&#39;))
+# level_02 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_02_annotated.qs2&#39;))
+level_03 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2&#39;))</code></pre>
+</div>
+<div id="load-gene-sets-paper-settings" class="section level2">
+<h2>Load gene sets + paper settings</h2>
+<pre class="r"><code>source(here(&quot;code/scRNAseq/general_scripts/yap1_meox1_important_genes.R&quot;))
+source(here(&quot;code/scRNAseq/general_scripts/yap1_meox1_paper_settings.R&quot;))
+
+names(genotype_colours) &lt;- c(&quot;wildtype&quot;, &quot;yap1_mutant&quot;)</code></pre>
+</div>
+<div id="plotting-orders" class="section level2">
+<h2>Plotting orders</h2>
+<pre class="r"><code>level_03_celltpe_order &lt;- c(
+  &quot;LEC&quot;,
+  &quot;preLEC&quot;,
+  &quot;hmVEC&quot;,
+  &quot;mVEC&quot;,
+  &quot;cVEC&quot;,
+  &quot;iVEC&quot;
+)</code></pre>
+</div>
+<div id="plotting-colours" class="section level2">
+<h2>Plotting colours</h2>
+<pre class="r"><code>level_03_celltype_colours &lt;- c(
+  &quot;#41ae76&quot;,
+  &quot;#a1d99b&quot;,
+  &quot;#9ecae1&quot;,
+  &quot;#6baed6&quot;,
+  &quot;#4292c6&quot;,
+  &quot;#084594&quot;)
+
+names(level_03_celltype_colours) &lt;- level_03_celltpe_order</code></pre>
+</div>
+<div id="plotting-themes" class="section level2">
+<h2>Plotting themes</h2>
+<pre class="r"><code>plot_sizing &lt;- theme_bw()+ theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14),
+        legend.title = element_blank()) 
+
+plot_sizing_seurat &lt;- theme(axis.title = element_text(size = 16),
+        axis.text = element_text(size = 14, colour = &quot;black&quot;),
+        plot.title = element_text(size = 18),
+        legend.text = element_text(size = 14))
+
+rotate_x &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+strip_fix &lt;- theme(strip.background = element_rect(fill = &quot;white&quot;), 
+                   strip.text = element_text(size = 14))</code></pre>
+</div>
+<div id="directories" class="section level2">
+<h2>directories</h2>
+<pre class="r"><code>save_dir &lt;- here(&quot;output/explorations&quot;)
+name &lt;- &quot;yap1_dataset&quot;</code></pre>
+</div>
+</div>
+<div id="boxplots-for-transition-score" class="section level1">
+<h1>Boxplots for transition score</h1>
+<p>Focusing only on developmental transition score. This time the focus
+is not on split by mutant vs wildtype, but just per cluster.</p>
+<p>Note, the way we visualise this transition score is inspired by this
+paper <a
+href="https://www.cell.com/cell/fulltext/S0092-8674(24)00534-8">here</a>
+- we actually use their code.</p>
+<p>The way this works is not by scaling the values themselves, but by
+ordering the scores for colouring:</p>
+<pre class="r"><code>md &lt;- level_03[[]]
+coords &lt;- Embeddings(level_03[[&quot;umap&quot;]])
+md &lt;- cbind(md, coords)
+
+midpoint &lt;- mean(range(md$EMBO_dev_transient_score)) #-0.2513305
+
+# Order by absolute difference from the midpoint
+md_ordered &lt;- md[order(abs(md$EMBO_dev_transient_score - midpoint)), ]</code></pre>
+<p>The midpoint is <code>{r} midpoint</code> - which means that overall
+the VEC scores are larger than the LEC scores. This makes sense
+considering we’re looking at mostly VECs at this timepoint and only very
+few LECs.</p>
+<p>The data is then reordered based on absolute difference from
+midpoint, but the underlying data is unchanged. This just ensures that
+the extreme points are plotted last, so they’re visible and not
+burried.</p>
+<pre class="r"><code># plot ordered
+p1 &lt;- ggplot(md_ordered, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = &quot;#406880&quot;, high = &quot;darkgreen&quot;, mid = &quot;azure2&quot;) + #not keeping original green bc its too light
+  theme_classic()  + ggtitle(&quot;ordered&quot;)
+
+# plot unordered
+p2 &lt;- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = &quot;#406880&quot;, high = &quot;darkgreen&quot;, mid = &quot;azure2&quot;) + #not keeping original green bc its too light
+  theme_classic()  + ggtitle(&quot;unordered&quot;)
+
+p1+p2 + plot_layout(guides=&quot;collect&quot;) &amp; theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-9-1.png" width="864" style="display: block; margin: auto;" /></p>
+<div id="no-scaling" class="section level2">
+<h2>No scaling</h2>
+<p>This is how we visualise the data on the UMAPs.</p>
+<pre class="r"><code>#copied out from function above, 
+df_in &lt;- level_03@meta.data
+score = &quot;EMBO_dev_transient_score&quot;
+celltype_order=level_03_celltpe_order
+
+
+new_labels &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    group_by(L3_celltype) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    summarise(., label = paste0(L3_celltype, &quot;\nn=&quot;, count)) %&gt;% 
+    pull(label) %&gt;% unique()</code></pre>
+<pre><code>Warning: Using an external vector in selections was deprecated in tidyselect 1.1.0.
+ℹ Please use `all_of()` or `any_of()` instead.
+  # Was:
+  data %&gt;% select(score)
+
+  # Now:
+  data %&gt;% select(all_of(score))
+
+See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+dplyr 1.1.0.
+ℹ Please use `reframe()` instead.
+ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+  always returns an ungrouped data frame and adjust accordingly.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre class="r"><code>#rename
+colnames(df_in)[colnames(df_in) == score] &lt;- &quot;score&quot;
+  
+#y limits for test
+y_max &lt;- df_in$score %&gt;% max()
+y_pairwise &lt;- y_max + (y_max*0.2)
+y_global &lt;- y_max + (y_max*0.4)
+  
+#get stats
+stat_list &lt;- list()
+stat_list[[&quot;global&quot;]] &lt;- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = &quot;kruskal.test&quot;)
+stat_list[[&quot;pairwise&quot;]] &lt;- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = &quot;hmVEC&quot;,
+                                           data =df_in,
+                                           method = &quot;wilcox.test&quot;) %&gt;%
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                   p.adj &lt;= 0.05 &amp; p.adj &gt; 0.01 ~ &quot;*&quot;,
+                                   p.adj &lt;= 0.01 &amp; p.adj &gt; 0.001 ~ &quot;**&quot;,
+                                   p.adj &lt;= 0.001 &amp; p.adj &gt; 0.0001 ~ &quot;***&quot;,
+                                   p.adj &lt;= 0.0001 ~ &quot;****&quot;))
+  
+plot &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab(&quot;&quot;) + ylab(paste0(score, &quot; score&quot;)) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, &quot;, p = &quot;, p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot </code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># filename &lt;- sprintf(&#39;%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf&#39;, save_dir, name_current)
+# ggsave(filename,
+#        plot,
+#        device=&quot;pdf&quot;,
+#        width=8,
+#        height=5)</code></pre>
+<p>Stats as well.</p>
+<pre class="r"><code>stats_DF &lt;- stat_list %&gt;% bind_rows(., .id=&quot;score&quot;)
+
+# #also export 
+# filename &lt;- sprintf(&quot;%s/%s_module_score_dev_transition_celltype_boxplots_stats.csv&quot;, save_dir, name_current)
+# write.csv(x = stats_DF, file = filename, row.names = FALSE)
+
+DT::datatable(stats_DF, class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-f30fe04190b0208cd78a" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-f30fe04190b0208cd78a">{"x":{"filter":"none","vertical":false,"data":[["global","pairwise","pairwise","pairwise","pairwise","pairwise"],["score","score","score","score","score","score"],[0,1.384421428247411e-55,3.804312419196371e-116,1.674477577057147e-12,3.711649787400719e-235,5.165130928439615e-09],[0,4.2e-55,1.5e-115,3.3e-12,1.899999999999999e-234,5.2e-09],["&lt;2e-16","&lt; 2e-16","&lt; 2e-16","1.7e-12","&lt; 2e-16","5.2e-09"],["****","****","****","****","****","****"],["Kruskal-Wallis","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon","Wilcoxon"],[null,"hmVEC","hmVEC","hmVEC","hmVEC","hmVEC"],[null,"preLEC","mVEC","cVEC","LEC","iVEC"],[null,"****","****","****","****","****"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>score<\/th>\n      <th>.y.<\/th>\n      <th>p<\/th>\n      <th>p.adj<\/th>\n      <th>p.format<\/th>\n      <th>p.signif<\/th>\n      <th>method<\/th>\n      <th>group1<\/th>\n      <th>group2<\/th>\n      <th>sig_sign<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3]},{"name":"score","targets":0},{"name":".y.","targets":1},{"name":"p","targets":2},{"name":"p.adj","targets":3},{"name":"p.format","targets":4},{"name":"p.signif","targets":5},{"name":"method","targets":6},{"name":"group1","targets":7},{"name":"group2","targets":8},{"name":"sig_sign","targets":9}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<p>Make this plot for each score separately? No stats for now.</p>
+<pre class="r"><code>df_in &lt;- level_03@meta.data
+celltype_order=level_03_celltpe_order
+
+df_in %&gt;% 
+    select(., LEC_dev_score_1,EMBO_VEC_score_1, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    pivot_longer(cols = c(&quot;EMBO_VEC_score_1&quot;, &quot;LEC_dev_score_1&quot;), names_to = &quot;score&quot;, values_to = &quot;value&quot;) %&gt;% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = value, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab(&quot;&quot;) + ylab(&quot;score&quot;) +
+    geom_jitter(aes(x = L3_celltype, y = value),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  facet_wrap(~score) + strip_fix + theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Not sure we can make any great statements about the distribution of
+the LEC scores… They’re all pretty low.</p>
+<p>Run stats anyway?</p>
+<pre class="r"><code>mean_lec_dev_scores &lt;- df_in %&gt;% 
+  group_by(L3_celltype) %&gt;% 
+  summarise(., mean_celltype = mean(LEC_dev_score_1))
+
+pairwise &lt;- compare_means(LEC_dev_score_1 ~ L3_celltype, 
+                                           # ref.group = &quot;hmVEC&quot;,
+                                           data =df_in,
+                                           method = &quot;wilcox.test&quot;) %&gt;%
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                   p.adj &lt;= 0.05 &amp; p.adj &gt; 0.01 ~ &quot;*&quot;,
+                                   p.adj &lt;= 0.01 &amp; p.adj &gt; 0.001 ~ &quot;**&quot;,
+                                   p.adj &lt;= 0.001 &amp; p.adj &gt; 0.0001 ~ &quot;***&quot;,
+                                   p.adj &lt;= 0.0001 ~ &quot;****&quot;)) %&gt;% 
+  left_join(
+    mean_lec_dev_scores %&gt;%
+      dplyr::rename(group1 = L3_celltype,
+             group1_mean = mean_celltype),
+    by = &quot;group1&quot;
+  ) %&gt;%
+  left_join(
+    mean_lec_dev_scores %&gt;%
+      dplyr::rename(group2 = L3_celltype,
+             group2_mean = mean_celltype),
+    by = &quot;group2&quot;
+  ) %&gt;%
+  relocate(group1_mean, .after = group1) %&gt;%
+  relocate(group2_mean, .after = group2) %&gt;% 
+  mutate(., direction = ifelse(group1_mean &gt; group2_mean, &quot;up&quot;, &quot;down&quot;)) %&gt;% 
+  select(., -c(&quot;.y.&quot;, &quot;p&quot;, &quot;p.format&quot;, &quot;p.signif&quot;, &quot;method&quot;))</code></pre>
+<p>Show stats for significant entries that are not LEC, because we know
+that score is higher.</p>
+<pre class="r"><code>DT::datatable(pairwise %&gt;% filter(., p.adj &lt; 0.05 &amp; group1 != &quot;LEC&quot; &amp; group2 != &quot;LEC&quot;), class = &#39;cell-border stripe&#39;, rownames = FALSE)</code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-d4a5dc02c6c3975f378f" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d4a5dc02c6c3975f378f">{"x":{"filter":"none","vertical":false,"data":[["preLEC","preLEC","mVEC","mVEC","hmVEC","cVEC"],[-0.008437797016527469,-0.008437797016527469,-0.01666914108321852,-0.01666914108321852,-0.02183413575409761,-0.01629245659684564],["hmVEC","iVEC","hmVEC","iVEC","cVEC","iVEC"],[-0.02183413575409761,-0.01902678277958374,-0.02183413575409761,-0.01902678277958374,-0.01629245659684564,-0.01902678277958374],[1.3e-19,4.9e-05,2.1e-20,8e-06,9e-11,0.0002],["****","****","****","****","****","***"],["up","up","up","up","down","up"]],"container":"<table class=\"cell-border stripe\">\n  <thead>\n    <tr>\n      <th>group1<\/th>\n      <th>group1_mean<\/th>\n      <th>group2<\/th>\n      <th>group2_mean<\/th>\n      <th>p.adj<\/th>\n      <th>sig_sign<\/th>\n      <th>direction<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,3,4]},{"name":"group1","targets":0},{"name":"group1_mean","targets":1},{"name":"group2","targets":2},{"name":"group2_mean","targets":3},{"name":"p.adj","targets":4},{"name":"sig_sign","targets":5},{"name":"direction","targets":6}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<p>It actually doesn’t really look like the LEC score is higher in hmVEC
+clusters compared to other non-LEC clusters.</p>
+</div>
+<div id="scale-each-score-before-subtracting" class="section level2">
+<h2>Scale each score before subtracting</h2>
+<p>The main motivator for this is that the scores are pretty arbitrary
+and the midpoint isn’t 0. This makes it hard to make sense of the
+numbers. While we probably shouldn’t put too much weight on this anyway,
+we could explore whether we can scale the LEC and VEC scores to go from
+0 to 1 independently. Then, when subtracting, the midpoint around 0
+would actually be a proper intermediate. It would also mean that
+everything &gt;0 had a larger LEC than VEC score, and everything &lt;0
+had a larger VEC than LEC score.</p>
+<pre class="r"><code>level_03$LEC_dev_score_scale &lt;- scales::rescale(level_03$LEC_dev_score_1, to = c(0,1))
+level_03$EMBO_VEC_score_scale &lt;- scales::rescale(level_03$EMBO_VEC_score_1, to = c(0,1))
+level_03$EMBO_dev_transient_score_scale &lt;- level_03$LEC_dev_score_scale - level_03$EMBO_VEC_score_scale</code></pre>
+<p>Check what these look on UMAP for each score sep as well as
+transition.</p>
+<pre class="r"><code>vec &lt;- FeaturePlot(level_03,
+                   features = &quot;EMBO_VEC_score_scale&quot;,
+                      cols = c(&quot;#d9d9d9&quot;, &quot;#406880&quot;), pt.size = 1,
+                      min.cutoff = &quot;q1&quot;,
+                      max.cutoff =  &quot;q99&quot;,
+                      order = T)
+
+lec &lt;- FeaturePlot(level_03,
+                   features = &quot;LEC_dev_score_scale&quot;,
+                      cols = c(&quot;#d9d9d9&quot;, &quot;darkgreen&quot;),pt.size = 1,
+                      min.cutoff = &quot;q1&quot;,
+                      max.cutoff =  &quot;q99&quot;,
+                      order = T)
+
+md &lt;- level_03[[]]
+coords &lt;- Embeddings(level_03[[&quot;umap&quot;]])
+md &lt;- cbind(md, coords)
+
+midpoint &lt;- mean(range(md$EMBO_dev_transient_score_scale))
+
+# Order by absolute difference from the midpoint
+md &lt;- md[order(abs(md$EMBO_dev_transient_score_scale - midpoint)), ]
+
+# plot
+trans &lt;- ggplot(md, aes(x = umap_1, y = umap_2, color = EMBO_dev_transient_score_scale)) +
+  geom_point(size = 1) + 
+  scale_color_gradient2(low = &quot;#406880&quot;, high = &quot;darkgreen&quot;, mid = &quot;azure2&quot;) + 
+  theme_classic() + ggtitle(&quot;each scaled&quot;)
+
+
+vec + lec + trans + plot_layout(ncol=3, guides = &quot;collect&quot;, axes=&quot;collect&quot;) &amp; theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-16-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>I think one of the issues is that almost all cells have a VEC
+signature, but only very few have a LEC signature- but the ones that do
+have a very strong one.</p>
+<p>Make boxplot</p>
+<pre class="r"><code>#copied out from function above, 
+df_in &lt;- level_03@meta.data
+score = &quot;EMBO_dev_transient_score_scale&quot;
+celltype_order=level_03_celltpe_order
+
+new_labels &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    group_by(L3_celltype) %&gt;% 
+    summarise(., count = n()) %&gt;% 
+    summarise(., label = paste0(L3_celltype, &quot;\nn=&quot;, count)) %&gt;% 
+    pull(label) %&gt;% unique()</code></pre>
+<pre><code>Warning: Returning more (or less) than 1 row per `summarise()` group was deprecated in
+dplyr 1.1.0.
+ℹ Please use `reframe()` instead.
+ℹ When switching from `summarise()` to `reframe()`, remember that `reframe()`
+  always returns an ungrouped data frame and adjust accordingly.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre class="r"><code>#rename
+colnames(df_in)[colnames(df_in) == score] &lt;- &quot;score&quot;
+  
+#y limits for test
+y_max &lt;- df_in$score %&gt;% max()
+y_pairwise &lt;- y_max + (y_max*0.2)
+y_global &lt;- y_max + (y_max*0.4)
+  
+#get stats
+stat_list &lt;- list()
+stat_list[[&quot;global&quot;]] &lt;- compare_means(score ~ L3_celltype,
+                                         data = df_in,
+                                         method = &quot;kruskal.test&quot;)
+stat_list[[&quot;pairwise&quot;]] &lt;- compare_means(score ~ L3_celltype, #pairwise compared to hmVEC
+                                           ref.group = &quot;hmVEC&quot;,
+                                           data =df_in,
+                                           method = &quot;wilcox.test&quot;) %&gt;%
+    mutate(., sig_sign = case_when(p.adj &gt; 0.05 ~ &quot;ns&quot;, #add for adjusted
+                                   p.adj &lt;= 0.05 &amp; p.adj &gt; 0.01 ~ &quot;*&quot;,
+                                   p.adj &lt;= 0.01 &amp; p.adj &gt; 0.001 ~ &quot;**&quot;,
+                                   p.adj &lt;= 0.001 &amp; p.adj &gt; 0.0001 ~ &quot;***&quot;,
+                                   p.adj &lt;= 0.0001 ~ &quot;****&quot;))
+  
+plot &lt;- df_in %&gt;% 
+    select(., score, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = score, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab(&quot;&quot;) + ylab(paste0(score, &quot; score&quot;)) +
+    geom_jitter(aes(x = L3_celltype, y = score),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+    geom_text(data = stat_list$pairwise, aes(x = group2, y = y_pairwise, label = sig_sign)) +
+    geom_text(data = stat_list$global, aes(x = 2.5, y = y_global, label = paste0(method, &quot;, p = &quot;, p.adj))) +
+    scale_x_discrete(labels= new_labels) +
+    ggtitle(score)
+
+
+plot </code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># filename &lt;- sprintf(&#39;%s/%s_module_score_dev_transition_celltype_boxplots_pvalue.pdf&#39;, save_dir, name_current)
+# ggsave(filename,
+#        plot,
+#        device=&quot;pdf&quot;,
+#        width=8,
+#        height=5)</code></pre>
+<p>Even the LECs don’t really have a high mean score for this transition
+score… probably because they all also have a relatively high VEC
+score.</p>
+<p>Plot boxplots without stats for LEC and VEC scores separately.</p>
+<pre class="r"><code>df_in &lt;- level_03@meta.data
+celltype_order=level_03_celltpe_order
+
+df_in %&gt;% 
+    select(., LEC_dev_score_scale,EMBO_VEC_score_scale, L3_celltype) %&gt;% 
+    mutate(., L3_celltype = factor(L3_celltype, levels = celltype_order)) %&gt;% 
+    pivot_longer(cols = c(&quot;EMBO_VEC_score_scale&quot;, &quot;LEC_dev_score_scale&quot;), names_to = &quot;score&quot;, values_to = &quot;value&quot;) %&gt;% 
+    ggplot(.) +
+    geom_boxplot(aes(x = L3_celltype, y = value, fill = L3_celltype), 
+                 position = position_dodge2(),outlier.shape = NA) +
+    scale_fill_manual(values = level_03_celltype_colours) +
+    theme_bw(base_size = 14)+ 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=15)) +
+    xlab(&quot;&quot;) + ylab(&quot;score&quot;) +
+    geom_jitter(aes(x = L3_celltype, y = value),
+                size = 0.1, alpha = 0.5, 
+                position  = position_jitterdodge(jitter.width = 0.3, dodge.width = 0.75)) +
+  facet_wrap(~score) + strip_fix + theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="figure/exploration_D10025_yap1_dataset_transition_scores.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.5.0 (2025-04-11)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sequoia 15.7.4
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices datasets  utils     methods  
+[8] base     
+
+other attached packages:
+ [1] chisq.posthoc.test_0.1.2    qs2_0.1.7                  
+ [3] scran_1.38.0                scater_1.38.0              
+ [5] scuttle_1.20.0              patchwork_1.3.2            
+ [7] clustree_0.5.1              ggraph_2.2.2               
+ [9] ggpubr_0.6.2                scDblFinder_1.24.0         
+[11] SingleCellExperiment_1.32.0 SummarizedExperiment_1.40.0
+[13] Biobase_2.70.0              GenomicRanges_1.62.1       
+[15] Seqinfo_1.0.0               IRanges_2.44.0             
+[17] S4Vectors_0.48.0            BiocGenerics_0.56.0        
+[19] generics_0.1.4              MatrixGenerics_1.22.0      
+[21] matrixStats_1.5.0           Seurat_5.4.0               
+[23] SeuratObject_5.3.0          sp_2.2-0                   
+[25] here_1.0.2                  lubridate_1.9.4            
+[27] forcats_1.0.1               stringr_1.5.1              
+[29] dplyr_1.1.4                 purrr_1.2.1                
+[31] readr_2.1.6                 tidyr_1.3.2                
+[33] tibble_3.3.1                ggplot2_4.0.1              
+[35] tidyverse_2.0.0             workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
+  [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
+  [7] sctransform_0.4.3        backports_1.5.0          DT_0.34.0               
+ [10] R6_2.6.1                 lazyeval_0.2.2           uwot_0.2.4              
+ [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
+ [16] cli_3.6.5                spatstat.explore_3.7-0   fastDummies_1.7.5       
+ [19] labeling_0.4.3           sass_0.4.10              S7_0.2.1                
+ [22] spatstat.data_3.1-9      ggridges_0.5.7           pbapply_1.7-4           
+ [25] Rsamtools_2.26.0         parallelly_1.46.1        limma_3.66.0            
+ [28] rstudioapi_0.17.1        BiocIO_1.20.0            crosstalk_1.2.2         
+ [31] vroom_1.6.7              ica_1.0-3                spatstat.random_3.4-4   
+ [34] car_3.1-3                Matrix_1.7-3             ggbeeswarm_0.7.3        
+ [37] abind_1.4-8              lifecycle_1.0.4          whisker_0.4.1           
+ [40] yaml_2.3.10              edgeR_4.8.2              carData_3.0-5           
+ [43] SparseArray_1.10.8       Rtsne_0.17               grid_4.5.0              
+ [46] promises_1.5.0           dqrng_0.4.1              crayon_1.5.3            
+ [49] miniUI_0.1.2             lattice_0.22-6           beachmat_2.26.0         
+ [52] cowplot_1.2.0            cigarillo_1.0.0          pillar_1.11.1           
+ [55] knitr_1.50               metapod_1.18.0           rjson_0.2.23            
+ [58] xgboost_3.1.3.1          future.apply_1.20.1      codetools_0.2-20        
+ [61] glue_1.8.0               getPass_0.2-4            spatstat.univar_3.1-6   
+ [64] data.table_1.18.0        vctrs_0.6.5              png_0.1-8               
+ [67] spam_2.11-3              gtable_0.3.6             cachem_1.1.0            
+ [70] xfun_0.52                S4Arrays_1.10.1          mime_0.13               
+ [73] tidygraph_1.3.1          survival_3.8-3           statmod_1.5.1           
+ [76] bluster_1.20.0           fitdistrplus_1.2-5       ROCR_1.0-11             
+ [79] nlme_3.1-168             bit64_4.6.0-1            RcppAnnoy_0.0.23        
+ [82] GenomeInfoDb_1.46.2      rprojroot_2.1.1          bslib_0.9.0             
+ [85] irlba_2.3.5.1            vipor_0.4.7              KernSmooth_2.23-26      
+ [88] otel_0.2.0               tidyselect_1.2.1         processx_3.8.6          
+ [91] bit_4.6.0                compiler_4.5.0           curl_7.0.0              
+ [94] git2r_0.36.2             BiocNeighbors_2.4.0      DelayedArray_0.36.0     
+ [97] plotly_4.11.0            stringfish_0.18.0        rtracklayer_1.70.1      
+[100] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
+[103] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
+[106] rmarkdown_2.29           XVector_0.50.0           htmltools_0.5.8.1       
+[109] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
+[112] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
+[115] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
+[118] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
+[121] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
+[124] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
+[127] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
+[130] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
+[133] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
+[136] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
+[139] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
+[142] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
+[145] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
+[148] XML_3.99-0.20            evaluate_1.0.5           RcppParallel_5.1.11-1   
+[151] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
+[154] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
+[157] polyclip_1.10-7          future_1.69.0            scattermore_1.2         
+[160] ggforce_0.5.0            rsvd_1.0.5               broom_1.0.11            
+[163] xtable_1.8-4             restfulr_0.0.16          RSpectra_0.16-2         
+[166] rstatix_0.7.3            later_1.4.2              viridisLite_0.4.2       
+[169] memoise_2.0.1            beeswarm_0.4.0           GenomicAlignments_1.46.0
+[172] cluster_2.1.8.1          timechange_0.3.0         globals_0.18.0          </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
