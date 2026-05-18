@@ -461,4 +461,46 @@ df_in %>%
 
 ```
 
+Not sure we can make any great statements about the distribution of the LEC scores... They're all pretty low.
 
+Run stats anyway?
+
+```{r}
+mean_lec_dev_scores <- df_in %>% 
+  group_by(L3_celltype) %>% 
+  summarise(., mean_celltype = mean(LEC_dev_score_scale))
+
+pairwise <- compare_means(LEC_dev_score_scale ~ L3_celltype, 
+                                           # ref.group = "hmVEC",
+                                           data =df_in,
+                                           method = "wilcox.test") %>%
+    mutate(., sig_sign = case_when(p.adj > 0.05 ~ "ns", #add for adjusted
+                                   p.adj <= 0.05 & p.adj > 0.01 ~ "*",
+                                   p.adj <= 0.01 & p.adj > 0.001 ~ "**",
+                                   p.adj <= 0.001 & p.adj > 0.0001 ~ "***",
+                                   p.adj <= 0.0001 ~ "****")) %>% 
+  left_join(
+    mean_lec_dev_scores %>%
+      dplyr::rename(group1 = L3_celltype,
+             group1_mean = mean_celltype),
+    by = "group1"
+  ) %>%
+  left_join(
+    mean_lec_dev_scores %>%
+      dplyr::rename(group2 = L3_celltype,
+             group2_mean = mean_celltype),
+    by = "group2"
+  ) %>%
+  relocate(group1_mean, .after = group1) %>%
+  relocate(group2_mean, .after = group2) %>% 
+  mutate(., direction = ifelse(group1_mean > group2_mean, "up", "down")) %>% 
+  select(., -c(".y.", "p", "p.format", "p.signif", "method"))
+  
+```
+
+
+Show stats for significant entries that are not LEC, because we know that score is higher.
+
+```{r}
+DT::datatable(pairwise %>% filter(., p.adj < 0.05 & group1 != "LEC" & group2 != "LEC"), class = 'cell-border stripe', rownames = FALSE)
+```
