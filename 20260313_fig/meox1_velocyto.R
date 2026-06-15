@@ -254,9 +254,10 @@ order_D10051 <- c(
     "hmsVEC",
     "msVEC"
 )
+# "pre_muLEC" = "#a1d99b",
 col_map_D10051 <- c(
     "LEC"       = "#41ae76",
-    "pre_muLEC" = "#a1d99b",
+    "pre_muLEC" = "#fec44f",
     "hmsVEC"    = "#9ecae1",
     "msVEC"     = "#6baed6"
 )
