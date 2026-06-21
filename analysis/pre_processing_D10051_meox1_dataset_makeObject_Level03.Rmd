@@ -218,6 +218,29 @@ plot_list <- lapply(list_objects, plot_umap_dataset)
 wrap_plots(unlist(plot_list, recursive = F)) +  plot_layout(nrow = 2)
 ```
 
+## Stacked barplot for seurat cluster vs genotype 
+
+
+```{r, fig.align='center'}
+list_objects$D10051_meox1_dataset_Level_03@meta.data %>% 
+  group_by(seurat_clusters, Genotype) %>% 
+  summarise(count=n()) %>% 
+  ggplot(., aes(x=seurat_clusters, y=count, fill=Genotype))+
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing
+
+```
+
+
+
+## Some other gene expression plots
+
+```{r, fig.align='center', fig.height=15, fig.width=10}
+FeaturePlot(list_objects$D10051_meox1_dataset_Level_03, features = c("cdkn1bb", "tp53", "flt4", "kdrl", "percent.mt", "sulf2a"))
+```
+
+
+
 ## Low quality clusters
 
 
@@ -255,8 +278,6 @@ Only running for one object.
 markers_low <- FindAllMarkers(object = list_objects$D10051_meox1_dataset_Level_03, 
                               group.by = "seurat_clusters")
 
-
-markers_low %>% filter(., cluster == 1 & p_val_adj < 0.05)
 ```
 
 Make scatterplot with % expressed, colour by avglog2FC
