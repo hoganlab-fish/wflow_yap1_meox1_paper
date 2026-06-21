@@ -236,7 +236,7 @@ list_objects$D10051_meox1_dataset_Level_03@meta.data %>%
 ## Some other gene expression plots
 
 ```{r, fig.align='center', fig.height=15, fig.width=10}
-FeaturePlot(list_objects$D10051_meox1_dataset_Level_03, features = c("cdkn1bb", "tp53", "flt4", "kdrl", "percent.mt", "sulf2a"))
+FeaturePlot(list_objects$D10051_meox1_dataset_Level_03, features = c("cdkn1bb", "tp53", "flt4", "kdrl", "percent.mt", "tagln2"))
 ```
 
 
