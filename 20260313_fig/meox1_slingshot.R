@@ -72,6 +72,18 @@
     # meox1__DensLabel_Minima_start_hmVEC_lin1.S20200.pdf 
     # meox1__DensLabel_Minima_start_hmVEC_lin1.S20201.pdf
 
+# this is the set of plots
+# /Revision_analysis/queue_plots/
+    # meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_hmVEC_lin1.pdf
+    # meox1__BarLabel_WT_Anchored_Quantified_Proportions_start_hmVEC_lin1.pdf
+
+# /Revision_analysis/queue_plots/
+    # meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_mVEC_lin1.pdf
+    # meox1__BarLabel_WT_Anchored_Quantified_Proportions_start_mVEC_lin1.pdf
+    # meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_mVEC_lin2.pdf
+    # meox1__BarLabel_WT_Anchored_Quantified_Proportions_start_mVEC_lin2.pdf
+
+
 # note that
 # S20200 is mutant and
 # S20201 is wildtype
@@ -181,6 +193,285 @@ plot_custom_transition_zones <- function(
 
     ggsave(paste0(outfile_dir, "meox1__BarLabel_", file_prefix, "_Zones", paste(target_zones, collapse=""), "_Dodged_Proportion.", col_name, ".pdf"), plot = plt_dodged, height = 5, width = 7)
     ggsave(paste0(outfile_dir, "meox1__BarStrip_", file_prefix, "_Zones", paste(target_zones, collapse=""), "_Dodged_Proportion.", col_name, ".pdf"), plot = plt_dodged + NoAxes() + NoLegend() + theme(plot.title = element_blank()), height = 4, width = 4)
+}
+
+# accent_palette <- c("#D32F2F", "#F57C00", "#7B1FA2", "#388E3C")
+
+run_wt_anchored_slingshot <- function(data, col_map, col_order, outfile_dir) {
+    sce <- as.SingleCellExperiment(data)
+    celltype <- as.vector(unique(data@meta.data$L3_celltype))
+    data$L3_celltype <- factor(data$L3_celltype, levels=col_order)
+    col_name <- "WT_Anchored"
+
+    for (start in celltype) {
+        sce_run <- slingshot(
+            sce, 
+            clusterLabels = "L3_celltype", 
+            reducedDim = "UMAP",           
+            start.clus = start             
+        )
+
+        pseudotime_matrix <- slingPseudotime(sce_run)
+        n_lineages <- ncol(pseudotime_matrix)
+
+        for (lin in seq_len(n_lineages)) {
+            
+            meta <- paste0("Slingshot_Pseudotime_start_", start, "_lin", lin)
+            pt_values <- pseudotime_matrix[, lin]
+            
+            cat("Processing WT-Anchored lineage:", meta, "\n")
+
+            # 1. BUILD MASTER DATAFRAME FOR ALL CELLS
+            master_zones_df <- data.frame(
+                Barcode = colnames(data), 
+                Pseudotime = pt_values,
+                Cluster = data@meta.data$L3_celltype
+            ) %>%
+                mutate(Sample = case_when(
+                    grepl("_1$", Barcode) ~ "meox1 -/- mutant", 
+                    grepl("_2$", Barcode) ~ "WildType", 
+                    TRUE ~ "Unknown"
+                )) %>%
+                filter(Sample != "Unknown")
+
+            # Split profiles
+            wt_pseudotime <- master_zones_df %>% filter(Sample == "WildType", !is.na(Pseudotime)) %>% pull(Pseudotime)
+            mut_pseudotime <- master_zones_df %>% filter(Sample == "meox1 -/- mutant", !is.na(Pseudotime)) %>% pull(Pseudotime)
+            full_pseudotime <- master_zones_df %>% filter(!is.na(Pseudotime)) %>% pull(Pseudotime)
+            
+            if(length(wt_pseudotime) < 10) {
+                cat("   -> Insufficient WT cells for density calculations. Skipping.\n")
+                next
+            }
+
+            # 2. CALCULATE ALL DENSITIES & EXTRACT VALLEYS
+            dens_wt <- density(wt_pseudotime, na.rm = TRUE)
+            valleys <- which(diff(sign(diff(dens_wt$y))) == 2) + 1
+            valley_times <- dens_wt$x[valleys]
+            
+            dens_mut  <- density(mut_pseudotime, na.rm = TRUE)
+            valleys_mut <- which(diff(sign(diff(dens_mut$y))) == 2) + 1
+            valley_times_mut <- dens_mut$x[valleys_mut]
+
+            dens_full <- density(full_pseudotime, na.rm = TRUE)
+
+            accent_palette <- c("#D32F2F", "#F57C00", "#7B1FA2", "#388E3C")
+            
+            # Setup base dataframes for plotting
+            df_wt   <- data.frame(X = dens_wt$x, Y = dens_wt$y)
+            df_mut  <- data.frame(X = dens_mut$x, Y = dens_mut$y)
+            df_full <- data.frame(X = dens_full$x, Y = dens_full$y)
+
+            # --- PLOT 1: CLEAN WT ONLY (NO OVERLAYS) ---
+            p1 <- ggplot(df_wt, aes(x = X, y = Y))
+            for (i in seq_along(valley_times)) {
+                p1 <- p1 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
+            }
+            p1 <- p1 + geom_line(color = "#377EB8", linewidth = 1) + geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
+                labs(title = paste0("WT-Only Baseline Profile\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + theme_classic()
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_WT_start_", start, "_lin", lin, ".pdf"), plot = p1, height = 5, width = 6)
+
+            # --- PLOT 2: CLEAN MUTANT ONLY (NO OVERLAYS) ---
+            p2 <- ggplot(df_mut, aes(x = X, y = Y))
+            for (i in seq_along(valley_times)) {
+                p2 <- p2 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
+            }
+            p2 <- p2 + geom_line(color = "#E41A1C", linewidth = 1) + geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
+                labs(title = paste0("Mutant-Only Profile mapped to WT Roadmarks\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + theme_classic()
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_Mut_start_", start, "_lin", lin, ".pdf"), plot = p2, height = 5, width = 6)
+
+            # --- PLOT 3: OVERLAY - COMBINED FULL DATASET VS WT BASELINE ---
+            p3 <- ggplot(df_full, aes(x = X, y = Y))
+            for (i in seq_along(valley_times)) {
+                p3 <- p3 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
+            }
+            p3 <- p3 + geom_line(aes(color = "Combined Dataset"), linewidth = 1) + 
+                geom_line(data = df_wt, aes(x = X, y = Y, color = "WT Baseline"), linetype = "longdash", linewidth = 0.8) +
+                geom_vline(xintercept = valley_times, color = "red") +
+                scale_color_manual(values = c("Combined Dataset" = "black", "WT Baseline" = "#377EB8")) +
+                labs(title = paste0("Combined Pool vs WT Baseline Validation\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density", color = "Subpopulation") + theme_classic() + theme(legend.position="top", plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Full_start_", start, "_lin", lin, ".pdf"), plot = p3, height = 5, width = 6)
+
+            # --- PLOT 4: OVERLAY - DIRECT COMPARISON (FACETED SUBPLOTS) ---
+            # Combine the two dataframes into one for easy faceting
+            df_compare <- bind_rows(
+                df_wt %>% mutate(Genotype = "WildType Baseline"),
+                df_mut %>% mutate(Genotype = "meox1 -/- Mutant")
+            )
+            # Lock the factor order so WildType is always the top plot
+            df_compare$Genotype <- factor(df_compare$Genotype, levels = c("WildType Baseline", "meox1 -/- Mutant"))
+
+            p4 <- ggplot(df_compare, aes(x = X, y = Y, color = Genotype))
+            
+            # Add WT background zones (ggplot automatically duplicates these across both subplots)
+            for (i in seq_along(valley_times)) {
+                p4 <- p4 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, 
+                                    ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1], color=NA)
+            }
+            
+            p4 <- p4 + geom_line(linewidth = 1) + 
+                geom_vline(xintercept = valley_times, color = "red", linetype = "solid") +
+                scale_color_manual(values = c("WildType Baseline" = "#377EB8", "meox1 -/- Mutant" = "#E41A1C")) +
+                facet_wrap(~ Genotype, ncol = 1) + # Stack vertically sharing the X axis
+                labs(title = paste0("Faceted Head-to-Head Density Alignment\n(Start: ", start, " Lin: ", lin, ")"), 
+                     x = "Pseudotime", y = "Density") + 
+                theme_classic() + 
+                theme(legend.position="none", # Removed legend since subplot titles do the job
+                      plot.title = element_text(hjust = 0.5, face = "bold"),
+                      strip.background = element_rect(fill = "grey90", color = "black"),
+                      strip.text = element_text(face = "bold", size = 11))
+
+            # I bumped the height slightly to 6 to give the stacked plots room to breathe
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_", start, "_lin", lin, ".pdf"), plot = p4, height = 6, width = 6)
+
+            # --- PLOT 5: FULL DENSITY OVERLAY WITH WT ZONES ONLY ---
+            p5 <- ggplot(df_full, aes(x = X, y = Y))
+            for (i in seq_along(valley_times)) {
+                p5 <- p5 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill="#377EB8")
+            }
+            p5 <- p5 + geom_line(linewidth = 1, color = "black") + 
+                geom_vline(xintercept = valley_times, color = "#377EB8", linetype = "dashed", linewidth = 1) +
+                labs(title = paste0("Full Dataset Density with WT Zones\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_WT_Zones_start_", start, "_lin", lin, ".pdf"), plot = p5, height = 5, width = 6)
+
+            # --- PLOT 6: FULL DENSITY OVERLAY WITH MUTANT ZONES ONLY ---
+            p6 <- ggplot(df_full, aes(x = X, y = Y))
+            for (i in seq_along(valley_times_mut)) {
+                p6 <- p6 + annotate("rect", xmin=valley_times_mut[i]-0.5, xmax=valley_times_mut[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill="#E41A1C")
+            }
+            p6 <- p6 + geom_line(linewidth = 1, color = "black") + 
+                geom_vline(xintercept = valley_times_mut, color = "#E41A1C", linetype = "dashed", linewidth = 1) +
+                labs(title = paste0("Full Dataset Density with Mutant Zones\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Mutant_Zones_start_", start, "_lin", lin, ".pdf"), plot = p6, height = 5, width = 6)
+
+            # --- PLOT 7: FULL DENSITY OVERLAY WITH BOTH ZONES ALIGNED ---
+            wt_lines <- data.frame(val = valley_times, type = "WT Zone Boundary")
+            mut_lines <- data.frame(val = valley_times_mut, type = "Mutant Zone Boundary")
+            all_lines <- rbind(wt_lines, mut_lines)
+
+            p7 <- ggplot(df_full, aes(x = X, y = Y)) +
+                geom_line(linewidth = 1, color = "black") +
+                geom_vline(data = all_lines, aes(xintercept = val, color = type), linetype = "dashed", linewidth = 1) +
+                scale_color_manual(values = c("WT Zone Boundary" = "#377EB8", "Mutant Zone Boundary" = "#E41A1C")) +
+                labs(title = paste0("Full Density with WT vs Mutant Zone Alignment\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density", color = "Calculated Boundary") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "top")
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Both_Zones_start_", start, "_lin", lin, ".pdf"), plot = p7, height = 5, width = 6.5)
+
+
+            # 3. ASSIGN INTENSITY CLASSIFICATIONS BY ZONE BOUNDARIES
+            master_zones_df <- master_zones_df %>% 
+                mutate(Zone = case_when(
+                    is.na(Pseudotime) ~ "Trajectory NA (Unmapped)", 
+                    TRUE ~ "Core/Other Cells"
+                ))
+            
+            master_zones_df$Sample <- factor(master_zones_df$Sample, levels = c("meox1 -/- mutant", "WildType"))
+            
+            # Using WT valley times to assign zones for the final barplots as this is the baseline
+            for (i in seq_along(valley_times)) {
+                v_time <- valley_times[i]
+                is_in_zone <- !is.na(master_zones_df$Pseudotime) & (abs(master_zones_df$Pseudotime - v_time) < 0.5)
+                master_zones_df$Zone[is_in_zone] <- paste0("Transition Zone ", i)
+            }
+
+            # 4. COMPUTE SUMMARIES AND PLOT UPDATED COUNTS + PERCENTAGE BARPLOTS
+            zone_names <- c(paste0("Transition Zone ", seq_along(valley_times)), "Core/Other Cells", "Trajectory NA (Unmapped)")
+            
+            # Isolate target zones for the focused presentation
+            target_zones_list <- paste0("Transition Zone ", seq_along(valley_times))
+            
+            barplot_data <- master_zones_df %>%
+                filter(Zone %in% target_zones_list) %>%
+                group_by(Sample, Zone) %>%
+                summarise(Count = n(), .groups = 'drop') %>%
+                group_by(Sample) %>%
+                mutate(
+                    TotalInSample = sum(Count),
+                    Percentage = (Count / TotalInSample) * 100
+                )
+
+            if (nrow(barplot_data) > 0) {
+                
+                # Make dynamic palette for stacked bars
+                zone_colors <- c("Transition Zone 1" = "#D32F2F", "Transition Zone 2" = "#F57C00", "Transition Zone 3" = "#7B1FA2", "Transition Zone 4" = "#388E3C")
+                
+                bp <- ggplot(barplot_data, aes(x = Sample, y = Percentage, fill = Zone)) +
+                    geom_bar(stat = "identity", position = "stack", width = 0.6, color = "black", size = 0.3) +
+                    # Add string text mapping directly over stacks containing both % and count (n)
+                    geom_text(
+                        aes(label = paste0(sprintf("%.1f", Percentage), "%\n(n=", Count, ")")),
+                        position = position_stack(vjust = 0.5), 
+                        size = 3.2, 
+                        fontface = "bold",
+                        color = "white"
+                    ) +
+                    scale_fill_manual(values = zone_colors) +
+                    labs(
+                        title = paste0("WT-Anchored Zone Allocations\n(Start: ", start, " Lin: ", lin, ")"),
+                        x = "Genotype Pool", 
+                        y = "Proportional Composition (%)"
+                    ) + 
+                    theme_classic() +
+                    theme(
+                        plot.title = element_text(hjust = 0.5, face = "bold"),
+                        axis.text = element_text(color = "black", size = 10)
+                    )
+
+                ggsave(paste0(outfile_dir, "meox1__BarLabel_WT_Anchored_Quantified_Proportions_start_", start, "_lin", lin, ".pdf"), plot = bp, height = 6, width = 5.5)
+            }
+            
+            # --- HELPER FUNCTION EXECUTIONS ---
+            has_wt  <- "WildType" %in% unique(master_zones_df$Sample)
+            has_mut <- "meox1 -/- mutant" %in% unique(master_zones_df$Sample)
+            
+            # hmVEC Lin 1
+            if (start == "hmVEC" && lin == 1) {
+                if (has_wt && has_mut) {
+                    plot_custom_transition_zones(
+                        master_df      = master_zones_df,
+                        target_zones   = c(1, 2, 3),
+                        custom_colors  = c("Transition Zone 1" = "#D32F2F", "Transition Zone 2" = "#F57C00", "Transition Zone 3" = "#7B1FA2"),
+                        title_prefix   = "WT-Anchored hmVEC Lin 1 (Combined)",
+                        file_prefix    = "Custom_WT_Anchored_hmVEC_Lin1",
+                        col_name       = col_name,
+                        outfile_dir    = outfile_dir
+                    )
+                }
+            }
+
+            # mVEC Lin 1
+            if (start == "mVEC" && lin == 1) {
+                if (has_wt && has_mut) {
+                    plot_custom_transition_zones(
+                        master_df      = master_zones_df,
+                        target_zones   = c(1, 2),
+                        custom_colors  = c("Transition Zone 1" = "#D32F2F", "Transition Zone 2" = "#F57C00"),
+                        title_prefix   = "WT-Anchored mVEC Lin 1 (Combined)",
+                        file_prefix    = "Custom_WT_Anchored_mVEC_Lin1",
+                        col_name       = col_name,
+                        outfile_dir    = outfile_dir
+                    )
+                }
+            }
+
+            # mVEC Lin 2
+            if (start == "mVEC" && lin == 2) {
+                if (has_wt && has_mut) {
+                    plot_custom_transition_zones(
+                        master_df      = master_zones_df,
+                        target_zones   = c(1, 2),
+                        custom_colors  = c("Transition Zone 1" = "#D32F2F", "Transition Zone 2" = "#F57C00"),
+                        title_prefix   = "WT-Anchored mVEC Lin 2 (Combined)",
+                        file_prefix    = "Custom_WT_Anchored_mVEC_Lin2",
+                        col_name       = col_name,
+                        outfile_dir    = outfile_dir
+                    )
+                }
+            }
+        }
+    }
 }
 
 run_slingshot <- function(data, col_map, col_order, col_name) {
@@ -993,9 +1284,11 @@ data_D10051 <- qs_read(infile_path)
 data_S20200 <- data_D10051[, grepl("_1$", colnames(data_D10051))]
 data_S20201 <- data_D10051[, grepl("_2$", colnames(data_D10051))]
 
-run_slingshot(data_D10051, col_map, col_order, col_name="D10051")
-run_slingshot(data_S20200, col_map, col_order, col_name="S20200")
-run_slingshot(data_S20201, col_map, col_order, col_name="S20201")
+# run_slingshot(data_D10051, col_map, col_order, col_name="D10051")
+# run_slingshot(data_S20200, col_map, col_order, col_name="S20200")
+# run_slingshot(data_S20201, col_map, col_order, col_name="S20201")
 
 features <- c("mki67", "pcna")
-run_featureplot(data_ D10051, features)
+# run_featureplot(data_D10051, features, outfile_dir)
+
+run_wt_anchored_slingshot(data_D10051, col_map, col_order, outfile_dir)
