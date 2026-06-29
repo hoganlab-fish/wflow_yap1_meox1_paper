@@ -1,0 +1,82 @@
+{
+  "arrow_paths" : [
+    "mut_level_1_ensembl",
+    "wt_level_1_ensembl"
+  ],
+  "infile_paths" : [
+    "../data/mut_fragments.tsv.gz",
+    "../data/wt_fragments.tsv.gz"
+  ],
+  "sample_names" : [
+    "mut",
+    "wt"
+  ],
+  "doublet_filter" : true,
+  "lock_clusters" : false,
+  "macs2_path" : "/config/binaries/macs/2.1.1/bin/macs2",
+  "project_path" : "../results/archr_level_1_ensembl",
+  "ncpus" : 16,
+  "footprint_motif" : [
+    "ETS1",
+    "Ets1-distal",
+    "MafB",
+    "Oct4:Sox17",
+    "OCT4-SOX2-TCF-NANOG",
+    "Sox10",
+    "Sox15",
+    "Sox17",
+    "Sox2",
+    "Sox3",
+    "Sox4",
+    "Sox6",
+    "Sox7",
+    "Sox9",
+    "prox1"
+  ],
+  "genes_marker" : [
+    "cdh1",
+    "cdh5",
+    "cdh6",
+    "cldn11a",
+    "cldn11b",
+    "dab2",
+    "dll4",
+    "esama",
+    "flt4",
+    "fn1a",
+    "hand2",
+    "kdrl",
+    "lyve1a",
+    "mafa",
+    "mafba",
+    "osr2",
+    "prox1a",
+    "vegfc",
+    "mki67",
+    "angpt2a",
+    "pcna",
+    "aqp1a.1",
+    "mafb",
+    "per1a",
+    "per1b",
+    "per2",
+    "per3",
+    "s100a10b",
+    "lgals3b",
+    "meox2a",
+    "mrc1a",
+    "ptx3a",
+    "lyz",
+    "bub1bb",
+    "hist1h2a6",
+    "plk1",
+    "cdk1",
+    "flt1",
+    "lyve1b",
+    "hexa"
+  ],
+  "missing" : [
+    "lgals11a",
+    "lgals11b"
+  ]
+}

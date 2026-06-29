@@ -19,19 +19,19 @@ suppressPackageStartupMessages({
 })
 
 # Load data ----
-# input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_kept_doublets.qs2'),
-#                  here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03.qs2'))
-input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_SCT_kept_doublets.qs2'),
-                 here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_SCT.qs2'))
+input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_kept_doublets.qs2'),
+                 here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03.qs2'))
+# input_paths <- c(here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_SCT_kept_doublets.qs2'),
+#                  here('output/data/Datsets/D10025_yap1_dataset/D10025_yap1_dataset_Level_03_SCT.qs2'))
 list_objects <- lapply(input_paths, qs_read)
 
 names(list_objects) <- gsub("\\.qs2", "", basename(input_paths))
 
 #update names
-# list_objects$D10025_yap1_dataset_Level_03_kept_doublets@misc$name <- "D10025_yap1_dataset_Level_03_kept_doublets"
-# list_objects$D10025_yap1_dataset_Level_03@misc$name <- "D10025_yap1_dataset_Level_03"
-list_objects$D10025_yap1_dataset_Level_03_SCT_kept_doublets@misc$name <- "D10025_yap1_dataset_Level_03_SCT_kept_doublets"
-list_objects$D10025_yap1_dataset_Level_03_SCT@misc$name <- "D10025_yap1_dataset_Level_03_SCT"
+list_objects$D10025_yap1_dataset_Level_03_kept_doublets@misc$name <- "D10025_yap1_dataset_Level_03_kept_doublets"
+list_objects$D10025_yap1_dataset_Level_03@misc$name <- "D10025_yap1_dataset_Level_03"
+# list_objects$D10025_yap1_dataset_Level_03_SCT_kept_doublets@misc$name <- "D10025_yap1_dataset_Level_03_SCT_kept_doublets"
+# list_objects$D10025_yap1_dataset_Level_03_SCT@misc$name <- "D10025_yap1_dataset_Level_03_SCT"
 
 # Export path ----
 save_dir <- here("output/analysis/D10025_yap1_dataset/DEGs")
@@ -54,14 +54,14 @@ run_degs_mut_wt <- function(seurat,
                   ident.1 = "yap1_mutant",
                   ident.2 = "wildtype",
                   min.pct = min_pct,
-                  assay = "RNA",
+                  assay = "RNA", test.use = "wilcox_limma",
                   logfc.threshold = log2_t) %>%
         rownames_to_column("Gene") %>%
         mutate(., group = unit)
     }} ) %>% bind_rows()
 
-  file_name <- sprintf("%s/%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", save_dir, seurat@misc$name, group, log2_t, min_pct)
-  write.csv(file = file_name, x = all_results)
+  # file_name <- sprintf("%s/%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", save_dir, seurat@misc$name, group, log2_t, min_pct)
+  # write.csv(file = file_name, x = all_results)
 
   return(all_results)
 
