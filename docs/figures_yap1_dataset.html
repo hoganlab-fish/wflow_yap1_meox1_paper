@@ -367,7 +367,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Make figures for yap1 dataset</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">18. May 2026</h4>
+<h4 class="date">29. June 2026</h4>
 
 </div>
 
@@ -396,7 +396,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-05-18
+<strong>Last updated:</strong> 2026-06-29
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree27ec953de81e7f73925a90fb972334a59e62b94btargetblank27ec953a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree3afcc4f507dee422c971c3991165f4f4a3a13723targetblank3afcc4fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/27ec953de81e7f73925a90fb972334a59e62b94b" target="_blank">27ec953</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/3afcc4f507dee422c971c3991165f4f4a3a13723" target="_blank">3afcc4f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree27ec953de81e7f73925a90fb972334a59e62b94btargetblank27ec953a"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree3afcc4f507dee422c971c3991165f4f4a3a13723targetblank3afcc4fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/27ec953de81e7f73925a90fb972334a59e62b94b" target="_blank">27ec953</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/3afcc4f507dee422c971c3991165f4f4a3a13723" target="_blank">3afcc4f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -568,16 +568,22 @@ Ignored files:
     Ignored:    code/scRNAseq/.DS_Store
     Ignored:    code/scRNAseq/analysis/.DS_Store
     Ignored:    code/scRNAseq/pre_processing/.DS_Store
-    Ignored:    code/snATACseq/
+    Ignored:    code/scRNAseq/pre_processing/D10051_meox1_dataset/.DS_Store
+    Ignored:    code/snATACseq/.DS_Store
+    Ignored:    code/snATACseq/analysis/.DS_Store
     Ignored:    data/.DS_Store
     Ignored:    data/genesets/
     Ignored:    data/input/
+    Ignored:    data/txdb.sqlite
     Ignored:    output/.DS_Store
     Ignored:    output/analysis/
     Ignored:    output/data/
     Ignored:    output/figures/
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  code/tmo.R
 
 </code></pre>
 <p>
@@ -622,6 +628,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/3afcc4f507dee422c971c3991165f4f4a3a13723/analysis/figures_yap1_dataset.Rmd" target="_blank">3afcc4f</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-06-29
+</td>
+<td>
+wflow_publish(c("analysis/figures_meox1_dataset.Rmd",
+"analysis/figures_yap1_dataset.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/eaa3ac0e55d7777a054030fe26664e422e67616c/docs/figures_yap1_dataset.html" target="_blank">eaa3ac0</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-05-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -883,7 +924,9 @@ level_03 &lt;- qs_read(here(&#39;output/data/Datsets/paper/D10025_yap1_dataset_L
 <p>load DEGs</p>
 <pre class="r"><code>hippo_gene_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_hippo_targets_mutVSwt_L3_celltype_fc0.00_minpct_0.00.csv&quot;), show_col_types = F)
 
-all_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv&quot;), show_col_types = F)</code></pre>
+all_degs &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv&quot;), show_col_types = F)
+
+all_markers &lt;- read_csv(here(&quot;output/analysis/D10025_yap1_dataset/Markers/Level_03_Markers_L3_celltype_fc0.00_minpct_0.01.csv&quot;), show_col_types = F)</code></pre>
 <p>load GO</p>
 <pre class="r"><code>go_terms &lt;- qs_read(here(&quot;output/analysis/D10025_yap1_dataset/enrichR/D10025_yap1_dataset_markers_L3_celltype_top100_enrichR.qs2&quot;))</code></pre>
 </div>
@@ -2633,12 +2676,8 @@ for this.</p>
 <pre class="r"><code>M &lt;-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
 
 global_test &lt;- chisq.test(M)
-global_test</code></pre>
-<pre><code>
-    Pearson&#39;s Chi-squared test
-
-data:  M
-X-squared = 211.64, df = 5, p-value &lt; 2.2e-16</code></pre>
+global_test$p.value</code></pre>
+<pre><code>[1] 9.147661e-44</code></pre>
 <pre class="r"><code>res &lt;- chisq.posthoc.test(M) %&gt;% as.data.frame() %&gt;% 
     pivot_longer(., cols = level_03$L3_celltype %&gt;% unique(), names_to = &quot;L3_celltype&quot;, values_to = &quot;entry&quot;) %&gt;% 
     pivot_wider(., names_from = &quot;Value&quot;, values_from = &quot;entry&quot;)
@@ -2654,16 +2693,55 @@ res &lt;- res %&gt;%
                                  )) %&gt;% 
   select(., -Dimension)
 
-res</code></pre>
-<pre><code># A tibble: 6 × 4
-  L3_celltype Residuals `p values` is_sig
-  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
-1 mVEC            9.01    0        &quot;****&quot;
-2 preLEC          0.110   1        &quot;&quot;    
-3 LEC             3.24    0.0143   &quot;*&quot;   
-4 hmVEC           0.335   1        &quot;&quot;    
-5 cVEC            4.33    0.000177 &quot;***&quot; 
-6 iVEC           11.1     0        &quot;****&quot;</code></pre>
+res %&gt;% knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">L3_celltype</th>
+<th align="right">Residuals</th>
+<th align="right">p values</th>
+<th align="left">is_sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mVEC</td>
+<td align="right">9.0121960</td>
+<td align="right">0.000000</td>
+<td align="left">****</td>
+</tr>
+<tr class="even">
+<td align="left">preLEC</td>
+<td align="right">0.1097365</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">LEC</td>
+<td align="right">3.2415431</td>
+<td align="right">0.014266</td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">hmVEC</td>
+<td align="right">0.3353999</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">cVEC</td>
+<td align="right">4.3320199</td>
+<td align="right">0.000177</td>
+<td align="left">***</td>
+</tr>
+<tr class="even">
+<td align="left">iVEC</td>
+<td align="right">11.0905051</td>
+<td align="right">0.000000</td>
+<td align="left">****</td>
+</tr>
+</tbody>
+</table>
 <p>Add to barplot:</p>
 <pre class="r"><code>barplot &lt;- level_03@meta.data %&gt;% 
   group_by(Genotype, L3_celltype, .drop=FALSE) %&gt;% 
@@ -2837,13 +2915,55 @@ global_stats &lt;- global_stats %&gt;% bind_rows(., .id = &quot;L3_celltype&quot
                                 pvalue&lt;= 0.05 ~ &quot;*&quot;
                                  )) 
 
-global_stats</code></pre>
-<pre><code>              L3_celltype statistic       pvalue is_sig
-X-squared...1        mVEC  7.951571 1.876456e-02      *
-X-squared...2      preLEC 43.125726 4.318845e-10   ****
-X-squared...3         LEC  1.067595 5.863741e-01       
-X-squared...4       hmVEC 19.431034 6.033989e-05   ****
-X-squared...5        cVEC  2.907423 2.337013e-01       </code></pre>
+global_stats %&gt;% knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">L3_celltype</th>
+<th align="right">statistic</th>
+<th align="right">pvalue</th>
+<th align="left">is_sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">X-squared…1</td>
+<td align="left">mVEC</td>
+<td align="right">7.951571</td>
+<td align="right">0.0187646</td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">X-squared…2</td>
+<td align="left">preLEC</td>
+<td align="right">43.125726</td>
+<td align="right">0.0000000</td>
+<td align="left">****</td>
+</tr>
+<tr class="odd">
+<td align="left">X-squared…3</td>
+<td align="left">LEC</td>
+<td align="right">1.067595</td>
+<td align="right">0.5863741</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">X-squared…4</td>
+<td align="left">hmVEC</td>
+<td align="right">19.431034</td>
+<td align="right">0.0000603</td>
+<td align="left">****</td>
+</tr>
+<tr class="odd">
+<td align="left">X-squared…5</td>
+<td align="left">cVEC</td>
+<td align="right">2.907423</td>
+<td align="right">0.2337013</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 <p>Using the chisq.posthoc.test package to perform a post-hoc analysis
 for this. Residuals only end up being meaningful for the celltypes with
 global changes.</p>
@@ -2874,19 +2994,83 @@ all_x_tests_df &lt;- all_x_tests %&gt;% bind_rows(., .id = &quot;L3_celltype&quo
                                  )) %&gt;% 
   select(., -Dimension)
 
-all_x_tests_df</code></pre>
-<pre><code># A tibble: 9 × 5
-  L3_celltype tricycle_stage Residuals `p values` is_sig
-  &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt; 
-1 mVEC        G1/G0              0.947   1        &quot;&quot;    
-2 mVEC        S                  2.81    0.0297   &quot;*&quot;   
-3 mVEC        G2M                0.130   1        &quot;&quot;    
-4 preLEC      G1/G0              6.34    0        &quot;****&quot;
-5 preLEC      S                  6.24    0        &quot;****&quot;
-6 preLEC      G2M                1.27    1        &quot;&quot;    
-7 hmVEC       G1/G0              2.96    0.0186   &quot;*&quot;   
-8 hmVEC       S                  4.36    0.000077 &quot;****&quot;
-9 hmVEC       G2M                0.893   1        &quot;&quot;    </code></pre>
+all_x_tests_df %&gt;% knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">L3_celltype</th>
+<th align="left">tricycle_stage</th>
+<th align="right">Residuals</th>
+<th align="right">p values</th>
+<th align="left">is_sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">mVEC</td>
+<td align="left">G1/G0</td>
+<td align="right">0.9468431</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">mVEC</td>
+<td align="left">S</td>
+<td align="right">2.8097719</td>
+<td align="right">0.029746</td>
+<td align="left">*</td>
+</tr>
+<tr class="odd">
+<td align="left">mVEC</td>
+<td align="left">G2M</td>
+<td align="right">0.1304185</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">preLEC</td>
+<td align="left">G1/G0</td>
+<td align="right">6.3431604</td>
+<td align="right">0.000000</td>
+<td align="left">****</td>
+</tr>
+<tr class="odd">
+<td align="left">preLEC</td>
+<td align="left">S</td>
+<td align="right">6.2350709</td>
+<td align="right">0.000000</td>
+<td align="left">****</td>
+</tr>
+<tr class="even">
+<td align="left">preLEC</td>
+<td align="left">G2M</td>
+<td align="right">1.2659889</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">hmVEC</td>
+<td align="left">G1/G0</td>
+<td align="right">2.9572254</td>
+<td align="right">0.018625</td>
+<td align="left">*</td>
+</tr>
+<tr class="even">
+<td align="left">hmVEC</td>
+<td align="left">S</td>
+<td align="right">4.3631213</td>
+<td align="right">0.000077</td>
+<td align="left">****</td>
+</tr>
+<tr class="odd">
+<td align="left">hmVEC</td>
+<td align="left">G2M</td>
+<td align="right">0.8926419</td>
+<td align="right">1.000000</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
 <p>Barplot with stats:</p>
 <pre class="r"><code>#cell cycle
 barplot &lt;- level_03@meta.data %&gt;% 
@@ -2990,6 +3174,7 @@ Michelle Meier
 </div>
 <div id="volcano-plot" class="section level2">
 <h2>Volcano plot</h2>
+<p>Volcano plot with log2FC.</p>
 <pre class="r"><code>degs_mark &lt;- all_degs %&gt;% 
   filter(., group == &quot;hmVEC&quot; &amp; p_val_adj &lt; 0.05) 
 
@@ -3290,6 +3475,21 @@ Michelle Meier
 </div>
 <div id="go-plot-for-il_vec" class="section level2">
 <h2>GO plot for IL_VEC</h2>
+<p>Export only iVEC results for GO analysis.</p>
+<pre class="r"><code>export_sub &lt;- go_terms %&gt;% 
+  mutate(., Term = gsub(&quot;_WP.*&quot;, &quot;&quot;, Term)) %&gt;% 
+  filter(., cluster == &quot;iVEC&quot;)  %&gt;% 
+  mutate(Overlap = gsub(&quot;/&quot;, &quot; out of &quot;, Overlap)) #because excel keeps thinking this is a date
+
+filename &lt;- sprintf(&quot;%s/%s_iVEC_GO_WP_results.csv&quot;, save_dir, name_current)
+write.csv(x = export_sub, file = filename, row.names = FALSE, quote = T)</code></pre>
+<p>Also export the genes that went into this analysis</p>
+<pre class="r"><code>export_sub &lt;-  all_markers %&gt;% filter(., p_val_adj &lt; 0.05 &amp; cluster == &quot;iVEC&quot;) %&gt;%
+    top_n(., n=100, wt = -avg_log2FC) 
+
+filename &lt;- sprintf(&quot;%s/%s_iVEC_markers_for_enrichment.csv&quot;, save_dir, name_current)
+write.csv(x = export_sub, file = filename, row.names = FALSE, quote = T)</code></pre>
+<p>Make plot.</p>
 <pre class="r"><code>plot &lt;- go_terms %&gt;% 
   mutate(., Term = gsub(&quot;_WP.*&quot;, &quot;&quot;, Term)) %&gt;% 
   filter(., cluster == &quot;iVEC&quot; &amp; Adjusted.P.value &lt; 0.05) %&gt;% 
@@ -3306,13 +3506,13 @@ ggsave(filename,
        height=4)
 
 plot</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-61-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-59-1">
-Past versions of unnamed-chunk-59-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-61-1">
+Past versions of unnamed-chunk-61-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-59-1" class="collapse">
+<div id="fig-unnamed-chunk-61-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -3331,7 +3531,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ffc604c360901c4bcb457b47512d9f84377848c3/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-59-1.png" target="_blank">ffc604c</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ffc604c360901c4bcb457b47512d9f84377848c3/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-61-1.png" target="_blank">ffc604c</a>
 </td>
 <td>
 Michelle Meier
@@ -3371,44 +3571,7 @@ the one-sample Kolmogorov-Smirnov test</code></pre>
 <p>Show normality plots</p>
 <pre class="r"><code>plot_list &lt;- lapply(all_res, function(item) wrap_elements(item$plot))
 wrap_plots(plot_list)</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-61-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-61-1">
-Past versions of unnamed-chunk-61-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-61-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ffc604c360901c4bcb457b47512d9f84377848c3/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-61-1.png" target="_blank">ffc604c</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-05-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-63-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Show stats results</p>
 <pre class="r"><code>lapply(all_res, function(item) item$stats) %&gt;% bind_rows(., .id=&quot;score&quot;)</code></pre>
 <pre><code>                     score ks_res
@@ -3502,44 +3665,7 @@ ggsave(filename,
        height=15)
 
 patch</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-65-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-65-1">
-Past versions of unnamed-chunk-65-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-65-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ffc604c360901c4bcb457b47512d9f84377848c3/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-65-1.png" target="_blank">ffc604c</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-05-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-67-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <p>Show stats details:</p>
 <pre class="r"><code>names(results) &lt;- all_scores
 stats_DF &lt;- lapply(results, function(item) item$stat) %&gt;% bind_rows(., .id=&quot;score&quot;)
@@ -3621,44 +3747,7 @@ ggsave(filename,
        height=15)
 
 patch</code></pre>
-<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-69-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-69-1">
-Past versions of unnamed-chunk-69-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-69-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ffc604c360901c4bcb457b47512d9f84377848c3/docs/figure/figures_yap1_dataset.Rmd/unnamed-chunk-69-1.png" target="_blank">ffc604c</a>
-</td>
-<td>
-Michelle Meier
-</td>
-<td>
-2026-05-11
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/figures_yap1_dataset.Rmd/unnamed-chunk-71-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -3710,63 +3799,62 @@ loaded via a namespace (and not attached):
   [1] fs_1.6.6                 spatstat.sparse_3.1-0    bitops_1.0-9            
   [4] httr_1.4.7               RColorBrewer_1.1-3       tools_4.5.0             
   [7] sctransform_0.4.3        backports_1.5.0          DT_0.34.0               
- [10] utf8_1.2.6               R6_2.6.1                 lazyeval_0.2.2          
- [13] uwot_0.2.4               withr_3.0.2              gridExtra_2.3           
- [16] progressr_0.18.0         textshaping_1.0.4        cli_3.6.5               
- [19] spatstat.explore_3.7-0   fastDummies_1.7.5        labeling_0.4.3          
- [22] sass_0.4.10              S7_0.2.1                 spatstat.data_3.1-9     
- [25] ggridges_0.5.7           pbapply_1.7-4            systemfonts_1.3.1       
- [28] Rsamtools_2.26.0         parallelly_1.46.1        limma_3.66.0            
- [31] rstudioapi_0.17.1        BiocIO_1.20.0            crosstalk_1.2.2         
- [34] vroom_1.6.7              ica_1.0-3                spatstat.random_3.4-4   
- [37] car_3.1-3                Matrix_1.7-3             ggbeeswarm_0.7.3        
- [40] abind_1.4-8              lifecycle_1.0.4          whisker_0.4.1           
- [43] yaml_2.3.10              edgeR_4.8.2              carData_3.0-5           
- [46] SparseArray_1.10.8       Rtsne_0.17               grid_4.5.0              
- [49] promises_1.5.0           dqrng_0.4.1              crayon_1.5.3            
- [52] miniUI_0.1.2             lattice_0.22-6           beachmat_2.26.0         
- [55] cowplot_1.2.0            cigarillo_1.0.0          pillar_1.11.1           
- [58] knitr_1.50               metapod_1.18.0           rjson_0.2.23            
- [61] xgboost_3.1.3.1          future.apply_1.20.1      codetools_0.2-20        
- [64] glue_1.8.0               getPass_0.2-4            spatstat.univar_3.1-6   
- [67] data.table_1.18.0        vctrs_0.6.5              png_0.1-8               
- [70] spam_2.11-3              gtable_0.3.6             cachem_1.1.0            
- [73] xfun_0.52                S4Arrays_1.10.1          mime_0.13               
- [76] tidygraph_1.3.1          survival_3.8-3           statmod_1.5.1           
- [79] bluster_1.20.0           fitdistrplus_1.2-5       ROCR_1.0-11             
- [82] nlme_3.1-168             bit64_4.6.0-1            RcppAnnoy_0.0.23        
- [85] GenomeInfoDb_1.46.2      rprojroot_2.1.1          bslib_0.9.0             
- [88] irlba_2.3.5.1            vipor_0.4.7              KernSmooth_2.23-26      
- [91] otel_0.2.0               tidyselect_1.2.1         processx_3.8.6          
- [94] bit_4.6.0                compiler_4.5.0           curl_7.0.0              
- [97] git2r_0.36.2             BiocNeighbors_2.4.0      DelayedArray_0.36.0     
-[100] plotly_4.11.0            stringfish_0.18.0        rtracklayer_1.70.1      
-[103] scales_1.4.0             lmtest_0.9-40            callr_3.7.6             
-[106] digest_0.6.37            goftest_1.2-3            spatstat.utils_3.2-1    
-[109] rmarkdown_2.29           XVector_0.50.0           htmltools_0.5.8.1       
-[112] pkgconfig_2.0.3          fastmap_1.2.0            rlang_1.1.6             
-[115] htmlwidgets_1.6.4        UCSC.utils_1.6.1         shiny_1.12.1            
-[118] farver_2.1.2             jquerylib_0.1.4          zoo_1.8-15              
-[121] jsonlite_2.0.0           BiocParallel_1.44.0      BiocSingular_1.26.1     
-[124] RCurl_1.98-1.17          magrittr_2.0.3           Formula_1.2-5           
-[127] dotCall64_1.2            Rcpp_1.0.14              viridis_0.6.5           
-[130] reticulate_1.44.1        stringi_1.8.7            MASS_7.3-65             
-[133] plyr_1.8.9               parallel_4.5.0           listenv_0.10.0          
-[136] ggrepel_0.9.6            deldir_2.0-4             graphlayouts_1.2.2      
-[139] Biostrings_2.78.0        splines_4.5.0            tensor_1.5.1            
-[142] hms_1.1.4                locfit_1.5-9.12          ps_1.9.1                
-[145] igraph_2.2.1             spatstat.geom_3.7-0      ggsignif_0.6.4          
-[148] RcppHNSW_0.6.0           reshape2_1.4.5           ScaledMatrix_1.18.0     
-[151] XML_3.99-0.20            evaluate_1.0.5           RcppParallel_5.1.11-1   
-[154] renv_1.1.4               BiocManager_1.30.27      tweenr_2.0.3            
-[157] tzdb_0.5.0               httpuv_1.6.16            RANN_2.6.2              
-[160] polyclip_1.10-7          future_1.69.0            scattermore_1.2         
-[163] ggforce_0.5.0            rsvd_1.0.5               broom_1.0.11            
-[166] xtable_1.8-4             restfulr_0.0.16          RSpectra_0.16-2         
-[169] rstatix_0.7.3            later_1.4.2              ragg_1.5.0              
-[172] viridisLite_0.4.2        memoise_2.0.1            beeswarm_0.4.0          
-[175] GenomicAlignments_1.46.0 cluster_2.1.8.1          timechange_0.3.0        
-[178] globals_0.18.0          </code></pre>
+ [10] R6_2.6.1                 lazyeval_0.2.2           uwot_0.2.4              
+ [13] withr_3.0.2              gridExtra_2.3            progressr_0.18.0        
+ [16] textshaping_1.0.4        cli_3.6.5                spatstat.explore_3.7-0  
+ [19] fastDummies_1.7.5        labeling_0.4.3           sass_0.4.10             
+ [22] S7_0.2.1                 spatstat.data_3.1-9      ggridges_0.5.7          
+ [25] pbapply_1.7-4            systemfonts_1.3.1        Rsamtools_2.26.0        
+ [28] parallelly_1.46.1        limma_3.66.0             rstudioapi_0.17.1       
+ [31] BiocIO_1.20.0            crosstalk_1.2.2          vroom_1.6.7             
+ [34] ica_1.0-3                spatstat.random_3.4-4    car_3.1-3               
+ [37] Matrix_1.7-3             ggbeeswarm_0.7.3         abind_1.4-8             
+ [40] lifecycle_1.0.4          whisker_0.4.1            yaml_2.3.10             
+ [43] edgeR_4.8.2              carData_3.0-5            SparseArray_1.10.8      
+ [46] Rtsne_0.17               grid_4.5.0               promises_1.5.0          
+ [49] dqrng_0.4.1              crayon_1.5.3             miniUI_0.1.2            
+ [52] lattice_0.22-6           beachmat_2.26.0          cowplot_1.2.0           
+ [55] cigarillo_1.0.0          pillar_1.11.1            knitr_1.50              
+ [58] metapod_1.18.0           rjson_0.2.23             xgboost_3.1.3.1         
+ [61] future.apply_1.20.1      codetools_0.2-20         glue_1.8.0              
+ [64] getPass_0.2-4            spatstat.univar_3.1-6    data.table_1.18.0       
+ [67] vctrs_0.6.5              png_0.1-8                spam_2.11-3             
+ [70] gtable_0.3.6             cachem_1.1.0             xfun_0.52               
+ [73] S4Arrays_1.10.1          mime_0.13                tidygraph_1.3.1         
+ [76] survival_3.8-3           statmod_1.5.1            bluster_1.20.0          
+ [79] fitdistrplus_1.2-5       ROCR_1.0-11              nlme_3.1-168            
+ [82] bit64_4.6.0-1            RcppAnnoy_0.0.23         GenomeInfoDb_1.46.2     
+ [85] rprojroot_2.1.1          bslib_0.9.0              irlba_2.3.5.1           
+ [88] vipor_0.4.7              KernSmooth_2.23-26       otel_0.2.0              
+ [91] tidyselect_1.2.1         processx_3.8.6           bit_4.6.0               
+ [94] compiler_4.5.0           curl_7.0.0               git2r_0.36.2            
+ [97] BiocNeighbors_2.4.0      DelayedArray_0.36.0      plotly_4.11.0           
+[100] stringfish_0.18.0        rtracklayer_1.70.1       scales_1.4.0            
+[103] lmtest_0.9-40            callr_3.7.6              digest_0.6.37           
+[106] goftest_1.2-3            spatstat.utils_3.2-1     rmarkdown_2.29          
+[109] XVector_0.50.0           htmltools_0.5.8.1        pkgconfig_2.0.3         
+[112] fastmap_1.2.0            rlang_1.1.6              htmlwidgets_1.6.4       
+[115] UCSC.utils_1.6.1         shiny_1.12.1             farver_2.1.2            
+[118] jquerylib_0.1.4          zoo_1.8-15               jsonlite_2.0.0          
+[121] BiocParallel_1.44.0      BiocSingular_1.26.1      RCurl_1.98-1.17         
+[124] magrittr_2.0.3           Formula_1.2-5            dotCall64_1.2           
+[127] Rcpp_1.0.14              viridis_0.6.5            reticulate_1.44.1       
+[130] stringi_1.8.7            MASS_7.3-65              plyr_1.8.9              
+[133] parallel_4.5.0           listenv_0.10.0           ggrepel_0.9.6           
+[136] deldir_2.0-4             graphlayouts_1.2.2       Biostrings_2.78.0       
+[139] splines_4.5.0            tensor_1.5.1             hms_1.1.4               
+[142] locfit_1.5-9.12          ps_1.9.1                 igraph_2.2.1            
+[145] spatstat.geom_3.7-0      ggsignif_0.6.4           RcppHNSW_0.6.0          
+[148] reshape2_1.4.5           ScaledMatrix_1.18.0      XML_3.99-0.20           
+[151] evaluate_1.0.5           RcppParallel_5.1.11-1    renv_1.1.4              
+[154] BiocManager_1.30.27      tweenr_2.0.3             tzdb_0.5.0              
+[157] httpuv_1.6.16            RANN_2.6.2               polyclip_1.10-7         
+[160] future_1.69.0            scattermore_1.2          ggforce_0.5.0           
+[163] rsvd_1.0.5               broom_1.0.11             xtable_1.8-4            
+[166] restfulr_0.0.16          RSpectra_0.16-2          rstatix_0.7.3           
+[169] later_1.4.2              ragg_1.5.0               viridisLite_0.4.2       
+[172] memoise_2.0.1            beeswarm_0.4.0           GenomicAlignments_1.46.0
+[175] cluster_2.1.8.1          timechange_0.3.0         globals_0.18.0          </code></pre>
 </div>
 </div>
 </div>
