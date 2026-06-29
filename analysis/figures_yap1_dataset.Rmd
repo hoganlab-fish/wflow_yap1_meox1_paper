@@ -52,6 +52,8 @@ hippo_gene_degs <- read_csv(here("output/analysis/D10025_yap1_dataset/DEGs/Level
 
 all_degs <- read_csv(here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"), show_col_types = F)
 
+all_markers <- read_csv(here("output/analysis/D10025_yap1_dataset/Markers/Level_03_Markers_L3_celltype_fc0.00_minpct_0.01.csv"), show_col_types = F)
+
 ```
 
 load GO
@@ -820,7 +822,8 @@ Using the chisq.posthoc.test package to perform a post-hoc analysis for this.
 M <-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
 
 global_test <- chisq.test(M)
-global_test
+global_test$p.value
+
 
 res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
     pivot_longer(., cols = level_03$L3_celltype %>% unique(), names_to = "L3_celltype", values_to = "entry") %>% 
@@ -837,7 +840,7 @@ res <- res %>%
                                  )) %>% 
   select(., -Dimension)
 
-res
+res %>% knitr::kable()
 
 ```
 
@@ -928,7 +931,7 @@ global_stats <- global_stats %>% bind_rows(., .id = "L3_celltype")  %>%
                                 pvalue<= 0.05 ~ "*"
                                  )) 
 
-global_stats
+global_stats %>% knitr::kable()
 ```
 
 Using the chisq.posthoc.test package to perform a post-hoc analysis for this. Residuals only end up being meaningful for the celltypes with global changes. 
@@ -961,7 +964,7 @@ all_x_tests_df <- all_x_tests %>% bind_rows(., .id = "L3_celltype") %>%
                                  )) %>% 
   select(., -Dimension)
 
-all_x_tests_df
+all_x_tests_df %>% knitr::kable()
 
 ```
 
@@ -1008,6 +1011,8 @@ barplot
 
 
 ## Volcano plot
+
+Volcano plot with log2FC.
 
 ```{r, fig.align='center', fig.height=5, fig.width=7}
 degs_mark <- all_degs %>% 
@@ -1127,6 +1132,32 @@ plot
 
 
 ## GO plot for IL_VEC
+
+Export only iVEC results for GO analysis. 
+
+```{r}
+export_sub <- go_terms %>% 
+  mutate(., Term = gsub("_WP.*", "", Term)) %>% 
+  filter(., cluster == "iVEC")  %>% 
+  mutate(Overlap = gsub("/", " out of ", Overlap)) #because excel keeps thinking this is a date
+
+filename <- sprintf("%s/%s_iVEC_GO_WP_results.csv", save_dir, name_current)
+write.csv(x = export_sub, file = filename, row.names = FALSE, quote = T)
+
+```
+
+Also export the genes that went into this analysis
+
+```{r}
+export_sub <-  all_markers %>% filter(., p_val_adj < 0.05 & cluster == "iVEC") %>%
+    top_n(., n=100, wt = -avg_log2FC) 
+
+filename <- sprintf("%s/%s_iVEC_markers_for_enrichment.csv", save_dir, name_current)
+write.csv(x = export_sub, file = filename, row.names = FALSE, quote = T)
+
+```
+
+Make plot. 
 
 ```{r, fig.align='center', fig.height=5, fig.width=7}
 plot <- go_terms %>% 

@@ -773,6 +773,7 @@ M <-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small numbe
 
 global_test <- chisq.test(M)
 global_test
+global_test$p.value
 
 res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
     pivot_longer(., cols = level_03$L3_celltype %>% unique(), names_to = "L3_celltype", values_to = "entry") %>% 
@@ -789,7 +790,7 @@ res <- res %>%
                                  )) %>% 
   select(., -Dimension)
 
-res
+res %>% knitr::kable()
 
 ```
 
@@ -880,7 +881,7 @@ global_stats <- global_stats %>% bind_rows(., .id = "L3_celltype")  %>%
                                 pvalue<= 0.05 ~ "*"
                                  )) 
 
-global_stats
+global_stats %>% knitr::kable()
 ```
 
 Using the chisq.posthoc.test package to perform a post-hoc analysis for this. Residuals only end up being meaningful for the celltypes with global changes. 
@@ -913,7 +914,7 @@ all_x_tests_df <- all_x_tests %>% bind_rows(., .id = "L3_celltype") %>%
                                  )) %>% 
   select(., -Dimension)
 
-all_x_tests_df
+all_x_tests_df %>% knitr::kable()
 
 ```
 

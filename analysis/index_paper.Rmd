@@ -10,21 +10,24 @@ editor_options:
 
 # **FIGURES FOR PAPER**
 
-[yap1 dataset, all levels](figures_yap1_dataset.html)
+- [yap1 dataset, all levels](figures_yap1_dataset.html)
 
-[meox1 dataset, all levels](figures_meox1_dataset.html)
+- [meox1 dataset, all levels](figures_meox1_dataset.html)
 
+- meox1 expression for Grimm et al dataset (timecourse) can be found here `code/scRNAseq/Grimm_etal_rversion4.2`
+
+- Figures for the 48hpf yap1 snATAC datasets + 4dpf Grimm et al dataset (snATAC) can be found here `code/snATACseq/figures`
 
 # **ANNOTATION FOR PAPER**
 
-This contains the final annotations for the paper
+This contains the final annotations for the paper (scRNA-seq datasets only)
 
 [yap1 dataset, all levels](pre_processing_D10025_yap1_dataset_paper_annotations_allLevels.html)
 
 [meox1 dataset, all levels](pre_processing_D10051_meox1_dataset_paper_annotations_allLevels.html)
 
 
-# **Pre-processing - yap1 dataset**
+# **Pre-processing - yap1 dataset (scRNAseq)**
 
 ## Levels{.tabset}
 
@@ -53,7 +56,7 @@ Cycling cells contain a mix of all endothelial cells, which is why we are not se
 [Level 03](pre_processing_D10025_yap1_dataset_makeObject_Level03.html) only making object
 
 
-# **Pre-processing - meox1 dataset**
+# **Pre-processing - meox1 dataset(scRNAseq)**
 
 ## Levels{.tabset}
 
@@ -77,6 +80,21 @@ Subsettig further, only including VEC and LEC cells -> removing AEC, cycling cel
 
 [Level 03; annotation](pre_processing_D10051_meox1_dataset_makeObject_Level03_stringent_annotation.html) 
 
+# **Pre-processing - yap1 dataset (snATACseq)**
+
+All code can be found here `/code/snATACseq/pre_processing` and here `/code/snATACseq/analysis`
 
 
+# **Pre-processing - Grimm et al 4dpf dataset (snATACseq)**
+
+All code can be found here `code/snATACseq/Grimm_etal`
+
+
+# **NOTES ON VERSIONS**
+
+- scRNA-seq analysis for the yap1 and meox1 dataset (this study) were performed using R version 4.5. R libraries are tracked using `renv` and the `renv.lock` file is in the main directory
+
+- scRNA-seq analysis for the previously published lymphatic timecourse (Grimm et al) was performed using R version 4.2.0 and Seurat v4.1.1
+
+- snATAC-seq analysis for yap1 dataset (this study) as well as the 4dpf dataset previosuly published by Grimm et al was performed using R version 4.2.0. R libraries are tracked using `renv` and the `renv.lock` file can be found here: `code/snATACseq/renv.lock`
 
