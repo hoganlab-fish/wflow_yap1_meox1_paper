@@ -83,6 +83,16 @@
     # meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_mVEC_lin2.pdf
     # meox1__BarLabel_WT_Anchored_Quantified_Proportions_start_mVEC_lin2.pdf
 
+# /Revision_analysis/queue_plots/
+#   meox1__DimLabel_WT_Anchored_Contours_Combined_start_hmVEC_lin1.pdf
+#   meox1__DimLabel_WT_Anchored_Contours_Split_start_hmVEC_lin1.pdf
+
+# /Revision_analysis/queue_plots/
+#   meox1__DimLabel_WT_Anchored_Contours_Combined_start_mVEC_lin1.pdf
+#   meox1__DimLabel_WT_Anchored_Contours_Split_start_mVEC_lin1.pdf
+#   meox1__DimLabel_WT_Anchored_Contours_Combined_start_mVEC_lin2.pdf
+#   meox1__DimLabel_WT_Anchored_Contours_Split_start_mVEC_lin2.pdf
+
 
 # note that
 # S20200 is mutant and
@@ -263,88 +273,100 @@ run_wt_anchored_slingshot <- function(data, col_map, col_order, outfile_dir) {
             df_full <- data.frame(X = dens_full$x, Y = dens_full$y)
 
             # --- PLOT 1: CLEAN WT ONLY (NO OVERLAYS) ---
-            p1 <- ggplot(df_wt, aes(x = X, y = Y))
-            for (i in seq_along(valley_times)) {
-                p1 <- p1 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
-            }
-            p1 <- p1 + geom_line(color = "#377EB8", linewidth = 1) + geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
-                labs(title = paste0("WT-Only Baseline Profile\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + theme_classic()
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_WT_start_", start, "_lin", lin, ".pdf"), plot = p1, height = 5, width = 6)
+# Setup base dataframes for plotting
+            df_wt   <- data.frame(X = dens_wt$x, Y = dens_wt$y)
+            df_mut  <- data.frame(X = dens_mut$x, Y = dens_mut$y)
+            df_full <- data.frame(X = dens_full$x, Y = dens_full$y)
+
+            # Create mapping dataframes for the zones to force ggplot to build a legend
+            zones_wt_df <- data.frame(
+                Zone = paste0("Transition Zone ", seq_along(valley_times)),
+                xmin = valley_times - 0.5,
+                xmax = valley_times + 0.5,
+                ymin = -Inf,
+                ymax = Inf
+            )
+            zone_colors_wt <- setNames(accent_palette[((seq_along(valley_times) - 1) %% length(accent_palette)) + 1], zones_wt_df$Zone)
+
+            # --- PLOT 1: CLEAN WT ONLY (NO OVERLAYS) ---
+            p1 <- ggplot(df_wt, aes(x = X, y = Y)) +
+                geom_rect(data = zones_wt_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15) +
+                geom_line(color = "#377EB8", linewidth = 1) + 
+                geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
+                scale_fill_manual(name = "Trajectory Regions", values = zone_colors_wt) +
+                labs(title = paste0("WT-Only Baseline Profile\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_WT_start_", start, "_lin", lin, ".pdf"), plot = p1, height = 5, width = 6.5)
 
             # --- PLOT 2: CLEAN MUTANT ONLY (NO OVERLAYS) ---
-            p2 <- ggplot(df_mut, aes(x = X, y = Y))
-            for (i in seq_along(valley_times)) {
-                p2 <- p2 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
-            }
-            p2 <- p2 + geom_line(color = "#E41A1C", linewidth = 1) + geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
-                labs(title = paste0("Mutant-Only Profile mapped to WT Roadmarks\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + theme_classic()
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_Mut_start_", start, "_lin", lin, ".pdf"), plot = p2, height = 5, width = 6)
+            p2 <- ggplot(df_mut, aes(x = X, y = Y)) +
+                geom_rect(data = zones_wt_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15) +
+                geom_line(color = "#E41A1C", linewidth = 1) + 
+                geom_vline(xintercept = valley_times, color = "red", linetype = "dashed") +
+                scale_fill_manual(name = "Trajectory Regions", values = zone_colors_wt) +
+                labs(title = paste0("Mutant-Only Profile mapped to WT Roadmarks\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Relative Probability Density") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Pure_Mut_start_", start, "_lin", lin, ".pdf"), plot = p2, height = 5, width = 6.5)
 
             # --- PLOT 3: OVERLAY - COMBINED FULL DATASET VS WT BASELINE ---
-            p3 <- ggplot(df_full, aes(x = X, y = Y))
-            for (i in seq_along(valley_times)) {
-                p3 <- p3 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1])
-            }
-            p3 <- p3 + geom_line(aes(color = "Combined Dataset"), linewidth = 1) + 
+            p3 <- ggplot(df_full, aes(x = X, y = Y)) +
+                geom_rect(data = zones_wt_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15) +
+                geom_line(aes(color = "Combined Dataset"), linewidth = 1) + 
                 geom_line(data = df_wt, aes(x = X, y = Y, color = "WT Baseline"), linetype = "longdash", linewidth = 0.8) +
                 geom_vline(xintercept = valley_times, color = "red") +
-                scale_color_manual(values = c("Combined Dataset" = "black", "WT Baseline" = "#377EB8")) +
-                labs(title = paste0("Combined Pool vs WT Baseline Validation\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density", color = "Subpopulation") + theme_classic() + theme(legend.position="top", plot.title = element_text(hjust = 0.5, face = "bold"))
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Full_start_", start, "_lin", lin, ".pdf"), plot = p3, height = 5, width = 6)
+                scale_color_manual(name = "Subpopulation", values = c("Combined Dataset" = "black", "WT Baseline" = "#377EB8")) +
+                scale_fill_manual(name = "Trajectory Regions", values = zone_colors_wt) +
+                labs(title = paste0("Combined Pool vs WT Baseline Validation\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Full_start_", start, "_lin", lin, ".pdf"), plot = p3, height = 5, width = 7.5)
 
             # --- PLOT 4: OVERLAY - DIRECT COMPARISON (FACETED SUBPLOTS) ---
-            # Combine the two dataframes into one for easy faceting
             df_compare <- bind_rows(
                 df_wt %>% mutate(Genotype = "WildType Baseline"),
                 df_mut %>% mutate(Genotype = "meox1 -/- Mutant")
             )
-            # Lock the factor order so WildType is always the top plot
             df_compare$Genotype <- factor(df_compare$Genotype, levels = c("WildType Baseline", "meox1 -/- Mutant"))
 
-            p4 <- ggplot(df_compare, aes(x = X, y = Y, color = Genotype))
-            
-            # Add WT background zones (ggplot automatically duplicates these across both subplots)
-            for (i in seq_along(valley_times)) {
-                p4 <- p4 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, 
-                                    ymin=-Inf, ymax=Inf, alpha=0.15, fill=accent_palette[((i-1)%%4)+1], color=NA)
-            }
-            
-            p4 <- p4 + geom_line(linewidth = 1) + 
+            p4 <- ggplot(df_compare, aes(x = X, y = Y, color = Genotype)) +
+                geom_rect(data = zones_wt_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15, color = NA) +
+                geom_line(linewidth = 1) + 
                 geom_vline(xintercept = valley_times, color = "red", linetype = "solid") +
-                scale_color_manual(values = c("WildType Baseline" = "#377EB8", "meox1 -/- Mutant" = "#E41A1C")) +
-                facet_wrap(~ Genotype, ncol = 1) + # Stack vertically sharing the X axis
-                labs(title = paste0("Faceted Head-to-Head Density Alignment\n(Start: ", start, " Lin: ", lin, ")"), 
-                     x = "Pseudotime", y = "Density") + 
+                scale_color_manual(name = "Genotype", values = c("WildType Baseline" = "#377EB8", "meox1 -/- Mutant" = "#E41A1C")) +
+                scale_fill_manual(name = "Trajectory Regions", values = zone_colors_wt) +
+                facet_wrap(~ Genotype, ncol = 1) + 
+                labs(title = paste0("Faceted Head-to-Head Density Alignment\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
                 theme_classic() + 
-                theme(legend.position="none", # Removed legend since subplot titles do the job
-                      plot.title = element_text(hjust = 0.5, face = "bold"),
+                theme(plot.title = element_text(hjust = 0.5, face = "bold"),
                       strip.background = element_rect(fill = "grey90", color = "black"),
                       strip.text = element_text(face = "bold", size = 11))
-
-            # I bumped the height slightly to 6 to give the stacked plots room to breathe
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_", start, "_lin", lin, ".pdf"), plot = p4, height = 6, width = 6)
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Overlay_Direct_HeadToHead_start_", start, "_lin", lin, ".pdf"), plot = p4, height = 6, width = 7.5)
 
             # --- PLOT 5: FULL DENSITY OVERLAY WITH WT ZONES ONLY ---
-            p5 <- ggplot(df_full, aes(x = X, y = Y))
-            for (i in seq_along(valley_times)) {
-                p5 <- p5 + annotate("rect", xmin=valley_times[i]-0.5, xmax=valley_times[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill="#377EB8")
-            }
-            p5 <- p5 + geom_line(linewidth = 1, color = "black") + 
+            p5 <- ggplot(df_full, aes(x = X, y = Y)) +
+                geom_rect(data = zones_wt_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15) +
+                geom_line(linewidth = 1, color = "black") + 
                 geom_vline(xintercept = valley_times, color = "#377EB8", linetype = "dashed", linewidth = 1) +
+                scale_fill_manual(name = "Trajectory Regions", values = zone_colors_wt) +
                 labs(title = paste0("Full Dataset Density with WT Zones\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
                 theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_WT_Zones_start_", start, "_lin", lin, ".pdf"), plot = p5, height = 5, width = 6)
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_WT_Zones_start_", start, "_lin", lin, ".pdf"), plot = p5, height = 5, width = 6.5)
 
             # --- PLOT 6: FULL DENSITY OVERLAY WITH MUTANT ZONES ONLY ---
-            p6 <- ggplot(df_full, aes(x = X, y = Y))
-            for (i in seq_along(valley_times_mut)) {
-                p6 <- p6 + annotate("rect", xmin=valley_times_mut[i]-0.5, xmax=valley_times_mut[i]+0.5, ymin=-Inf, ymax=Inf, alpha=0.15, fill="#E41A1C")
-            }
-            p6 <- p6 + geom_line(linewidth = 1, color = "black") + 
+            zones_mut_df <- data.frame(
+                Zone = paste0("Mutant Zone ", seq_along(valley_times_mut)),
+                xmin = valley_times_mut - 0.5,
+                xmax = valley_times_mut + 0.5,
+                ymin = -Inf,
+                ymax = Inf
+            )
+            p6 <- ggplot(df_full, aes(x = X, y = Y)) +
+                geom_rect(data = zones_mut_df, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = Zone), inherit.aes = FALSE, alpha = 0.15) +
+                geom_line(linewidth = 1, color = "black") + 
                 geom_vline(xintercept = valley_times_mut, color = "#E41A1C", linetype = "dashed", linewidth = 1) +
+                scale_fill_manual(name = "Mutant Peak Regions", values = setNames(rep("#E41A1C", length(valley_times_mut)), zones_mut_df$Zone)) +
                 labs(title = paste0("Full Dataset Density with Mutant Zones\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density") + 
                 theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Mutant_Zones_start_", start, "_lin", lin, ".pdf"), plot = p6, height = 5, width = 6)
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Mutant_Zones_start_", start, "_lin", lin, ".pdf"), plot = p6, height = 5, width = 6.5)
 
             # --- PLOT 7: FULL DENSITY OVERLAY WITH BOTH ZONES ALIGNED ---
             wt_lines <- data.frame(val = valley_times, type = "WT Zone Boundary")
@@ -356,8 +378,8 @@ run_wt_anchored_slingshot <- function(data, col_map, col_order, outfile_dir) {
                 geom_vline(data = all_lines, aes(xintercept = val, color = type), linetype = "dashed", linewidth = 1) +
                 scale_color_manual(values = c("WT Zone Boundary" = "#377EB8", "Mutant Zone Boundary" = "#E41A1C")) +
                 labs(title = paste0("Full Density with WT vs Mutant Zone Alignment\n(Start: ", start, " Lin: ", lin, ")"), x = "Pseudotime", y = "Density", color = "Calculated Boundary") + 
-                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"), legend.position = "top")
-            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Both_Zones_start_", start, "_lin", lin, ".pdf"), plot = p7, height = 5, width = 6.5)
+                theme_classic() + theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+            ggsave(paste0(outfile_dir, "meox1__DensLabel_WT_Anchored_Full_with_Both_Zones_start_", start, "_lin", lin, ".pdf"), plot = p7, height = 5, width = 7.5)
 
 
             # 3. ASSIGN INTENSITY CLASSIFICATIONS BY ZONE BOUNDARIES
@@ -375,6 +397,67 @@ run_wt_anchored_slingshot <- function(data, col_map, col_order, outfile_dir) {
                 is_in_zone <- !is.na(master_zones_df$Pseudotime) & (abs(master_zones_df$Pseudotime - v_time) < 0.5)
                 master_zones_df$Zone[is_in_zone] <- paste0("Transition Zone ", i)
             }
+
+            # ========================================================================
+            # WT-ANCHORED UMAP CONTOURS (With Contour Density Legends)
+            # ========================================================================
+            cat("   -> Generating WT-Anchored UMAP Contours...\n")
+            
+            # 1. Prepare data
+            umap_embed <- as.data.frame(Embeddings(data, reduction = "umap"))
+            colnames(umap_embed)[1:2] <- c("umap_1", "umap_2")
+            umap_embed$Barcode <- rownames(umap_embed)
+            umap_df <- master_zones_df %>% left_join(umap_embed, by = "Barcode")
+            max_pt <- max(umap_df$Pseudotime, na.rm = TRUE)            
+            
+            # Ensure Zone levels match the palette exactly
+            umap_df$Zone <- factor(umap_df$Zone, levels = names(zone_colors_wt))
+            
+            # 2. Base UMAP Plot
+            p_umap <- ggplot(umap_df %>% arrange(Pseudotime), aes(x = umap_1, y = umap_2)) +
+                geom_point(aes(color = Pseudotime), size = 0.8, alpha = 0.6) +
+                scale_color_viridis_c(option = "plasma", na.value = "grey90", limits = c(0, max_pt)) +
+                theme_classic() +
+                labs(title = paste0("WT-Anchored UMAP Contours\n(Start: ", start, " Lin: ", lin, ")"),
+                     x = "UMAP 1", y = "UMAP 2") +
+                theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+            # 3. Add Zones mapping fill to density level, and linetype to the Zone
+            for (i in seq_along(valley_times)) {
+                z_label <- paste0("Transition Zone ", i)
+                zone_subdata <- umap_df %>% filter(Zone == z_label)
+                
+                if (nrow(zone_subdata) > 5) { 
+                    p_umap <- p_umap + stat_density_2d(
+                        data = zone_subdata, 
+                        aes(x = umap_1, y = umap_2, fill = after_stat(level), linetype = Zone), 
+                        geom = "polygon", alpha = 0.12, bins = 4, 
+                        color = zone_colors_wt[z_label], linewidth = 0.8
+                    )
+                }
+            }
+            
+            # 4. Integrate Legends & Scales matching your original formatting
+            p_umap <- p_umap + 
+                scale_fill_gradient(name = "Contour Density", low = "#ECEFF1", high = "#37474F") +
+                scale_linetype_manual(name = "Trajectory Regions", values = setNames(rep("solid", length(valley_times)), names(zone_colors_wt)), drop = FALSE) +
+                guides(
+                    color = guide_colorbar(title = "Pseudotime", order = 1),
+                    linetype = guide_legend(order = 2, override.aes = list(color = unname(zone_colors_wt), fill = NA, linewidth = 1.5)),
+                    fill = guide_colorbar(order = 3)
+                )
+
+            # 5. Save Combined Plot
+            ggsave(paste0(outfile_dir, "meox1__DimLabel_WT_Anchored_Contours_Combined_start_", start, "_lin", lin, ".pdf"), 
+                   plot = p_umap, height = 7, width = 8.5)
+            
+            # 6. Save Split (Faceted) Plot
+            p_umap_split <- p_umap + facet_wrap(~ Sample) +
+                theme(strip.background = element_rect(fill = "grey90", color = "black"),
+                      strip.text = element_text(face = "bold", size = 11))
+            
+            ggsave(paste0(outfile_dir, "meox1__DimLabel_WT_Anchored_Contours_Split_start_", start, "_lin", lin, ".pdf"), 
+                   plot = p_umap_split, height = 6, width = 12.5)
 
             # 4. COMPUTE SUMMARIES AND PLOT UPDATED COUNTS + PERCENTAGE BARPLOTS
             zone_names <- c(paste0("Transition Zone ", seq_along(valley_times)), "Core/Other Cells", "Trajectory NA (Unmapped)")
