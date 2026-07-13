@@ -389,7 +389,9 @@ ggsave(filename,
 dotplot
 ```
 
-## Barplot
+## Barplots
+
+### Genotype vs L2_cluster_id
 
 ```{r, fig.align='center'}
 barplot <- level_02@meta.data %>% 
@@ -414,7 +416,33 @@ barplot
 ```
 
 
+### Genotype vs L2_celltype
 
+```{r, fig.align='center', eval=FALSE}
+barplot <- level_02@meta.data %>% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L2_celltype = factor(L2_celltype, levels =level_02_celltpe_order) )%>% 
+  group_by(Genotype, L2_celltype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  group_by(Genotype) %>% 
+  mutate(., proportion = count/sum(count)) %>% 
+  ggplot(., aes(x =Genotype, y = count, fill = L2_celltype)) +
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing + rotate_x +
+  geom_text(aes(label = scales::percent(proportion, accuracy = 1)), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = level_02_celltype_colours)+
+  ylab("proportion") + xlab("")
+# 
+# filename <- sprintf('%s/%s_L2_cluster_id_genotype_barplot.pdf', save_dir, name_current)
+# ggsave(filename,
+#        barplot,
+#        device="pdf",
+#        width=7,
+#        height=4)
+
+barplot
+```
 
 
 # LEVEL 03 - VEC AND LEC{.tabset}
