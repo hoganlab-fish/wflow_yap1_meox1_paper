@@ -153,3 +153,43 @@ rna_res <- lapply(old_object$Level_03_seurat_cluster_predicted_phenotype %>% uni
       mutate(., group = unit)
   }} ) %>% bind_rows()
 
+
+# 20.07.2026 - Run on all VEC/LEC
+level_03 <- qs_read(here('output/data/Datsets/paper/D10025_yap1_dataset_Level_03_annotated.qs2'))
+#add high level cell type labels
+level_03$broad_celltype <- case_when(level_03$L3_celltype %in% c("cVEC", "hmVEC", "mVEC", "iVEC") ~ "VEC",
+                                     level_03$L3_celltype %in%  c("LEC", "preLEC") ~ "LEC",
+                                     TRUE ~ level_03$L3_celltype)
+
+#function
+run_degs_mut_wt <- function(seurat,
+                            group,
+                            save_dir,
+                            log2_t =0,
+                            min_pct = 0.01){
+  #all idents for the group
+  all_results <- lapply(seurat@meta.data[,group] %>% unique(), function(unit){
+    seurat_subset <- subset(seurat, cells = colnames(seurat)[seurat@meta.data[,group] == unit])
+    seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
+    if (all(table(seurat_subset$Genotype) > 5)){
+      Idents(seurat_subset) <- "Genotype"
+      FindMarkers(object = seurat_subset,
+                  group.by = "Genotype",
+                  ident.1 = "yap1_mutant",
+                  ident.2 = "wildtype",
+                  min.pct = min_pct,
+                  assay = "RNA",
+                  logfc.threshold = log2_t) %>%
+        rownames_to_column("Gene") %>%
+        mutate(., group = unit)
+    }} ) %>% bind_rows()
+
+  # file_name <- sprintf("%s/%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", save_dir, seurat@misc$name, group, log2_t, min_pct)
+  # write.csv(file = file_name, x = all_results)
+
+  return(all_results)
+
+}
+
+result <- run_degs_mut_wt(seurat = level_03, group = "broad_celltype", save_dir = "test")
+
