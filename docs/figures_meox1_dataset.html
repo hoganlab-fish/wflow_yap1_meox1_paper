@@ -367,7 +367,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Make figures for meox1 dataset</h1>
 <h4 class="author">Michelle Meier</h4>
-<h4 class="date">13. July 2026</h4>
+<h4 class="date">20. July 2026</h4>
 
 </div>
 
@@ -396,7 +396,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2026-07-13
+<strong>Last updated:</strong> 2026-07-20
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -527,15 +527,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree8c4559edee4fe0fbe76cd6436ff687c2d434dbc7targetblank8c4559ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeec4cc1a167d8b537aa1e4f70abccfe2cc3fc5d95targetblankec4cc1aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/8c4559edee4fe0fbe76cd6436ff687c2d434dbc7" target="_blank">8c4559e</a>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ec4cc1a167d8b537aa1e4f70abccfe2cc3fc5d95" target="_blank">ec4cc1a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertree8c4559edee4fe0fbe76cd6436ff687c2d434dbc7targetblank8c4559ea"
+id="strongRepositoryversionstrongahrefsshgitatlassianpetermacorgau7999hlwflowyap1meox1papertreeec4cc1a167d8b537aa1e4f70abccfe2cc3fc5d95targetblankec4cc1aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -545,7 +545,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/8c4559edee4fe0fbe76cd6436ff687c2d434dbc7" target="_blank">8c4559e</a>.
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/tree/ec4cc1a167d8b537aa1e4f70abccfe2cc3fc5d95" target="_blank">ec4cc1a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -564,6 +564,7 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.DS_Store
+    Ignored:    analysis/figure/
     Ignored:    code/.DS_Store
     Ignored:    code/scRNAseq/.DS_Store
     Ignored:    code/scRNAseq/analysis/.DS_Store
@@ -587,6 +588,9 @@ Untracked files:
     Untracked:  code/scRNAseq/general_scripts/ExtendSeurat_pseudotime_functions.R
     Untracked:  code/scRNAseq/general_scripts/testing_slingshot_gene_function.R
     Untracked:  code/tmo.R
+
+Unstaged changes:
+    Modified:   code/scRNAseq/analysis/D10025_yap1_dataset/D10025_yap1_dataset_analysis_degs_EXPLOREONLY.R
 
 </code></pre>
 <p>
@@ -631,6 +635,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/ec4cc1a167d8b537aa1e4f70abccfe2cc3fc5d95/analysis/figures_meox1_dataset.Rmd" target="_blank">ec4cc1a</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-20
+</td>
+<td>
+wflow_publish("analysis/figures_meox1_dataset.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figures_meox1_dataset.html" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1660,29 +1698,65 @@ Michelle Meier
 </div>
 <div id="genotype-vs-l2_celltype" class="section level3">
 <h3>Genotype vs L2_celltype</h3>
-<pre class="r"><code>barplot &lt;- level_02@meta.data %&gt;% 
+<pre class="r"><code>barplot_p_n &lt;- level_02@meta.data %&gt;% 
   mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
             L2_celltype = factor(L2_celltype, levels =level_02_celltpe_order) )%&gt;% 
   group_by(Genotype, L2_celltype, .drop=FALSE) %&gt;% 
   summarise(., count =n()) %&gt;% 
   group_by(Genotype) %&gt;% 
-  mutate(., proportion = count/sum(count)) %&gt;% 
-  ggplot(., aes(x =Genotype, y = count, fill = L2_celltype)) +
+  mutate(., proportion = count/sum(count),
+            all_sum = sum(count), 
+            x_label= paste0(Genotype, &quot;\nn=&quot;, all_sum), 
+            stacked_labels = paste0(100*round(proportion,3), &quot;%\nn=&quot;, count)) %&gt;% 
+  arrange(Genotype) %&gt;%  #reorder other factors
+  mutate(., x_label = factor(x_label)) %&gt;% 
+  ggplot(., aes(x =x_label, y = count, fill = L2_celltype)) +
   geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
   plot_sizing + rotate_x +
-  geom_text(aes(label = scales::percent(proportion, accuracy = 1)), 
+  geom_text(aes(label = stacked_labels), 
             position = position_fill(vjust = 0.5)) +
   scale_fill_manual(values = level_02_celltype_colours)+
-  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)
-# 
-# filename &lt;- sprintf(&#39;%s/%s_L2_cluster_id_genotype_barplot.pdf&#39;, save_dir, name_current)
-# ggsave(filename,
-#        barplot,
-#        device=&quot;pdf&quot;,
-#        width=7,
-#        height=4)
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>barplot_p &lt;- level_02@meta.data %&gt;% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L2_celltype = factor(L2_celltype, levels =level_02_celltpe_order) )%&gt;% 
+  group_by(Genotype, L2_celltype, .drop=FALSE) %&gt;% 
+  summarise(., count =n()) %&gt;% 
+  group_by(Genotype) %&gt;% 
+  mutate(., proportion = count/sum(count),
+            all_sum = sum(count), 
+            x_label= paste0(Genotype, &quot;\nn=&quot;, all_sum), 
+            stacked_labels = paste0(100*round(proportion,3), &quot;%&quot;)) %&gt;% 
+  arrange(Genotype) %&gt;%  #reorder other factors
+  mutate(., x_label = factor(x_label)) %&gt;% 
+  ggplot(., aes(x =x_label, y = count, fill = L2_celltype)) +
+  geom_bar(stat=&quot;identity&quot;, position = &quot;fill&quot;) +
+  plot_sizing + rotate_x +
+  geom_text(aes(label = stacked_labels), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = level_02_celltype_colours)+
+  ylab(&quot;proportion&quot;) + xlab(&quot;&quot;)</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;Genotype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>#save each one individually
+filename &lt;- sprintf(&#39;%s/%s_genotype_L2_celltype_barplot.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot_p,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=7)
 
-barplot</code></pre>
+filename &lt;- sprintf(&#39;%s/%s_genotype_L2_celltype_barplot_withN.pdf&#39;, save_dir, name_current)
+ggsave(filename,
+       barplot_p_n,
+       device=&quot;pdf&quot;,
+       width=5,
+       height=7)
+
+barplot_p + barplot_p_n + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-28-1.png" width="768" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 </div>
@@ -1731,6 +1805,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-32-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-32-1.png" target="_blank">11e2d49</a>
@@ -1793,6 +1878,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-33-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-33-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -1847,6 +1943,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-34-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-34-1.png" target="_blank">11e2d49</a>
@@ -1912,6 +2019,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-35-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-35-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -1975,6 +2093,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-36-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-36-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2035,6 +2164,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-37-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-37-1.png" target="_blank">11e2d49</a>
@@ -2104,6 +2244,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-38-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-38-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2168,6 +2319,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-39-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-39-1.png" target="_blank">11e2d49</a>
@@ -2250,6 +2412,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-40-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-40-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2320,6 +2493,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-41-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-41-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2375,6 +2559,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-42-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-42-1.png" target="_blank">11e2d49</a>
@@ -2456,6 +2651,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-44-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-44-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2524,6 +2730,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-45-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-45-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2584,6 +2801,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-46-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-46-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2642,6 +2870,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-47-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-47-1.png" target="_blank">11e2d49</a>
@@ -2706,6 +2945,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-48-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
 <tr>
 <td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-48-1.png" target="_blank">11e2d49</a>
@@ -2852,6 +3102,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-50-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-50-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -2897,6 +3158,43 @@ ggsave(filename,
 
 barplot</code></pre>
 <p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-51-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-51-1">
+Past versions of unnamed-chunk-51-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-51-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-51-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Stats to support this:</p>
 <pre class="r"><code>global_stats &lt;- lapply(level_03$L3_celltype %&gt;% unique(), function(x){
   filtered_seurat &lt;- level_03@meta.data %&gt;% 
@@ -3122,6 +3420,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-54-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-54-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -3245,6 +3554,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-57-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-57-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -3301,6 +3621,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-58-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/11e2d4987cc381cef1b2649ad0b1270f19b02298/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-58-1.png" target="_blank">11e2d49</a>
 </td>
 <td>
@@ -3342,6 +3673,43 @@ ggsave(filename,
 
 plot</code></pre>
 <p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-59-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-59-1">
+Past versions of unnamed-chunk-59-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-59-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-59-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="boxplot-for-scores" class="section level2">
 <h2>Boxplot for scores</h2>
@@ -3368,6 +3736,43 @@ names(all_res) &lt;- all_scores</code></pre>
 <pre class="r"><code>plot_list &lt;- lapply(all_res, function(item) wrap_elements(item$plot))
 wrap_plots(plot_list)</code></pre>
 <p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-61-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-61-1">
+Past versions of unnamed-chunk-61-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-61-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-61-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Show stats results</p>
 <pre class="r"><code>lapply(all_res, function(item) item$stats) %&gt;% bind_rows(., .id=&quot;score&quot;)</code></pre>
 <pre><code>                     score  shapiro_res        ks_res
@@ -3461,6 +3866,43 @@ ggsave(filename,
 
 patch</code></pre>
 <p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-65-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-65-1">
+Past versions of unnamed-chunk-65-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-65-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-65-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Show stats details:</p>
 <pre class="r"><code>names(results) &lt;- all_scores
 stats_DF &lt;- lapply(results, function(item) item$stat) %&gt;% bind_rows(., .id=&quot;score&quot;)
@@ -3543,6 +3985,43 @@ ggsave(filename,
 
 patch</code></pre>
 <p><img src="figure/figures_meox1_dataset.Rmd/unnamed-chunk-69-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-69-1">
+Past versions of unnamed-chunk-69-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-69-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="ssh://git@atlassian.petermac.org.au:7999/hl/wflow_yap1_meox1_paper/blob/cae96151bf6baf758ebc06c51bf5b711fc20e9f6/docs/figure/figures_meox1_dataset.Rmd/unnamed-chunk-69-1.png" target="_blank">cae9615</a>
+</td>
+<td>
+Michelle Meier
+</td>
+<td>
+2026-07-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
