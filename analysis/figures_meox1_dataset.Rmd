@@ -418,30 +418,63 @@ barplot
 
 ### Genotype vs L2_celltype
 
-```{r, fig.align='center', eval=FALSE}
-barplot <- level_02@meta.data %>% 
+```{r, fig.align='center', fig.height=6, fig.width=8}
+barplot_p_n <- level_02@meta.data %>% 
   mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
             L2_celltype = factor(L2_celltype, levels =level_02_celltpe_order) )%>% 
   group_by(Genotype, L2_celltype, .drop=FALSE) %>% 
   summarise(., count =n()) %>% 
   group_by(Genotype) %>% 
-  mutate(., proportion = count/sum(count)) %>% 
-  ggplot(., aes(x =Genotype, y = count, fill = L2_celltype)) +
+  mutate(., proportion = count/sum(count),
+            all_sum = sum(count), 
+            x_label= paste0(Genotype, "\nn=", all_sum), 
+            stacked_labels = paste0(100*round(proportion,3), "%\nn=", count)) %>% 
+  arrange(Genotype) %>%  #reorder other factors
+  mutate(., x_label = factor(x_label)) %>% 
+  ggplot(., aes(x =x_label, y = count, fill = L2_celltype)) +
   geom_bar(stat="identity", position = "fill") +
   plot_sizing + rotate_x +
-  geom_text(aes(label = scales::percent(proportion, accuracy = 1)), 
+  geom_text(aes(label = stacked_labels), 
             position = position_fill(vjust = 0.5)) +
   scale_fill_manual(values = level_02_celltype_colours)+
   ylab("proportion") + xlab("")
-# 
-# filename <- sprintf('%s/%s_L2_cluster_id_genotype_barplot.pdf', save_dir, name_current)
-# ggsave(filename,
-#        barplot,
-#        device="pdf",
-#        width=7,
-#        height=4)
 
-barplot
+barplot_p <- level_02@meta.data %>% 
+  mutate(., Genotype = factor(Genotype, levels = names(genotype_colours)),
+            L2_celltype = factor(L2_celltype, levels =level_02_celltpe_order) )%>% 
+  group_by(Genotype, L2_celltype, .drop=FALSE) %>% 
+  summarise(., count =n()) %>% 
+  group_by(Genotype) %>% 
+  mutate(., proportion = count/sum(count),
+            all_sum = sum(count), 
+            x_label= paste0(Genotype, "\nn=", all_sum), 
+            stacked_labels = paste0(100*round(proportion,3), "%")) %>% 
+  arrange(Genotype) %>%  #reorder other factors
+  mutate(., x_label = factor(x_label)) %>% 
+  ggplot(., aes(x =x_label, y = count, fill = L2_celltype)) +
+  geom_bar(stat="identity", position = "fill") +
+  plot_sizing + rotate_x +
+  geom_text(aes(label = stacked_labels), 
+            position = position_fill(vjust = 0.5)) +
+  scale_fill_manual(values = level_02_celltype_colours)+
+  ylab("proportion") + xlab("")
+
+#save each one individually
+filename <- sprintf('%s/%s_genotype_L2_celltype_barplot.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot_p,
+       device="pdf",
+       width=5,
+       height=7)
+
+filename <- sprintf('%s/%s_genotype_L2_celltype_barplot_withN.pdf', save_dir, name_current)
+ggsave(filename,
+       barplot_p_n,
+       device="pdf",
+       width=5,
+       height=7)
+
+barplot_p + barplot_p_n + plot_layout(guides = "collect")
 ```
 
 
