@@ -1,9 +1,9 @@
 # !/usr/bin/Rscript
 # merge VECs and LECs into groups for comparison
-# ref: D10051_meox1_dataset_analysis_degs.R
+# ref: D10025_yap1_dataset_analysis_degs.R
 # ../Saki_data/Revision_analysis/queue_plots/
-#   meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv
-#   meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv
+#   yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv
+#   yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv
 library(tidyverse)
 library(here)
 library(Seurat)
@@ -40,13 +40,13 @@ run_degs_mut_wt_custom_groups <- function(seurat,
     # if no match, skip
     if (ncol(seurat_subset) == 0) return(NULL)
     
-    seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "meox1_mutant"))
+    seurat_subset$Genotype <- factor(seurat_subset$Genotype, levels = c("wildtype", "yap1_mutant"))
     
     if (all(table(seurat_subset$Genotype) > 5)) {
       Idents(seurat_subset) <- "Genotype"
       FindMarkers(object = seurat_subset,
                   group.by = "Genotype",
-                  ident.1 = "meox1_mutant",
+                  ident.1 = "yap1_mutant",
                   ident.2 = "wildtype",
                   min.pct = min_pct,
                   assay = "RNA",
@@ -58,7 +58,7 @@ run_degs_mut_wt_custom_groups <- function(seurat,
 
   # tag filename if custom grouping was deployed
   file_suffix <- ifelse(is.null(custom_groups), group, paste0(group, "_merged_VEC_merged_LEC"))
-  file_name <- sprintf("%s/meox1_%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", save_dir, seurat@misc$name, file_suffix, log2_t, min_pct)
+  file_name <- sprintf("%s/yap1_%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", save_dir, seurat@misc$name, file_suffix, log2_t, min_pct)
   write.csv(file = file_name, x = all_results, row.names = FALSE)
 
   return(all_results)
@@ -71,9 +71,9 @@ run_degs_mut_wt_selected_genes_custom_groups <- function(seurat,
                                                          features_in,   
                                                          export_name,   
                                                          geno_col = "Genotype",
-                                                         mut_id = "meox1_mutant",
+                                                         mut_id = "yap1_mutant",
                                                          wt_id = "wildtype",
-                                                         project_name = "meox1_dataset",
+                                                         project_name = "yap1_dataset",
                                                          log2_t = 0,
                                                          min_pct = 0) {
                                                          
@@ -115,23 +115,21 @@ run_degs_mut_wt_selected_genes_custom_groups <- function(seurat,
   }) %>% bind_rows()
 
   # Create a distinct filename using the export_name (e.g., "hippo_targets")
-  file_name <- sprintf("%s/meox1_%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", 
+  file_name <- sprintf("%s/yap1_%s_DEG_mutVSwt_%s_fc%0.2f_minpct_%0.2f.csv", 
                        save_dir, seurat@misc$name, export_name, log2_t, min_pct)
   write.csv(file = file_name, x = all_results, row.names = FALSE)
 
   return(all_results)
 }
 
-infile_path <- "../paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+infile_path <- "../paper/D10025_yap1_dataset_Level_03_annotated.qs2"
 data <- qs_read(infile_path)
 outfile_dir <- "../Revision_analysis/queue_plots/"
 
 custom_groups <- list(
-    "hmVEC__mVEC" = c("hmVEC", "mVEC"),
-    "LEC__pre_muLEC" = c("LEC", "pre_muLEC")
+    "LEC__preLEC" = c("LEC", "preLEC"),
+    "cVEC__hmVEC__mVEC" = c("cVEC", "hmVEC", "mVEC")
 )
-
-data$celltype_genotype <- paste(data$L3_celltype, data$Genotype, sep = "_")
 
 hippo_targets <- c(
     "yap1",

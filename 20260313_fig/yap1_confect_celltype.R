@@ -12,8 +12,8 @@
 #   here we pseudobulked and ran limma, then topconfects
 # output:
 # ../Saki_data/Revision_analysis/queue_plots/
-#   meox1_Level_03_TopConfects_MergedGroups_mutVSwt_FDR0.05.csv
-#   meox1_Level_03_TopConfects_L3_celltype_merged_VEC_merged_LEC_hippo_targets_MergedGroups_mutVSwt_FDR0.05.csv
+#   yap1_Level_03_TopConfects_MergedGroups_mutVSwt_FDR0.05.csv
+#   yap1_Level_03_TopConfects_L3_celltype_merged_VEC_merged_LEC_hippo_targets_MergedGroups_mutVSwt_FDR0.05.csv
 
 library(tidyverse)
 library(here)
@@ -36,9 +36,9 @@ run_topconfects_custom_groups <- function(seurat,
                                           custom_groups,    
                                           save_dir,
                                           geno_col = "Genotype",
-                                          mut_id = "meox1_mutant",
+                                          mut_id = "yap1_mutant",
                                           wt_id = "wildtype",
-                                          project_name = "meox1_dataset",
+                                          project_name = "yap1_dataset",
                                           fdr_target = 0.05) {  # topconfects uses FDR instead of p_val
   
   p_name <- if (!is.null(seurat@misc$name)) seurat@misc$name else project_name
@@ -88,7 +88,7 @@ run_topconfects_custom_groups <- function(seurat,
   }) %>% bind_rows()
 
   # Export the compiled table
-  file_name <- sprintf("%s/meox1_%s_TopConfects_MergedGroups_mutVSwt_FDR%0.2f.csv", save_dir, p_name, fdr_target)
+  file_name <- sprintf("%s/yap1_%s_TopConfects_MergedGroups_mutVSwt_FDR%0.2f.csv", save_dir, p_name, fdr_target)
   write.csv(file = file_name, x = all_results, row.names = FALSE)
 
   return(all_results)
@@ -101,9 +101,9 @@ run_topconfects_selected_genes_custom_groups <- function(seurat,
                                                          export_name,
                                                          save_dir,
                                                          geno_col = "Genotype",
-                                                         mut_id = "meox1_mutant",
+                                                         mut_id = "yap1_mutant",
                                                          wt_id = "wildtype",
-                                                         project_name = "meox1_dataset",
+                                                         project_name = "yap1_dataset",
                                                          fdr_target = 0.05) {
   
   p_name <- if (!is.null(seurat@misc$name)) seurat@misc$name else project_name
@@ -141,20 +141,20 @@ run_topconfects_selected_genes_custom_groups <- function(seurat,
     }
   }) %>% bind_rows()
 
-  file_name <- sprintf("%s/meox1_%s_TopConfects_%s_MergedGroups_mutVSwt_FDR%0.2f.csv", 
+  file_name <- sprintf("%s/yap1_%s_TopConfects_%s_MergedGroups_mutVSwt_FDR%0.2f.csv", 
                        save_dir, p_name, export_name, fdr_target)
   write.csv(file = file_name, x = all_results, row.names = FALSE)
 
   return(all_results)
 }
 
-infile_path <- "../paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+infile_path <- "../paper/D10025_yap1_dataset_Level_03_annotated.qs2"
 data <- qs_read(infile_path)
 outfile_dir <- "../Revision_analysis/queue_plots/"
 
 custom_groups <- list(
-    "hmVEC__mVEC" = c("hmVEC", "mVEC"),
-    "LEC__pre_muLEC" = c("LEC", "pre_muLEC")
+    "LEC__preLEC" = c("LEC", "preLEC"),
+    "cVEC__hmVEC__mVEC" = c("cVEC", "hmVEC", "mVEC")
 )
 
 hippo_targets <- c(
