@@ -105,11 +105,14 @@ libraries <- c(
     "ggplot2",
     "ggrepel",
     "patchwork",
+    "pheatmap",
     "qs2",
     "Seurat",
     "SingleCellExperiment",
     "slingshot",
-    "tidyverse"
+    "tradeSeq",
+    "tidyverse",
+    "viridis"
 )
 
 load_packages <- function(packages) {
@@ -122,6 +125,141 @@ load_packages <- function(packages) {
 }
 invisible(Sys.setenv(OPENBLAS_NUM_THREADS="1"))
 load_packages(libraries)
+
+# ========================================================================
+# TRADESEQ GAM PIPELINE: Trajectory & Divergence Testing
+# ========================================================================
+run_lineage_tradeseq <- function(seurat_obj, start, lin, meta_pt, meta_weight, outfile_dir, n_top_genes = 2000) {
+    cat("\n   -> [tradeSeq] Initializing GAM fit for start:", start, "lin:", lin, "\n")
+    
+    # 1. Isolate cells that actually participate in this lineage
+    # We require a pseudotime value and a Slingshot weight > 0
+    valid_cells <- rownames(seurat_obj@meta.data)[
+        !is.na(seurat_obj@meta.data[[meta_pt]]) & 
+        seurat_obj@meta.data[[meta_weight]] > 0
+    ]
+    
+    if (length(valid_cells) < 50) {
+        cat("      -> Too few cells for robust GAM fitting. Skipping.\n")
+        return()
+    }
+    
+    sub_seurat <- subset(seurat_obj, cells = valid_cells)
+    
+    # 2. Extract and format condition (Genotype)
+    # Ensure WT is the reference level
+    sub_seurat$Genotype <- case_when(
+        grepl("_1$", colnames(sub_seurat)) ~ "meox1_mutant", 
+        grepl("_2$", colnames(sub_seurat)) ~ "WildType"
+    )
+    sub_seurat$Genotype <- factor(sub_seurat$Genotype, levels = c("WildType", "meox1_mutant"))
+    
+    if (length(unique(sub_seurat$Genotype)) < 2) {
+        cat("      -> Missing one genotype condition in this lineage. Skipping divergence test.\n")
+        return()
+    }
+
+    # 3. Restrict gene space to save massive compute time
+    sub_seurat <- FindVariableFeatures(sub_seurat, selection.method = "vst", nfeatures = n_top_genes, verbose = FALSE)
+    target_genes <- VariableFeatures(sub_seurat)
+    
+    # Extract inputs for tradeSeq
+    counts_matrix <- GetAssayData(sub_seurat, assay = "RNA", layer = "counts")[target_genes, ]
+    pt_vec <- sub_seurat@meta.data[[meta_pt]]
+    cw_vec <- sub_seurat@meta.data[[meta_weight]]
+    cond_factor <- sub_seurat$Genotype
+    
+    # 4. Fit the GAM model
+    # Note: nknots=5 is standard for single-cell tradeSeq balances flexibility with overfitting
+    cat("      -> Fitting GAMs (this may take a few minutes)...\n")
+    set.seed(42)
+    sce_tradeseq <- fitGAM(
+        counts = counts_matrix,
+        pseudotime = as.matrix(pt_vec),
+        cellWeights = as.matrix(cw_vec),
+        conditions = cond_factor,
+        nknots = 5,
+        verbose = FALSE
+    )
+    
+    # 5. TEST 1: Baseline Trajectory Association (Does it change over time at all?)
+    cat("      -> Testing Baseline Trajectory Associations...\n")
+    asso_res <- associationTest(sce_tradeseq)
+    asso_res$Gene <- rownames(asso_res)
+    asso_res <- asso_res %>% 
+        arrange(pvalue, desc(waldStat)) %>%
+        mutate(FDR = p.adjust(pvalue, method = "fdr")) %>%
+        select(Gene, waldStat, df, pvalue, FDR, meanLogFC)
+    
+    file_asso <- sprintf("%smeox1__Table_tradeSeq_Baseline_start_%s_lin%s.csv", outfile_dir, start, lin)
+    write.csv(asso_res, file = file_asso, row.names = FALSE)
+    
+    # 6. TEST 2: Genotype Divergence (Does the mutant behave differently over time?)
+    cat("      -> Testing Genotype Divergence (WT vs Mut)...\n")
+    cond_res <- conditionTest(sce_tradeseq)
+    cond_res$Gene <- rownames(cond_res)
+    cond_res <- cond_res %>% 
+        arrange(pvalue, desc(waldStat)) %>%
+        mutate(FDR = p.adjust(pvalue, method = "fdr")) %>%
+        select(Gene, waldStat, df, pvalue, FDR)
+    
+    file_cond <- sprintf("%smeox1__Table_tradeSeq_Divergence_start_%s_lin%s.csv", outfile_dir, start, lin)
+    write.csv(cond_res, file = file_cond, row.names = FALSE)
+    
+    # ========================================================================
+    # HEATMAP GENERATION
+    # ========================================================================
+    cat("      -> Generating Smoothed Heatmaps...\n")
+    
+    # Helper function to generate and save heatmap
+    plot_tradeseq_heatmap <- function(genes_to_plot, filename, title_text) {
+        if (length(genes_to_plot) < 2) return()
+        
+        # predictSmooth generates 100 points along the pseudotime curve for both conditions
+        smooth_expr <- predictSmooth(sce_tradeseq, gene = genes_to_plot, nPoints = 100, tidy = FALSE)
+        
+        # Scale the data row-wise (Z-score) for heatmap visualization
+        mat_scaled <- t(scale(t(smooth_expr)))
+        
+        # tradeSeq outputs WT and Mutant columns contiguously. 
+        # Create an annotation bar to clearly separate WT vs Mutant on the heatmap
+        annot_col <- data.frame(
+            Genotype = factor(rep(c("WildType", "meox1_mutant"), each = 100), levels = c("WildType", "meox1_mutant"))
+        )
+        rownames(annot_col) <- colnames(mat_scaled)
+        ann_colors <- list(Genotype = c("WildType" = "#377EB8", "meox1_mutant" = "#E41A1C"))
+        
+        pdf(filename, width = 8, height = 10)
+        pheatmap(
+            mat_scaled,
+            cluster_cols = FALSE, # MUST be false to preserve pseudotime ordering
+            cluster_rows = TRUE,  # Cluster genes with similar patterns
+            show_colnames = FALSE,
+            annotation_col = annot_col,
+            annotation_colors = ann_colors,
+            color = viridis::viridis(100),
+            main = title_text,
+            fontsize_row = 7
+        )
+        dev.off()
+    }
+    
+    # Plot top 50 Baseline Trajectory Genes
+    top_asso_genes <- head(asso_res$Gene[asso_res$FDR < 0.05], 50)
+    plot_tradeseq_heatmap(
+        top_asso_genes, 
+        sprintf("%smeox1__Heatmap_tradeSeq_Baseline_start_%s_lin%s.pdf", outfile_dir, start, lin),
+        sprintf("Top 50 Baseline Pseudotime Genes\n(Start: %s, Lin: %s)", start, lin)
+    )
+    
+    # Plot top 50 Divergence (Mutant vs WT) Genes
+    top_cond_genes <- head(cond_res$Gene[cond_res$FDR < 0.05], 50)
+    plot_tradeseq_heatmap(
+        top_cond_genes, 
+        sprintf("%smeox1__Heatmap_tradeSeq_Divergence_start_%s_lin%s.pdf", outfile_dir, start, lin),
+        sprintf("Top 50 Genotype Divergence Genes\n(Start: %s, Lin: %s)", start, lin)
+    )
+}
 
 # custom transition zone barplots
 plot_custom_transition_zones <- function(
@@ -273,7 +411,7 @@ run_wt_anchored_slingshot <- function(data, col_map, col_order, outfile_dir) {
             df_full <- data.frame(X = dens_full$x, Y = dens_full$y)
 
             # --- PLOT 1: CLEAN WT ONLY (NO OVERLAYS) ---
-# Setup base dataframes for plotting
+            # Setup base dataframes for plotting
             df_wt   <- data.frame(X = dens_wt$x, Y = dens_wt$y)
             df_mut  <- data.frame(X = dens_mut$x, Y = dens_mut$y)
             df_full <- data.frame(X = dens_full$x, Y = dens_full$y)
@@ -809,6 +947,16 @@ run_slingshot <- function(data, col_map, col_order, col_name) {
                     )
                 )
             data[[transition_col_name]] <- meta_data[[transition_col_name]]
+
+            # run tradeseq
+            run_lineage_tradeseq(
+                seurat_obj = data, 
+                start = start, 
+                lin = lin, 
+                meta_pt = meta, 
+                meta_weight = weights_col_name, 
+                outfile_dir = outfile_dir
+            )
 
             # dimplot celltype
             plt_dim <- DimPlot(data, group.by = "L3_celltype", cols=col_map)
@@ -1367,9 +1515,9 @@ data_D10051 <- qs_read(infile_path)
 data_S20200 <- data_D10051[, grepl("_1$", colnames(data_D10051))]
 data_S20201 <- data_D10051[, grepl("_2$", colnames(data_D10051))]
 
-# run_slingshot(data_D10051, col_map, col_order, col_name="D10051")
-# run_slingshot(data_S20200, col_map, col_order, col_name="S20200")
-# run_slingshot(data_S20201, col_map, col_order, col_name="S20201")
+run_slingshot(data_D10051, col_map, col_order, col_name="D10051")
+run_slingshot(data_S20200, col_map, col_order, col_name="S20200")
+run_slingshot(data_S20201, col_map, col_order, col_name="S20201")
 
 features <- c("mki67", "pcna")
 # run_featureplot(data_D10051, features, outfile_dir)
