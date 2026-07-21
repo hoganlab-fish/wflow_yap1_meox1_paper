@@ -1,0 +1,506 @@
+---
+title: "GO analyses for yap1"
+subtitle: "Kobayashi et al. 2036"
+author: "Tyrone Chen"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    highlight: textmate
+    keep_md: TRUE
+    number_sections: TRUE
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_title: merged samples
+editor_options:
+  chunk_output_type: console
+params:
+  sample_index: 1
+  sample_name: "default"
+---
+
+# GO analyses for yap1
+
+## Important info
+
+We want to compare ontology across different groups and subgroups of wild type and mutant cells.
+
+- This assumes you ran `yap1_deg_celltype.R` first, in which we merged VECs and LECs into groups for comparison.
+- Two algorithms are used for complementarity (they are conceptually different but functionally similar)
+- `FGSEA` can "fail" in some conditions since it makes assumptions which are more consistent with bulk RNA-Seq data. At the same time, expect that `ORA/EGO` will return more results. This is not an error.
+- To minimise information overload, a brief description is embedded together with each figure so they can be interpreted in context.
+
+### Quickstart instructions for getting the info you want:
+
+- Select your `GO` analysis of choice in the sidebar (ie 1.5 onwards)
+- Suggest starting with the `ORA` plots as the core component. 
+  - ORA Barplots, dotplots and enrichment map show the same information in different ways
+  - ORA enrichment map and category-gene network show higher level pathway information
+- FGSEA is plotted as a supplementary complement to ORA and are not always available
+  - While useful, they can be safely ignored if absent
+
+<!-- ref: D10025_yap1_dataset_analysis_degs.R
+../Saki_data/Revision_analysis/queue_plots/
+  Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv
+  Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv -->
+
+### Experimental design information
+
+We perform two different analyses, on two different sample groupings, on two different sample groups. Best described with the tree below
+
+```
+DATASET -- CELL STATES (MERGED/SINGLE) -- GO ANALYSIS TYPE
+
+                                 +---- FGSEA ranked analysis
+                                 |
+              +-- single state --+  
+              |                  |
+              |                  +---- ORA/EGO overrepresentation analysis
+meox data ----|   
+              |                  +---- FGSEA ranked analysis
+              |                  |
+              +-- merged state --+
+                                 |
+                                 +---- ORA/EGO overrepresentation analysis
+
+                                 +---- FGSEA ranked analysis
+                                 |
+              +-- single state --+  
+              |                  |
+              |                  +---- ORA/EGO overrepresentation analysis
+yap1 data ----|   
+              |                  +---- FGSEA ranked analysis
+              |                  |
+              +-- merged state --+
+                                 |
+                                 +---- ORA/EGO overrepresentation analysis
+```
+
+### Methods information
+
+We compare and contrast two different gene ontology enrichment methods.
+
+| Aspect | GSEA (`gseGO`/fgsea) | ORA (`enrichGO`) |
+|---|---|---|
+| **Input** | Full ranked gene list (all genes, ranked by `avg_log2FC`) | Binary significant/not-significant gene list (`p_val < 0.05` cutoff) |
+| **Statistical test** | Running-sum enrichment score against a ranked list (Kolmogorov-Smirnov-like) | Hypergeometric / Fisher's exact test vs. background |
+| **Cutoff dependency** | None — every gene contributes proportionally to its rank | Hard cutoff required — genes just below threshold contribute nothing |
+| **Directionality** | Native — `NES > 0` / `NES < 0` splits up- vs down-enriched | Not native — requires re-running ORA separately on up/down subsets (reduces power) |
+| **Sensitive to** | Coordinated small shifts across many genes in a pathway | Strong individual gene-level significance |
+| **Best suited for** | Well-powered fold-change estimates across full transcriptome/gene set | Clean list of "hits" where direction of each term isn't the focus |
+| **Known caveat here** | Single-cell `p_val` is often inflated (large cell counts) — ranking uses `avg_log2FC`, not p-value, to avoid this | Empty results possible for weak/underpowered comparisons (guarded in code) |
+
+Note that `GSEA` methods were originally developed for and inherit the major assumptions of bulk RNA-Seq data. They can still be used for single-cell data, but p-value inflation means their precision can be reduced. To buffer this effect, we rank by fold changes and not by p values. Expect the majority of the output below to work on `ORA` but not `GSEA`.
+
+## Initial setup
+
+For developers.
+
+```{r class.source="fold-hide", label="init", eval=TRUE}
+# !/usr/bin/Rscript
+library(clusterProfiler)
+library(enrichplot)
+library(ggpubr)
+library(org.Dr.eg.db)
+library(patchwork)
+library(qs2)
+library(UpSetR)
+
+outfile_dir <- "../Revision_analysis/queue_plots/go/"
+
+singles_yap_path <- "../analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"
+grouped_yap_path <- "../Revision_analysis/queue_plots/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
+
+singles_yap_hippo_path <- "../analysis/D10025_yap1_dataset/DEGs/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_hippo_targets_mutVSwt_L3_celltype_fc0.00_minpct_0.00.csv"
+grouped_yap_hippo_path <- "../Revision_analysis/queue_plots/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv"
+
+custom_groups <- list(
+    "LEC__preLEC" = c("LEC", "preLEC"),
+    "cVEC__hmVEC__mVEC" = c("cVEC", "hmVEC", "mVEC")
+)
+
+keytypes(org.Dr.eg.db)
+```
+
+## Wrapper for downstream functions
+
+For developers. We will reuse this a lot so we make a wrapper function for `FGSEA` and `enrichGO`.
+
+```{r class.source="fold-hide", label="wrap", eval=TRUE, results="asis"}
+run_go <- function(data, data_name) {
+    cat("\n\n## GO analysis:", data_name, "\n\n")
+    cat("Input genes:", nrow(data), "\n\n")
+
+    # FGSEA
+    gene_list <- data$avg_log2FC
+    names(gene_list) <- data$Gene
+    gene_list <- sort(gene_list, decreasing = TRUE)
+
+    fgsea_result <- gseGO(
+        geneList = gene_list,
+        OrgDb = org.Dr.eg.db,
+        keyType = "SYMBOL",
+        ont = "BP",
+        pAdjustMethod = "BH"
+    )
+
+    n_fgsea_terms <- nrow(fgsea_result@result)
+
+    # enrichGO - now split into up/down, plus combined kept for FGSEA comparison
+    sig_gene_list      <- data$Gene[data$p_val < 0.05]
+    sig_gene_list_up    <- data$Gene[data$p_val < 0.05 & data$avg_log2FC > 0]
+    sig_gene_list_down  <- data$Gene[data$p_val < 0.05 & data$avg_log2FC < 0]
+
+    cat("**ORA input genes:** combined =", length(sig_gene_list),
+        "&nbsp;&nbsp; up =", length(sig_gene_list_up),
+        "&nbsp;&nbsp; down =", length(sig_gene_list_down), "\n\n")
+
+    run_ora <- function(genes) {
+        if (length(genes) < 2) return(NULL)
+        enrichGO(
+            gene = genes,
+            keyType = "SYMBOL",
+            OrgDb = org.Dr.eg.db,
+            ont = "BP",
+            pAdjustMethod = "BH",
+            pvalueCutoff = 0.05,
+            qvalueCutoff = 0.05,
+            readable = TRUE
+        )
+    }
+
+    ego_result      <- run_ora(sig_gene_list)
+    ego_result_up   <- run_ora(sig_gene_list_up)
+    ego_result_down <- run_ora(sig_gene_list_down)
+
+    n_ora_terms      <- if (!is.null(ego_result))      nrow(ego_result@result)      else 0
+    n_ora_up_terms   <- if (!is.null(ego_result_up))   nrow(ego_result_up@result)   else 0
+    n_ora_down_terms <- if (!is.null(ego_result_down)) nrow(ego_result_down@result) else 0
+
+    cat("**FGSEA:**", n_fgsea_terms, "terms tested/returned &nbsp;&nbsp; ",
+        "**ORA (combined):**", n_ora_terms, "terms &nbsp;&nbsp; ",
+        "**ORA (up):**", n_ora_up_terms, "terms &nbsp;&nbsp; ",
+        "**ORA (down):**", n_ora_down_terms, "terms\n\n")
+
+    # significant terms - guard against empty results
+    fgsea_sig_terms <- if (n_fgsea_terms > 0) {
+        fgsea_result@result$ID[fgsea_result@result$p.adjust < 0.05]
+    } else character(0)
+
+    ora_sig_terms <- if (n_ora_terms > 0) {
+        ego_result@result$ID[ego_result@result$p.adjust < 0.05]
+    } else character(0)
+
+    ora_up_sig_terms <- if (n_ora_up_terms > 0) {
+        ego_result_up@result$ID[ego_result_up@result$p.adjust < 0.05]
+    } else character(0)
+
+    ora_down_sig_terms <- if (n_ora_down_terms > 0) {
+        ego_result_down@result$ID[ego_result_down@result$p.adjust < 0.05]
+    } else character(0)
+
+    fgsea_up <- if (n_fgsea_terms > 0) {
+        fgsea_result@result$ID[fgsea_result@result$p.adjust < 0.05 & fgsea_result@result$NES > 0]
+    } else character(0)
+
+    fgsea_down <- if (n_fgsea_terms > 0) {
+        fgsea_result@result$ID[fgsea_result@result$p.adjust < 0.05 & fgsea_result@result$NES < 0]
+    } else character(0)
+
+    cat("**FGSEA significant terms** (p.adjust < 0.05):", length(fgsea_sig_terms),
+        "(", length(fgsea_up), "up /", length(fgsea_down), "down) &nbsp;&nbsp; ",
+        "**ORA significant terms:** combined =", length(ora_sig_terms),
+        ", up =", length(ora_up_sig_terms), ", down =", length(ora_down_sig_terms), "\n\n")
+
+    if (length(union(fgsea_sig_terms, ora_sig_terms)) > 0) {
+        overlap_n <- length(intersect(fgsea_sig_terms, ora_sig_terms))
+        jaccard <- overlap_n / length(union(fgsea_sig_terms, ora_sig_terms))
+        cat("**FGSEA/ORA (combined) overlap:**", overlap_n, "shared terms, Jaccard =", round(jaccard, 4), "\n\n")
+    } else {
+        cat("*No significant terms in either FGSEA or ORA (combined) for", data_name, "- skipping overlap calc*\n\n")
+    }
+
+    # helper to save a ggplot object in both pdf and png, log the pdf path clearly
+    save_plot <- function(plt, plot_name, width = 8, height = 12) {
+        pdf_path <- paste0(outfile_dir, "/", data_name, "_", plot_name, ".pdf")
+        png_path <- paste0(outfile_dir, "/", data_name, "_", plot_name, ".png")
+        ggsave(filename = pdf_path, plot = plt, width = width, height = height)
+        ggsave(filename = png_path, plot = plt, width = width, height = height)
+        cat("*PDF saved to:*", paste0("`", pdf_path, "`"), "\n\n")
+    }
+
+    # separate helper for UpSetR objects - these are NOT ggplot objects,
+    # ggsave() fails on them (no grid.draw method for class "upset")
+    save_upset_plot <- function(plt, plot_name, width = 8, height = 6) {
+        pdf_path <- paste0(outfile_dir, "/", data_name, "_", plot_name, ".pdf")
+        png_path <- paste0(outfile_dir, "/", data_name, "_", plot_name, ".png")
+
+        pdf(pdf_path, width = width, height = height)
+        print(plt)
+        dev.off()
+
+        png(png_path, width = width, height = height, units = "in", res = 300)
+        print(plt)
+        dev.off()
+
+        cat("*PDF saved to:*", paste0("`", pdf_path, "`"), "\n\n")
+    }
+
+    # reusable block for one ORA result (combined / up / down) - avoids
+    # triplicating the same five-plot sequence three times over
+    run_ora_plots <- function(ego_res, n_terms, block_label, file_tag) {
+        if (n_terms == 0 || dim(ego_res)[1] == 0) {
+            cat("*No ORA (", block_label, ") terms found for", data_name,
+                "- skipping ORA (", block_label, ") plots*\n\n")
+            return(invisible(NULL))
+        }
+
+        cat("### ORA (", block_label, "): Barplot\n\n")
+        cat("Shows the top enriched GO terms ranked by significance, bar length/colour reflecting ",
+            "adjusted p-value or gene count. **Expected:** terms biologically consistent with the ",
+            "comparison (e.g. vascular/endothelial terms for EC-related contrasts). **Unexpected:** ",
+            "dominance by generic housekeeping terms (translation, metabolism) with no thematic ",
+            "coherence - may indicate a weak or noisy input gene list rather than a real signal.\n\n")
+        plt <- barplot(ego_res, showCategory = 20)
+        print(plt)
+        save_plot(plt, paste0("ego_", file_tag, "_barplot"))
+
+        cat("### ORA (", block_label, "): Dotplot\n\n")
+        cat("Adds gene ratio (fraction of input genes hitting each term) as point size, with colour ",
+            "for significance - more informative than the barplot since it shows both effect size and ",
+            "confidence simultaneously. **Expected:** larger, more significant dots clustering around a ",
+            "coherent biological theme. **Unexpected:** significant terms with very small gene ratios ",
+            "(few genes driving a 'significant' result) - treat cautiously as potentially fragile.\n\n")
+        plt <- dotplot(ego_res, showCategory = 20)
+        print(plt)
+        save_plot(plt, paste0("ego_", file_tag, "_dotplot"))
+
+        cat("### ORA (", block_label, "): Enrichment map\n\n")
+        cat("Network graph connecting GO terms that share overlapping genes - clusters of connected ",
+            "terms suggest a shared underlying biological process rather than independent findings. ",
+            "**Expected:** tight clusters of related terms. **Unexpected:** many isolated, unconnected ",
+            "terms, suggesting the significant terms are thematically scattered rather than coherent.\n\n")
+        ego_res_sim <- pairwise_termsim(ego_res)
+        plt <- emapplot(ego_res_sim, showCategory = 20)
+        print(plt)
+        save_plot(plt, paste0("ego_", file_tag, "_emapplot"), width = 10, height = 10)
+
+        cat("### ORA (", block_label, "): Category-gene network\n\n")
+        cat("Shows which specific genes drive which enriched terms, useful for tracing a term back to ",
+            "the actual DE genes behind it. **Expected:** recognisable marker genes linking to expected ",
+            "terms. **Unexpected:** a term driven entirely by one or two genes rather than a broad gene ",
+            "set - weaker evidence than a term supported by many genes.\n\n")
+        plt <- cnetplot(ego_res, showCategory = 5)
+        print(plt)
+        save_plot(plt, paste0("ego_", file_tag, "_cnetplot"), width = 10, height = 10)
+    }
+
+    ## EGO plots - combined, then up, then down - each independently guarded
+    run_ora_plots(ego_result,      n_ora_terms,      "combined", "combined")
+    run_ora_plots(ego_result_up,   n_ora_up_terms,   "up",       "up")
+    run_ora_plots(ego_result_down, n_ora_down_terms, "down",     "down")
+
+    ## FGSEA plots - guarded
+    if (n_fgsea_terms > 0) {
+        n_gseaplots <- min(10, n_fgsea_terms)  # top N by significance (results already ranked by p.adjust)
+
+        cat("### FGSEA: Running enrichment score plots (top", n_gseaplots, "terms)\n\n")
+        cat("Shows the running enrichment score as genes are walked through the ranked list, one curve ",
+            "per term. A peak early in the ranking (sharp rise then decay) indicates strong enrichment ",
+            "at that end of the ranked list. **Expected:** a clear single peak, with gene hits (tick ",
+            "marks) concentrated toward one end. **Unexpected:** a flat or noisy running-score curve ",
+            "with hits scattered evenly - indicates weak enrichment even if nominally significant.\n\n")
+
+        for (i in seq_len(n_gseaplots)) {
+            plt <- gseaplot2(fgsea_result, geneSetID = fgsea_result@result$ID[i],
+                              title = fgsea_result@result$Description[i])
+            print(plt)
+            save_plot(plt, paste0("fgsea_gseaplot_", i, "_", fgsea_result@result$ID[i]))
+        }
+
+        cat("### FGSEA: Dotplot\n\n")
+        cat("Same interpretation as the ORA dotplot above, applied to FGSEA results - gene ratio as ",
+            "point size, colour for significance.\n\n")
+        plt <- dotplot(fgsea_result, showCategory = 20)
+        print(plt)
+        save_plot(plt, "fgsea_dotplot")
+
+        cat("### FGSEA: Ridgeplot\n\n")
+        cat("Shows the distribution of fold-changes for the genes within each enriched term, stacked ",
+            "across terms - lets you see whether a term's genes are consistently up/down or a mixed ",
+            "bag. **Expected:** distributions clearly shifted away from zero. **Unexpected:** ",
+            "distributions centred near zero or straddling both directions, suggesting the term's ",
+            "'enrichment' isn't reflecting a clean, consistent expression shift.\n\n")
+        plt <- ridgeplot(fgsea_result, showCategory = 20)
+        print(plt)
+        save_plot(plt, "fgsea_ridgeplot", width = 8, height = 10)
+    } else {
+        cat("*No FGSEA terms found for", data_name, "- skipping all FGSEA plots*\n\n")
+    }
+
+    ## UpSet plots - guarded (need at least 2 non-empty sets to be meaningful)
+    cat("### FGSEA vs ORA (combined) overlap (UpSet)\n\n")
+    cat("Shows how many significant terms are shared between FGSEA and ORA - bars show intersection ",
+        "sizes rather than just pairwise overlap, which scales better than a Venn diagram. ",
+        "**Expected:** substantial (though rarely complete) overlap between methods, since they test ",
+        "related but distinct hypotheses on the same data - some method-specific hits are normal. ",
+        "**Unexpected:** near-zero overlap, worth investigating (e.g. checking input gene list ",
+        "construction) since the two methods should generally point in a broadly similar direction.\n\n")
+
+    if (length(fgsea_sig_terms) > 0 && length(ora_sig_terms) > 0) {
+        plt <- upset(fromList(list(FGSEA = fgsea_sig_terms, ORA = ora_sig_terms)), order.by = "freq")
+        print(plt)
+        save_upset_plot(plt, "upset_fgsea_ora")
+    } else {
+        cat("*Need non-empty terms in BOTH FGSEA and ORA (combined) for", data_name, "- skipping this plot*\n\n")
+    }
+
+    n_nonempty_sets <- sum(length(fgsea_up) > 0, length(fgsea_down) > 0, length(ora_sig_terms) > 0)
+    if (n_nonempty_sets >= 2) {
+        cat("### FGSEA (up/down) vs ORA (combined) overlap (UpSet)\n\n")
+        cat("Same as above, but splits FGSEA by enrichment direction (NES > 0 vs NES < 0) - useful for ",
+            "checking whether ORA's (non-directional) hits align more with up- or down-regulated ",
+            "biology in this comparison.\n\n")
+        plt <- upset(fromList(list(
+            "FGSEA (up)"   = fgsea_up,
+            "FGSEA (down)" = fgsea_down,
+            "ORA"          = ora_sig_terms
+        )), order.by = "freq")
+        print(plt)
+        save_upset_plot(plt, "upset_gsea_direction_ora")
+    } else {
+        cat("*Fewer than 2 non-empty sets for", data_name, "- skipping direction-split upset plot*\n\n")
+    }
+
+    # NEW: FGSEA up/down vs ORA up/down - direction-matched comparison across BOTH methods
+    n_nonempty_sets_matched <- sum(length(fgsea_up) > 0, length(fgsea_down) > 0,
+                                    length(ora_up_sig_terms) > 0, length(ora_down_sig_terms) > 0)
+    if (n_nonempty_sets_matched >= 2) {
+        cat("### FGSEA (up/down) vs ORA (up/down) overlap (UpSet)\n\n")
+        cat("Fully direction-matched comparison - both methods split by up/down regulation. ",
+            "**Expected:** FGSEA (up) overlaps most with ORA (up), and FGSEA (down) with ORA (down); ",
+            "cross-direction overlap (e.g. FGSEA up vs ORA down) should be minimal. **Unexpected:** ",
+            "substantial cross-direction overlap, which would suggest a labelling/sign error somewhere ",
+            "in the upstream fold-change or p-value handling rather than a genuine biological finding. ",
+            "Note ORA (up)/(down) each use half the significant gene list of the combined ORA run, ",
+            "so these individual terms are less powered than the combined ORA result above.\n\n")
+        plt <- upset(fromList(list(
+            "FGSEA (up)"   = fgsea_up,
+            "FGSEA (down)" = fgsea_down,
+            "ORA (up)"     = ora_up_sig_terms,
+            "ORA (down)"   = ora_down_sig_terms
+        )), order.by = "freq")
+        print(plt)
+        save_upset_plot(plt, "upset_gsea_ora_direction_matched")
+    } else {
+        cat("*Fewer than 2 non-empty direction-matched sets for", data_name, "- skipping this plot*\n\n")
+    }
+
+    cat("**Done:**", data_name, "\n\n---\n\n")
+
+    # return everything for later reuse/inspection
+    list(fgsea_result = fgsea_result,
+         ego_result = ego_result, ego_result_up = ego_result_up, ego_result_down = ego_result_down,
+         fgsea_sig_terms = fgsea_sig_terms,
+         ora_sig_terms = ora_sig_terms, ora_up_sig_terms = ora_up_sig_terms, ora_down_sig_terms = ora_down_sig_terms)
+}
+```
+
+## Plots
+
+For developers. Load in data.
+
+```{r class.source="fold-hide", label="parse_input", eval=TRUE}
+grouped_yap <- read.csv(grouped_yap_path)
+
+
+custom_groups <- list(
+    "LEC__preLEC" = c("LEC", "preLEC"),
+    "cVEC__hmVEC__mVEC" = c("cVEC", "hmVEC", "mVEC")
+)
+
+
+grouped_lecs <- grouped_yap[grouped_yap$group == "LEC__preLEC", ]
+rownames(grouped_lecs) <- grouped_lecs$Gene
+
+grouped_vecs <- grouped_yap[grouped_yap$group == "cVEC__hmVEC__mVEC", ]
+rownames(grouped_vecs) <- grouped_vecs$Gene
+
+
+singles_yap <- read.csv(singles_yap_path)
+
+singles_LEC <- singles_yap[singles_yap$group == "LEC", ]
+rownames(singles_LEC) <- singles_LEC$Gene
+
+singles_pre_muLEC <- singles_yap[singles_yap$group == "preLEC", ]
+rownames(singles_pre_muLEC) <- singles_pre_muLEC$Gene
+
+singles_cVEC <- singles_yap[singles_yap$group == "cVEC", ]
+rownames(singles_cVEC) <- singles_cVEC$Gene
+
+singles_hmVEC <- singles_yap[singles_yap$group == "hmVEC", ]
+rownames(singles_hmVEC) <- singles_hmVEC$Gene
+
+singles_mVEC <- singles_yap[singles_yap$group == "mVEC", ]
+rownames(singles_mVEC) <- singles_mVEC$Gene
+```
+
+We have separate sections for each plot series for easy comparison.
+
+<!-- ### Grouped LECs -->
+
+```{r class.source="fold-hide", label="grp_lec", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+grouped_lecs_out <- run_go(grouped_lecs, data_name="LEC__preLEC")
+```
+
+<!-- ### Singles LECs -->
+
+```{r class.source="fold-hide", label="sin_LEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+singles_LEC_out <- run_go(singles_LEC, data_name="LEC")
+```
+
+<!-- ### Singles pre_muLECs -->
+
+```{r class.source="fold-hide", label="sin_pre_muLEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+singles_pre_muLEC_out <- run_go(singles_pre_muLEC, data_name="preLEC")
+```
+
+<!-- ### Grouped VECs -->
+
+```{r class.source="fold-hide", label="grp_vec", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+grouped_vecs_out <- run_go(grouped_vecs, data_name="cVEC__hmVEC__iVEC__mVEC")
+```
+
+<!-- ### Singles cVEC -->
+
+```{r class.source="fold-hide", label="sin_cVEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+singles_cVEC_out <- run_go(singles_cVEC, data_name="cVEC")
+```
+
+<!-- ### Singles hmVEC -->
+
+```{r class.source="fold-hide", label="sin_hmVEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+singles_hmVEC_out <- run_go(singles_hmVEC, data_name="hmVEC")
+```
+
+<!-- ### Singles mVEC -->
+
+```{r class.source="fold-hide", label="sin_mVEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
+singles_mVEC_out <- run_go(singles_mVEC, data_name="mVEC")
+```
+
+
+## For developers
+
+Sample run command:
+
+```{bash, eval=FALSE}
+Rscript -e "
+rmarkdown::render(
+  'yap1_goanalysis.Rmd',
+  output_file = './yap1_goanalysis.html'
+)
+"
+```
