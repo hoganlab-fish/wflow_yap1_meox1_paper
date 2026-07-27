@@ -1131,6 +1131,30 @@ plot
 ```
 
 
+Export downregulated genes, ranked. Will then mark hippo genes in extended data table
+
+```{r}
+#export sorted by log2FC
+filename <- here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_hmVEC_minpct_0.01_downregulated_sigpval_sorted_fc.csv")
+export <- all_degs %>% 
+  filter(., group == "hmVEC" & avg_log2FC < 0 & p_val < 0.05) %>% #only hmVEC, only down, and only sig (pval)
+  select(., -group) %>% 
+  mutate(., is_hippo_gene = ifelse(Gene %in% hippo_targets, "hippo target", "")) %>% 
+  arrange(avg_log2FC) 
+write_csv(x = export, file = filename)
+
+#export sorted by pval
+filename <- here("output/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_hmVEC_minpct_0.01_downregulated_sigpval_sorted_pval.csv")
+export <- all_degs %>% 
+  filter(., group == "hmVEC" & avg_log2FC < 0 & p_val < 0.05) %>% #only hmVEC, only down, and only sig (pval)
+  select(., -group) %>% 
+  mutate(., is_hippo_gene = ifelse(Gene %in% hippo_targets, "hippo target", "")) %>% 
+  arrange(p_val) 
+write_csv(x = export, file = filename)
+
+```
+
+
 ## GO plot for IL_VEC
 
 Export only iVEC results for GO analysis. 
