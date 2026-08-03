@@ -478,6 +478,34 @@ barplot_p + barplot_p_n + plot_layout(guides = "collect")
 ```
 
 
+Using the chisq.posthoc.test package to perform a post-hoc analysis for this.
+
+```{r}
+M <-table(level_02$Genotype, level_02$L2_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
+
+global_test <- chisq.test(M)
+global_test
+global_test$p.value
+
+res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
+    pivot_longer(., cols = level_02$L2_celltype %>% unique(), names_to = "L2_celltype", values_to = "entry") %>% 
+    pivot_wider(., names_from = "Value", values_from = "entry")
+  
+res <- res %>% 
+  distinct(., L2_celltype, .keep_all = T) %>%  #residuals for 2 groups are mirrored 
+  mutate(., Residuals = abs(Residuals), 
+            is_sig = case_when(`p values` > 0.05 ~ "", 
+                              `p values` <= 0.0001 ~ "****",
+                               `p values` <= 0.001 ~ "***",
+                              `p values` <= 0.01 ~ "**",
+                                `p values` <= 0.05 ~ "*"
+                                 )) %>% 
+  select(., -Dimension)
+
+res %>% knitr::kable()
+
+```
+
 # LEVEL 03 - VEC AND LEC{.tabset}
 
 ```{r}
