@@ -822,8 +822,8 @@ Using the chisq.posthoc.test package to perform a post-hoc analysis for this.
 M <-table(level_03$Genotype, level_03$L3_celltype) + 0.001 #add very small number to deal with test sensitivity to zeros
 
 global_test <- chisq.test(M)
+global_test
 global_test$p.value
-
 
 res <- chisq.posthoc.test(M) %>% as.data.frame() %>% 
     pivot_longer(., cols = level_03$L3_celltype %>% unique(), names_to = "L3_celltype", values_to = "entry") %>% 
