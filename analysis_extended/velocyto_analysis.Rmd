@@ -1,0 +1,1058 @@
+---
+title: "RNA velocity (velocyto.R) for meox1 and yap1 datasets"
+subtitle: "Kobayashi et al. 2026"
+author: "Tyrone Chen"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    highlight: textmate
+    keep_md: TRUE
+    number_sections: TRUE
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_title: merged samples
+editor_options:
+  chunk_output_type: console
+params:
+  sample_index: 1
+  sample_name: "default"
+---
+
+# README
+
+RNA velocity (`velocyto.R`) redone on both datasets with intron retention from cellranger.
+
+Two equivalent pipelines are provided for each dataset:
+
+- **Fast path (convenience) - this is what actually runs.** Reads the already-computed velocity estimate
+  objects (`velocyto.<ID>.qs2`, the saved output of a prior `gene.relative.velocity.estimates()` fit) directly,
+  skipping loom loading and re-fitting entirely. It recovers the cell set that went into each object from the
+  object itself (`colnames()` of its internal expression matrix) rather than from loom cell names.
+- **Slow path (completeness) - kept below, unmodified, `eval=FALSE`.** The original `meox1_velocyto.R` /
+  `yap1_velocyto.R` logic: computes velocity estimates from scratch, starting from the loom file
+  (`ReadVelocity()` → gene-filtering → `gene.relative.velocity.estimates()`). This is the code that originally
+  produced the `velocyto.<ID>.qs2` objects the fast path reads - kept in full for transparency and as the
+  reference implementation to fall back on (e.g. after regenerating the loom files, or to sanity-check the fast
+  path against a from-scratch refit). Re-fitting `gene.relative.velocity.estimates()` per sample is by far the
+  most expensive step in this document, which is why it isn't run by default.
+
+Each dataset section below is split into "Slow path (loom-based, for completeness - not run)" and "Fast path
+(qs2-based, for convenience - this is what actually runs)".
+
+For each dataset three high-resolution combined+per-sample plots are produced, each with its legend saved
+separately, intended for custom composition in Illustrator rather than as final figures on their own.
+
+**Note:** `S20200`/`S20201` (meox1) and `S20127`/`S20128` (yap1) are mutant/wildtype sample IDs baked into the
+source scripts' filenames - meox1's `S20200` = mutant, `S20201` = wildtype; yap1's `S20127` = mutant, `S20128` =
+wildtype.
+
+## Inputs
+
+Fast path (what actually runs) reads precomputed velocity objects from
+`../../Saki_data/Revision_analysis/queue_plots/`:
+
+- `velocyto.D10051.qs2`, `velocyto.S20200.qs2`, `velocyto.S20201.qs2` (meox1)
+- `velocyto.D10025.qs2`, `velocyto.S20127.qs2`, `velocyto.S20128.qs2` (yap1)
+
+Slow path (kept for completeness, not run) reads the loom files directly instead - see the per-dataset "Slow
+path" chunks for their locations. Both are available in this environment; the fast path is used by default
+purely because it avoids redundant re-fitting.
+
+## Outputs
+
+All under `../docs/figure_extended/velocyto/`, one set per dataset (`D10051` = meox1, `D10025` = yap1) and per
+sample:
+
+- `{meox,yap}_scrna_Level_03_L3_velocyto_introns.<ID>.pdf` (+ `.legend.pdf`)
+- `velocyto.<ID>.qs2` (copy of the precomputed object actually used, so downstream users find it in one place
+  regardless of which path produced/supplied it)
+- `mini_axis.pdf` (shared UMAP axis stamp, see "Dev utility" section)
+
+## Initial setup
+
+```{r class.source="fold-hide", label="init", eval=TRUE}
+libraries <- c(
+    "tidyverse",
+    "velocyto.R",
+    "pagoda2",
+    "qs2",
+    "Seurat",
+    "SeuratWrappers",
+    "ggplot2"
+)
+
+load_packages <- function(packages) {
+    suppressPackageStartupMessages({
+        cat(paste("Loading", packages, sep=" "), sep="\n")
+        invisible(sapply(
+            packages, library, character.only = TRUE, quietly = TRUE
+            ))
+    })
+}
+invisible(Sys.setenv(OPENBLAS_NUM_THREADS="1"))
+load_packages(libraries)
+
+outfile_dir <- "../docs/figure_extended/velocyto/"
+dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
+precomputed_dir <- "../../Saki_data/Revision_analysis/queue_plots/"
+
+detect_sample_prefixes <- function(loom_cellnames, n_samples) {
+    prefixes <- unique(sub(":.*", "", loom_cellnames))
+    if (length(prefixes) != n_samples) {
+        warning(sprintf("Expected %d samples but found %d prefixes: %s",
+                        n_samples, length(prefixes), paste(prefixes, collapse=", ")))
+    }
+    return(sort(prefixes))  # sort so sample 1 < sample 2
+}
+
+# plot parameters shared by both datasets and both pipelines
+alpha <- 0.5
+cex <<- 0.7
+arrow.scale <<- 2
+show.grid.flow <<- TRUE
+min.grid.cell.mass <<- 1
+grid.n <<- 50
+arrow.lwd <<- 1
+cell.border.alpha <<- 0
+n.cores <<- 1
+
+n <- 400
+kCells <<- 10
+deltaT <<- 3
+fit.quantile <<- 0.02
+```
+
+## Slow path: `run_velocyto_original_loom_based()` (loom-based, kept for completeness)
+
+Identical between the meox1 and yap1 source scripts. Builds the cell-distance matrix, draws the coloured UMAP +
+legend, filters genes by cluster expression, fits `gene.relative.velocity.estimates()` from loom-derived
+spliced/unspliced counts, and renders the velocity field over the UMAP embedding. **Defining this function is
+harmless and kept `eval=TRUE` so it's visible/checkable in the rendered doc; it is simply never called below**
+(all the calls that would need it are in the `eval=FALSE` "Slow path" chunks per dataset).
+
+```{r class.source="fold-hide", label="run_velocyto_func", eval=TRUE}
+run_velocyto_original_loom_based <- function(
+    data_sub, loom_cellnames, ldat, outfile_path, outfile_legend, outfile_obj, label,
+    recode_ids=NULL,      # named vector: c("old"="new")
+    col_map=NULL,         # named colour vector
+    level_order=NULL      # character vector of level order
+    ) {                   # -- subset loom assays to matched cells --
+    # -- optional recoding --
+    if (!is.null(recode_ids)) {
+        data_sub$L3_cluster_id <- recode(data_sub$L3_cluster_id, !!!recode_ids)
+    }
+
+    # -- optional reordering --
+    if (!is.null(level_order)) {
+        data_sub$L3_cluster_id <- factor(data_sub$L3_cluster_id, levels=level_order)
+    }
+
+    umap_cols <- if (!is.null(col_map)) col_map else NULL
+
+    list_all_assays_filtered <- lapply(names(x=ldat), function(name){
+        assay <- ldat[[name]]
+        colnames(assay) <- loom_cellnames
+        assay <- assay[, intersect(colnames(data_sub), colnames(assay))]
+    })
+    names(list_all_assays_filtered) <- names(x=ldat)
+
+    emat <- list_all_assays_filtered$spliced
+    nmat <- list_all_assays_filtered$unspliced
+
+    emb <- Embeddings(data_sub, reduction="umap")
+    cell.dist <- as.dist(1 - armaCor(t(emb)))
+
+    gg <- UMAPPlot(
+        data_sub,
+        group.by="L3_cluster_id",
+        cols=if (!is.null(umap_cols)) umap_cols else waiver()) +
+        guides(colour=guide_legend(override.aes=list(shape=16, size=4))) +
+        theme_void() +
+        theme(
+            legend.position=c(1, 1),
+            legend.justification=c(1, 1),
+            legend.title=element_blank(),
+            legend.background=element_blank(),
+            legend.key=element_blank()
+        )
+
+    colors <- as.list(ggplot_build(gg)$data[[1]]$colour)
+    names(colors) <- rownames(emb)
+
+    if (is.null(col_map)) {
+        legend_data <- data.frame(
+            x=1, y=1,
+            L3_cluster_id=factor(unique(data_sub$L3_cluster_id))
+        )
+    } else {
+        legend_data <- data.frame(
+            x=1, y=1,
+            L3_cluster_id=factor(names(col_map), levels=names(col_map))
+        )
+    }
+
+    gg_legend <- ggplot(legend_data, aes(x=x, y=y, colour=L3_cluster_id)) +
+        geom_point(shape=NA) +
+        scale_colour_manual(values=col_map) +
+        guides(colour=guide_legend(override.aes=list(shape=16, size=4))) +
+        theme_void() +
+        theme(
+            legend.title=element_blank(),
+            legend.background=element_blank(),
+            legend.margin=margin(r=200)
+        )
+    print(gg_legend)
+    ggsave(outfile_legend, gg_legend)
+
+    cell_identity <- data_sub$L3_cluster_id
+
+    emat_filtered <- filter.genes.by.cluster.expression(
+        emat, cell_identity, min.max.cluster.average=0.1
+    )
+    nmat_filtered <- filter.genes.by.cluster.expression(
+        nmat, cell_identity, min.max.cluster.average=0.05
+    )
+    cat(sprintf("emat_filtered: %d genes x %d cells\n", nrow(emat_filtered), ncol(emat_filtered)))
+    cat(sprintf("nmat_filtered: %d genes x %d cells\n", nrow(nmat_filtered), ncol(nmat_filtered)))
+
+    rvel <- gene.relative.velocity.estimates(
+        emat_filtered,
+        nmat_filtered,
+        deltaT=deltaT,
+        kCells=kCells,
+        cell.dist=cell.dist,
+        fit.quantile=fit.quantile,
+        n.cores=n.cores
+    )
+
+    velocity_title <- sprintf(
+        "Cell Velocity: %s\nfitquantile=%.2f, deltaT=%.1f, kCells=%i, n=%i",
+        label, fit.quantile, deltaT, kCells, n
+    )
+    draw_velocity <- function() {
+        par(bty="n")
+        show.velocity.on.embedding.cor(
+            emb, rvel, n=n, scale='sqrt',
+            cell.colors=ac(colors, alpha=alpha),
+            cex=cex, arrow.scale=arrow.scale,
+            show.grid.flow=show.grid.flow,
+            min.grid.cell.mass=min.grid.cell.mass,
+            grid.n=grid.n, arrow.lwd=arrow.lwd,
+            do.par=F, cell.border.alpha=cell.border.alpha,
+            n.cores=n.cores,
+            main=velocity_title
+        )
+    }
+
+    # draw once for the knitted document, once more into the PDF device for the file
+    draw_velocity()
+
+    pdf(outfile_path)
+    draw_velocity()
+    dev.off()
+
+    qs_save(rvel, outfile_obj)
+    cat("Saved: ", outfile_obj, "\n")
+}
+```
+
+## Fast path: `run_velocyto_from_precomputed()` (qs2-based, this is what runs)
+
+<div style="border:2px solid #2c7a4b; padding:0.75em; background:#eaf6ee;">
+**Divergence point.** Everything up to and including the UMAP legend/colour setup is unchanged from the slow
+path - none of it ever touches the loom file, it only ever needs the Seurat object's own UMAP embedding and
+cluster identities. The only thing that changes is what happens next: instead of subsetting loom
+spliced/unspliced counts and calling `gene.relative.velocity.estimates()` to *produce* `rvel`, this version
+`qs_read()`s an already-fit `rvel` object and uses `colnames()` of its internal expression matrix
+(`rvel$current`, falling back to `rvel$deltaE`/`rvel$projected` if that field is absent) as the source of truth
+for which cells to subset the Seurat object to - replacing what `loom_cellnames` did in the slow path. Everything
+downstream of that (UMAP embedding, colours, drawing, saving) is identical between the two paths.
+</div>
+
+```{r class.source="fold-hide", label="run_velocyto_precomputed_func", eval=TRUE}
+get_rvel_cells <- function(rvel) {
+    for (field in c("current", "deltaE", "projected", "deltaProjected")) {
+        if (!is.null(rvel[[field]])) return(colnames(rvel[[field]]))
+    }
+    stop("Could not determine cell names from precomputed rvel object - inspect its structure with str(rvel, max.level=1)")
+}
+
+run_velocyto_from_precomputed <- function(
+    data, rvel_path, outfile_path, outfile_legend, outfile_obj, label,
+    recode_ids=NULL,      # named vector: c("old"="new")
+    col_map=NULL,         # named colour vector
+    level_order=NULL      # character vector of level order
+    ) {
+    # ---- DIVERGENCE POINT: load a previously-fit velocity object instead of computing one from loom counts ----
+    rvel <- qs_read(rvel_path)
+    rvel_cells <- get_rvel_cells(rvel)
+
+    data_sub <- data[, colnames(data) %in% rvel_cells]
+    cat(sprintf("Precomputed rvel has %d cells; %d found in Seurat object\n",
+                length(rvel_cells), ncol(data_sub)))
+    # ---- end divergence point; everything below matches run_velocyto_original_loom_based() ----
+
+    # -- optional recoding --
+    if (!is.null(recode_ids)) {
+        data_sub$L3_cluster_id <- recode(data_sub$L3_cluster_id, !!!recode_ids)
+    }
+
+    # -- optional reordering --
+    if (!is.null(level_order)) {
+        data_sub$L3_cluster_id <- factor(data_sub$L3_cluster_id, levels=level_order)
+    }
+
+    umap_cols <- if (!is.null(col_map)) col_map else NULL
+
+    emb <- Embeddings(data_sub, reduction="umap")
+
+    gg <- UMAPPlot(
+        data_sub,
+        group.by="L3_cluster_id",
+        cols=if (!is.null(umap_cols)) umap_cols else waiver()) +
+        guides(colour=guide_legend(override.aes=list(shape=16, size=4))) +
+        theme_void() +
+        theme(
+            legend.position=c(1, 1),
+            legend.justification=c(1, 1),
+            legend.title=element_blank(),
+            legend.background=element_blank(),
+            legend.key=element_blank()
+        )
+
+    colors <- as.list(ggplot_build(gg)$data[[1]]$colour)
+    names(colors) <- rownames(emb)
+
+    if (is.null(col_map)) {
+        legend_data <- data.frame(
+            x=1, y=1,
+            L3_cluster_id=factor(unique(data_sub$L3_cluster_id))
+        )
+    } else {
+        legend_data <- data.frame(
+            x=1, y=1,
+            L3_cluster_id=factor(names(col_map), levels=names(col_map))
+        )
+    }
+
+    gg_legend <- ggplot(legend_data, aes(x=x, y=y, colour=L3_cluster_id)) +
+        geom_point(shape=NA) +
+        scale_colour_manual(values=col_map) +
+        guides(colour=guide_legend(override.aes=list(shape=16, size=4))) +
+        theme_void() +
+        theme(
+            legend.title=element_blank(),
+            legend.background=element_blank(),
+            legend.margin=margin(r=200)
+        )
+    print(gg_legend)
+    ggsave(outfile_legend, gg_legend)
+
+    velocity_title <- sprintf(
+        "Cell Velocity: %s\nfitquantile=%.2f, deltaT=%.1f, kCells=%i, n=%i",
+        label, fit.quantile, deltaT, kCells, n
+    )
+    draw_velocity <- function() {
+        par(bty="n")
+        show.velocity.on.embedding.cor(
+            emb, rvel, n=n, scale='sqrt',
+            cell.colors=ac(colors, alpha=alpha),
+            cex=cex, arrow.scale=arrow.scale,
+            show.grid.flow=show.grid.flow,
+            min.grid.cell.mass=min.grid.cell.mass,
+            grid.n=grid.n, arrow.lwd=arrow.lwd,
+            do.par=F, cell.border.alpha=cell.border.alpha,
+            n.cores=n.cores,
+            main=velocity_title
+        )
+    }
+
+    # draw once for the knitted document, once more into the PDF device for the file
+    draw_velocity()
+
+    pdf(outfile_path)
+    draw_velocity()
+    dev.off()
+
+    # re-save alongside the other outputs, so downstream users find it in one place
+    # regardless of whether it was freshly computed or read in precomputed
+    qs_save(rvel, outfile_obj)
+    cat("Saved: ", outfile_obj, "\n")
+}
+```
+
+## meox1 (D10051)
+
+Source: `meox1_velocyto.R`. `S20200` = meox1 mutant, `S20201` = wildtype.
+
+### Slow path (loom-based, for completeness - not run)
+
+```{r class.source="fold-hide", label="meox1_velocyto_setup_original", eval=FALSE}
+infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+infile_loom <- "../../Saki_data/Revision_analysis/Dataset_10051_meox1_scRNAseq.loom"
+
+outfile_path_D10051 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.D10051.pdf", sep="/")
+outfile_legend_D10051 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.D10051.legend.pdf", sep="/")
+outfile_obj_D10051 <- paste(outfile_dir, "velocyto.D10051.qs2", sep="/")
+
+outfile_path_S20200 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20200.pdf", sep="/")
+outfile_legend_S20200 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20200.legend.pdf", sep="/")
+outfile_obj_S20200 <- paste(outfile_dir, "velocyto.S20200.qs2", sep="/")
+
+outfile_path_S20201 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20201.pdf", sep="/")
+outfile_legend_S20201 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20201.legend.pdf", sep="/")
+outfile_obj_S20201 <- paste(outfile_dir, "velocyto.S20201.qs2", sep="/")
+
+data <- qs_read(infile_path)
+table(data@meta.data$L3_cluster_id)
+group.by <- "L3_cluster_id"
+ldat <- ReadVelocity(infile_loom)
+
+# -- cell name matching --
+loom_cellnames <- colnames(ldat$spliced)
+sample_names <- detect_sample_prefixes(loom_cellnames, n_samples = 2)
+cat("Detected prefixes:", paste(sample_names, collapse=", "), "\n")
+
+for (i in 1:length(sample_names)) {
+    current_name <- sprintf("%s:(.*)x", sample_names[i])
+    loom_cellnames <- gsub(current_name, sprintf("\\1-1_%i", i), loom_cellnames)
+}
+
+# -- subset Seurat to cells present in loom --
+n_missing <- sum(!colnames(data) %in% loom_cellnames)
+if (n_missing > 0) {
+    cat(sprintf("Note: %d / %d Seurat cells missing from loom, subsetting\n",
+                n_missing, ncol(data)))
+}
+data_sub <- data[, colnames(data) %in% loom_cellnames]
+cat(sprintf("Proceeding with %d cells\n", ncol(data_sub)))
+
+data_S20200 <- data_sub[, grepl("_1$", colnames(data_sub))]
+data_S20201 <- data_sub[, grepl("_2$", colnames(data_sub))]
+loom_S20200 <- loom_cellnames[grepl("_1$", loom_cellnames)]
+loom_S20201 <- loom_cellnames[grepl("_2$", loom_cellnames)]
+
+recode_D10051 <- c(
+    "mVEC_01"="msVEC",
+    "LEC_01"="LEC",
+    "hmVEC_01"="hmsVEC",
+    "pre_muLEC_01"="pre_muLEC"
+)
+order_D10051 <- c(
+    "LEC",
+    "pre_muLEC",
+    "hmsVEC",
+    "msVEC"
+)
+col_map_D10051 <- c(
+    "LEC"       = "#41ae76",
+    "pre_muLEC" = "#fec44f",
+    "hmsVEC"    = "#9ecae1",
+    "msVEC"     = "#6baed6"
+)
+```
+
+```{r class.source="fold-hide", label="meox1_velocyto_run_original", eval=FALSE}
+# combined - all samples, with full colour map and ordering
+run_velocyto_original_loom_based(
+    data_sub=data_sub,
+    loom_cellnames=loom_cellnames,
+    ldat=ldat,
+    outfile_path=outfile_path_D10051,
+    outfile_legend=outfile_legend_D10051,
+    outfile_obj=outfile_obj_D10051,
+    label="D10051",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+
+run_velocyto_original_loom_based(
+    data_sub=data_S20200,
+    loom_cellnames=loom_cellnames,
+    ldat=ldat,
+    outfile_path=outfile_path_S20200,
+    outfile_legend=outfile_legend_S20200,
+    outfile_obj=outfile_obj_S20200,
+    label="S20200_MUT",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+
+run_velocyto_original_loom_based(
+    data_sub=data_S20201,
+    loom_cellnames=loom_cellnames,
+    ldat=ldat,
+    outfile_path=outfile_path_S20201,
+    outfile_legend=outfile_legend_S20201,
+    outfile_obj=outfile_obj_S20201,
+    label="S20201_WT",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+```
+
+### Fast path (qs2-based, for convenience - this is what actually runs)
+
+```{r class.source="fold-hide", label="meox1_velocyto_setup_precomputed", eval=TRUE}
+infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+
+outfile_path_D10051 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.D10051.pdf", sep="/")
+outfile_legend_D10051 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.D10051.legend.pdf", sep="/")
+outfile_obj_D10051 <- paste(outfile_dir, "velocyto.D10051.qs2", sep="/")
+rvel_path_D10051 <- paste0(precomputed_dir, "velocyto.D10051.qs2")
+
+outfile_path_S20200 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20200.pdf", sep="/")
+outfile_legend_S20200 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20200.legend.pdf", sep="/")
+outfile_obj_S20200 <- paste(outfile_dir, "velocyto.S20200.qs2", sep="/")
+rvel_path_S20200 <- paste0(precomputed_dir, "velocyto.S20200.qs2")
+
+outfile_path_S20201 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20201.pdf", sep="/")
+outfile_legend_S20201 <- paste(outfile_dir, "meox_scrna_Level_03_L3_velocyto_introns.S20201.legend.pdf", sep="/")
+outfile_obj_S20201 <- paste(outfile_dir, "velocyto.S20201.qs2", sep="/")
+rvel_path_S20201 <- paste0(precomputed_dir, "velocyto.S20201.qs2")
+
+data <- qs_read(infile_path)
+table(data@meta.data$L3_cluster_id)
+
+recode_D10051 <- c(
+    "mVEC_01"="msVEC",
+    "LEC_01"="LEC",
+    "hmVEC_01"="hmsVEC",
+    "pre_muLEC_01"="pre_muLEC"
+)
+order_D10051 <- c(
+    "LEC",
+    "pre_muLEC",
+    "hmsVEC",
+    "msVEC"
+)
+col_map_D10051 <- c(
+    "LEC"       = "#41ae76",
+    "pre_muLEC" = "#fec44f",
+    "hmsVEC"    = "#9ecae1",
+    "msVEC"     = "#6baed6"
+)
+```
+
+```{r class.source="fold-hide", label="meox1_velocyto_run_precomputed", eval=TRUE}
+run_velocyto_from_precomputed(
+    data=data,
+    rvel_path=rvel_path_D10051,
+    outfile_path=outfile_path_D10051,
+    outfile_legend=outfile_legend_D10051,
+    outfile_obj=outfile_obj_D10051,
+    label="D10051",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+
+run_velocyto_from_precomputed(
+    data=data,
+    rvel_path=rvel_path_S20200,
+    outfile_path=outfile_path_S20200,
+    outfile_legend=outfile_legend_S20200,
+    outfile_obj=outfile_obj_S20200,
+    label="S20200_MUT",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+
+run_velocyto_from_precomputed(
+    data=data,
+    rvel_path=rvel_path_S20201,
+    outfile_path=outfile_path_S20201,
+    outfile_legend=outfile_legend_S20201,
+    outfile_obj=outfile_obj_S20201,
+    label="S20201_WT",
+    recode_ids=recode_D10051,
+    col_map=col_map_D10051,
+    level_order=order_D10051
+)
+```
+
+## yap1 (D10025)
+
+Source: `yap1_velocyto.R`.
+
+### Slow path (loom-based, for completeness - not run)
+
+```{r class.source="fold-hide", label="yap1_velocyto_setup_original", eval=FALSE}
+infile_path_yap <- "../../Saki_data/paper/D10025_yap1_dataset_Level_03_annotated.qs2"
+infile_loom_yap <- "../../Saki_data/Revision_analysis/Dataset_10025_Yap_scRNAseq.20260311.intron.loom"
+
+outfile_path_D10025 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.D10025.pdf", sep="/")
+outfile_legend_D10025 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.D10025.legend.pdf", sep="/")
+outfile_obj_D10025 <- paste(outfile_dir, "velocyto.D10025.qs2", sep="/")
+
+outfile_path_S20127 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20127.pdf", sep="/")
+outfile_legend_S20127 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20127.legend.pdf", sep="/")
+outfile_obj_S20127 <- paste(outfile_dir, "velocyto.S20127.qs2", sep="/")
+
+outfile_path_S20128 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20128.pdf", sep="/")
+outfile_legend_S20128 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20128.legend.pdf", sep="/")
+outfile_obj_S20128 <- paste(outfile_dir, "velocyto.S20128.qs2", sep="/")
+
+data_yap <- qs_read(infile_path_yap)
+table(data_yap@meta.data$L3_cluster_id)
+ldat_yap <- ReadVelocity(infile_loom_yap)
+
+# -- cell name matching --
+loom_cellnames_yap <- colnames(ldat_yap$spliced)
+sample_names_yap <- detect_sample_prefixes(loom_cellnames_yap, n_samples = 2)
+cat("Detected prefixes:", paste(sample_names_yap, collapse=", "), "\n")
+
+for (i in 1:length(sample_names_yap)) {
+    current_name <- sprintf("%s:(.*)x", sample_names_yap[i])
+    loom_cellnames_yap <- gsub(current_name, sprintf("\\1-1_%i", i), loom_cellnames_yap)
+}
+
+# -- subset Seurat to cells present in loom --
+n_missing_yap <- sum(!colnames(data_yap) %in% loom_cellnames_yap)
+if (n_missing_yap > 0) {
+    cat(sprintf("Note: %d / %d Seurat cells missing from loom, subsetting\n",
+                n_missing_yap, ncol(data_yap)))
+}
+data_sub_yap <- data_yap[, colnames(data_yap) %in% loom_cellnames_yap]
+cat(sprintf("Proceeding with %d cells\n", ncol(data_sub_yap)))
+
+data_S20127 <- data_sub_yap[, grepl("_1$", colnames(data_sub_yap))]
+data_S20128 <- data_sub_yap[, grepl("_2$", colnames(data_sub_yap))]
+loom_S20127 <- loom_cellnames_yap[grepl("_1$", loom_cellnames_yap)]
+loom_S20128 <- loom_cellnames_yap[grepl("_2$", loom_cellnames_yap)]
+
+recode_D10025 <- c(
+    "LEC_01"="LEC",
+    "preLEC_01"="preLEC",
+    "hmVEC_01"="hmsVEC",
+    "mVEC_01"="msVEC",
+    "cVEC_01"="cvpVEC",
+    "iVEC_01"="IL_VEC"
+)
+order_D10025 <- c(
+    "LEC",
+    "preLEC",
+    "hmsVEC",
+    "msVEC",
+    "cvpVEC",
+    "IL_VEC"
+)
+col_map_D10025 <- c(
+    "LEC"     = "#41ae76",
+    "preLEC"  = "#a1d99b",
+    "hmsVEC"  = "#9ecae1",
+    "msVEC"   = "#6baed6",
+    "cvpVEC"  = "#4292c6",
+    "IL_VEC"  = "#084594"
+)
+```
+
+```{r class.source="fold-hide", label="yap1_velocyto_run_original", eval=FALSE}
+# combined - all samples, with full colour map and ordering
+run_velocyto_original_loom_based(
+    data_sub=data_sub_yap,
+    loom_cellnames=loom_cellnames_yap,
+    ldat=ldat_yap,
+    outfile_path=outfile_path_D10025,
+    outfile_legend=outfile_legend_D10025,
+    outfile_obj=outfile_obj_D10025,
+    label="D10025",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+
+run_velocyto_original_loom_based(
+    data_sub=data_S20127,
+    loom_cellnames=loom_cellnames_yap,
+    ldat=ldat_yap,
+    outfile_path=outfile_path_S20127,
+    outfile_legend=outfile_legend_S20127,
+    outfile_obj=outfile_obj_S20127,
+    label="S20127_MUT",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+
+run_velocyto_original_loom_based(
+    data_sub=data_S20128,
+    loom_cellnames=loom_cellnames_yap,
+    ldat=ldat_yap,
+    outfile_path=outfile_path_S20128,
+    outfile_legend=outfile_legend_S20128,
+    outfile_obj=outfile_obj_S20128,
+    label="S20128_WT",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+```
+
+### Fast path (qs2-based, for convenience - this is what actually runs)
+
+```{r class.source="fold-hide", label="yap1_velocyto_setup_precomputed", eval=TRUE}
+infile_path_yap <- "../../Saki_data/paper/D10025_yap1_dataset_Level_03_annotated.qs2"
+
+outfile_path_D10025 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.D10025.pdf", sep="/")
+outfile_legend_D10025 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.D10025.legend.pdf", sep="/")
+outfile_obj_D10025 <- paste(outfile_dir, "velocyto.D10025.qs2", sep="/")
+rvel_path_D10025 <- paste0(precomputed_dir, "velocyto.D10025.qs2")
+
+outfile_path_S20127 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20127.pdf", sep="/")
+outfile_legend_S20127 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20127.legend.pdf", sep="/")
+outfile_obj_S20127 <- paste(outfile_dir, "velocyto.S20127.qs2", sep="/")
+rvel_path_S20127 <- paste0(precomputed_dir, "velocyto.S20127.qs2")
+
+outfile_path_S20128 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20128.pdf", sep="/")
+outfile_legend_S20128 <- paste(outfile_dir, "yap_scrna_Level_03_L3_velocyto_introns.S20128.legend.pdf", sep="/")
+outfile_obj_S20128 <- paste(outfile_dir, "velocyto.S20128.qs2", sep="/")
+rvel_path_S20128 <- paste0(precomputed_dir, "velocyto.S20128.qs2")
+
+data_yap <- qs_read(infile_path_yap)
+table(data_yap@meta.data$L3_cluster_id)
+
+recode_D10025 <- c(
+    "LEC_01"="LEC",
+    "preLEC_01"="preLEC",
+    "hmVEC_01"="hmsVEC",
+    "mVEC_01"="msVEC",
+    "cVEC_01"="cvpVEC",
+    "iVEC_01"="IL_VEC"
+)
+order_D10025 <- c(
+    "LEC",
+    "preLEC",
+    "hmsVEC",
+    "msVEC",
+    "cvpVEC",
+    "IL_VEC"
+)
+col_map_D10025 <- c(
+    "LEC"     = "#41ae76",
+    "preLEC"  = "#a1d99b",
+    "hmsVEC"  = "#9ecae1",
+    "msVEC"   = "#6baed6",
+    "cvpVEC"  = "#4292c6",
+    "IL_VEC"  = "#084594"
+)
+```
+
+```{r class.source="fold-hide", label="yap1_velocyto_run_precomputed", eval=TRUE}
+run_velocyto_from_precomputed(
+    data=data_yap,
+    rvel_path=rvel_path_D10025,
+    outfile_path=outfile_path_D10025,
+    outfile_legend=outfile_legend_D10025,
+    outfile_obj=outfile_obj_D10025,
+    label="D10025",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+
+run_velocyto_from_precomputed(
+    data=data_yap,
+    rvel_path=rvel_path_S20127,
+    outfile_path=outfile_path_S20127,
+    outfile_legend=outfile_legend_S20127,
+    outfile_obj=outfile_obj_S20127,
+    label="S20127_MUT",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+
+run_velocyto_from_precomputed(
+    data=data_yap,
+    rvel_path=rvel_path_S20128,
+    outfile_path=outfile_path_S20128,
+    outfile_legend=outfile_legend_S20128,
+    outfile_obj=outfile_obj_S20128,
+    label="S20128_WT",
+    recode_ids=recode_D10025,
+    col_map=col_map_D10025,
+    level_order=order_D10025
+)
+```
+
+## Dev utility: shared UMAP axis stamp
+
+Source: `create_template_umap_axis.R`. Draws a small standalone arrow-axis PDF ("UMAP_1" / "UMAP_2") for
+compositing onto the stripped (axis-free) UMAP panels above in Illustrator. **Path fix vs source:** the original
+wrote to `"../Saki/Revision_analysis/queue_plots/mini_axis.pdf"` - `Saki` doesn't exist as a directory (the real
+ones are `Saki_data` and `saki_new`), so this never actually wrote anywhere useful. Retargeted to this document's
+own output dir below.
+
+```{r class.source="fold-hide", label="umap_axis_stamp", eval=TRUE, fig.height=2, fig.width=2}
+library(grid)
+
+axis_outfile <- paste0(outfile_dir, "mini_axis.pdf")
+
+draw_axis_stamp <- function() {
+    grid.newpage()
+    grid.lines(c(0.1, 0.5), c(0.1, 0.1),
+               arrow=arrow(type="closed", length=unit(0.05, "inches"), angle=20),
+               gp=gpar(lwd=1, fill="black"))
+    grid.lines(c(0.1, 0.1), c(0.1, 0.5),
+               arrow=arrow(type="closed", length=unit(0.05, "inches"), angle=20),
+               gp=gpar(lwd=1, fill="black"))
+    grid.text("UMAP_1", x=0.3, y=0.05, gp=gpar(cex=0.8))
+    grid.text("UMAP_2", x=0.05, y=0.3, rot=90, gp=gpar(cex=0.8))
+}
+
+# draw once for the knitted document, once more into the PDF device for the file
+draw_axis_stamp()
+
+pdf(axis_outfile, width=2, height=2)
+draw_axis_stamp()
+dev.off()
+```
+
+## UNUSED - exon vs intron velocyto comparison (QC reference only)
+
+<div style="border:2px solid #c0392b; padding:0.75em; background:#fdecea;">
+**Not part of any manuscript figure.** Source: `D10025_intron_exon_velocyto_compare.R` - a QC comparison run
+once to decide whether the intron-retention loom file materially changed the velocity field vs. the older
+exon-only loom, for the yap1 dataset. Kept here purely for provenance/reproducibility, `eval=FALSE` throughout.
+Also blocked on the missing loom files described above - not converted to the qs2-based path since it's a loom
+vs. loom comparison by definition and has no equivalent precomputed object to substitute in.
+
+Paths in the source script are **not portable** and will not run as-is from this repo:
+
+- `input_seurat` was originally an absolute path into a lab file server, naming both an internal directory
+  structure and a specific colleague - redacted below and replaced with the same relative convention used
+  everywhere else in this migration.
+- `input_loom_exon` / `input_loom_intron` use `"../results/..."`, a convention not used anywhere else in this
+  migration and whose target directory isn't part of either `Saki_data` or this repo as inspected. Left
+  uncorrected since fixing them would require guessing at infrastructure this migration has no visibility into.
+</div>
+
+```{r class.source="fold-hide", label="intron_exon_compare_unused", eval=FALSE}
+libraries <- c(
+    "velocyto.R",
+    "pagoda2",
+    "qs2",
+    "Seurat",
+    "SeuratWrappers",
+    "ggplot2"
+)
+
+load_packages <- function(packages) {
+    suppressPackageStartupMessages({
+        cat(paste("Loading", packages, sep=" "), sep="\n")
+        invisible(sapply(
+            packages, library, character.only = TRUE, quietly = TRUE
+            ))
+    })
+}
+invisible(Sys.setenv(OPENBLAS_NUM_THREADS="1"))
+load_packages(libraries)
+
+# suppress OpenBLAS threading warning
+Sys.setenv(OPENBLAS_NUM_THREADS = "1")
+
+# load data
+input_seurat <- "../../Saki_data/paper/D10025_yap1_dataset_Level_03_annotated.qs2"
+myData_original <- qs_read(input_seurat)
+
+colnames(myData_original@meta.data)
+
+input_loom_exon <- "../results/Dataset_10025_Yap_scRNAseq.20240603.exon.loom"
+input_loom_intron <- "../results/Dataset_10025_Yap_scRNAseq.20260311.intron.loom"
+ldat_exon <- ReadVelocity(input_loom_exon)
+ldat_intron <- ReadVelocity(input_loom_intron)
+
+# paths
+project.name <- "Dataset_10025_Yap_exon_intron_velocyto_compare"
+out.dir <- "../results/velocyto_compare/"
+dir.create(out.dir, recursive=T, showWarnings=F)
+group.by <- "L3_celltype"
+
+# plot parameters
+alpha <- 0.5
+cex <- 0.7
+arrow.scale <- 2
+show.grid.flow <- TRUE
+min.grid.cell.mass <- 1
+grid.n <- 50
+arrow.lwd <- 1
+cell.border.alpha <- 0
+n.cores <- 4
+
+Level_03_seurat_cluster_predicted_phenotype_order_cols <- c(
+    "#a1d99b",
+    "#41ae76",
+    "#9ecae1",
+    "#6baed6",
+    "#4292c6",
+    "#2171b5",
+    "#084594"
+)
+names(Level_03_seurat_cluster_predicted_phenotype_order_cols) <- c(
+    "Specified_LEC_01",
+    "Specified_LEC_02",
+    "VEC_01",
+    "VEC_02",
+    "VEC_03",
+    "VEC_04",
+    "VEC_05"
+)
+
+detect_sample_prefixes <- function(loom_cellnames, n_samples) {
+    prefixes <- unique(sub(":.*", "", loom_cellnames))
+    if (length(prefixes) != n_samples) {
+        warning(sprintf("Expected %d samples but found %d prefixes: %s",
+                        n_samples, length(prefixes), paste(prefixes, collapse=", ")))
+    }
+    return(sort(prefixes))  # sort so sample 1 < sample 2
+}
+
+ldats <- list(exon=ldat_exon, intron=ldat_intron)
+
+for (ldat_name in names(ldats)) {
+    cat(sprintf("\n===== Processing: %s =====\n", ldat_name))
+    list_velocities <- list()
+    ldat <- ldats[[ldat_name]]
+
+    # -- cell name matching --
+    loom_cellnames <- colnames(ldat$spliced)
+    sample_names <- detect_sample_prefixes(loom_cellnames, n_samples = 2)
+    cat("Detected prefixes:", paste(sample_names, collapse=", "), "\n")
+
+    for (i in 1:length(sample_names)) {
+        current_name <- sprintf("%s:(.*)x", sample_names[i])
+        loom_cellnames <- gsub(current_name, sprintf("\\1-1_%i", i), loom_cellnames)
+    }
+
+    # -- subset Seurat to cells present in loom --
+    n_missing <- sum(!colnames(myData_original) %in% loom_cellnames)
+    if (n_missing > 0) {
+        cat(sprintf("Note: %d / %d Seurat cells missing from loom, subsetting\n",
+                    n_missing, ncol(myData_original)))
+    }
+    myData_sub <- myData_original[, colnames(myData_original) %in% loom_cellnames]
+    cat(sprintf("Proceeding with %d cells\n", ncol(myData_sub)))
+
+    # -- subset loom assays to matched cells --
+    list_all_assays_filtered <- lapply(names(x=ldat), function(name){
+        assay <- ldat[[name]]
+        colnames(assay) <- loom_cellnames
+        assay <- assay[, colnames(myData_sub)]  # use myData_sub
+    })
+    names(list_all_assays_filtered) <- names(x=ldat)
+
+    emat <- list_all_assays_filtered$spliced
+    nmat <- list_all_assays_filtered$unspliced
+
+    # -- embeddings from subsetted object --
+    emb <- Embeddings(myData_sub, reduction="umap")
+    cell.dist <- as.dist(1 - armaCor(t(emb)))
+
+    # -- histograms --
+    outfile.plot <- sprintf("%s/%s_histogram_spliced.pdf", out.dir, ldat_name)
+    pdf(outfile.plot)
+    hist(log10(rowSums(emat)+1), col='wheat',
+         xlab='log10[ number of reads + 1]',
+         main='Spliced: number of reads per gene')
+    dev.off()
+
+    outfile.plot <- sprintf("%s/%s_histogram_unspliced.pdf", out.dir, ldat_name)
+    pdf(outfile.plot)
+    hist(log10(rowSums(nmat)+1), col='wheat',
+         xlab='log10[ number of reads + 1]',
+         main='Unspliced: number of reads per gene')
+    dev.off()
+
+    # -- UMAP colors from subsetted object --
+    gg <- UMAPPlot(myData_sub, group.by=group.by,
+                   cols=Level_03_seurat_cluster_predicted_phenotype_order_cols) +
+        theme_void() + theme(legend.position="none", plot.title=element_blank())
+    colors <- as.list(ggplot_build(gg)$data[[1]]$colour)
+    names(colors) <- rownames(emb)
+
+    # -- gene filtering --
+    cell_identity <- myData_sub$L3_celltype
+
+    emat_filtered <- filter.genes.by.cluster.expression(
+        emat, cell_identity, min.max.cluster.average=0.1
+    )
+    cat(sprintf("emat_filtered: %d genes x %d cells\n", nrow(emat_filtered), ncol(emat_filtered)))
+
+    nmat_filtered <- filter.genes.by.cluster.expression(
+        nmat, cell_identity, min.max.cluster.average=0.05
+    )
+    cat(sprintf("nmat_filtered: %d genes x %d cells\n", nrow(nmat_filtered), ncol(nmat_filtered)))
+
+    # -- velocity estimation --
+    fit.quantile <- 0.02
+    deltaT <- 3
+    kCells <- 10
+
+    rvel <- gene.relative.velocity.estimates(
+        emat_filtered,
+        nmat_filtered,
+        deltaT=deltaT,
+        kCells=kCells,
+        cell.dist=cell.dist,
+        fit.quantile=fit.quantile,
+        n.cores=n.cores
+    )
+
+    list_velocities[[ldat_name]] <- rvel
+
+    # -- velocity plot --
+    n <- 400
+    outfile.plot <- sprintf(
+        "%s/%s_UMAP_velocyto_filtered_fq%0.2f_dT%0.1f_kCells%i_n%i.pdf",
+        out.dir, ldat_name, fit.quantile, deltaT, kCells, n
+    )
+    pdf(outfile.plot)
+    show.velocity.on.embedding.cor(
+        emb,
+        rvel,
+        n=n,
+        scale='sqrt',
+        cell.colors=ac(colors, alpha=alpha),
+        cex=cex,
+        arrow.scale=arrow.scale,
+        show.grid.flow=show.grid.flow,
+        min.grid.cell.mass=min.grid.cell.mass,
+        grid.n=grid.n,
+        arrow.lwd=arrow.lwd,
+        do.par=F,
+        cell.border.alpha=cell.border.alpha,
+        n.cores=n.cores,
+        main=sprintf(
+            "Cell Velocity: %s filtered\nfitquantile=%.2f, deltaT=%.1f, kCells=%i, n=%i",
+            ldat_name, fit.quantile, deltaT, kCells, n
+        )
+    )
+    dev.off()
+
+    # -- save (one RDS per loom, only its own result) --
+    export_name <- sprintf("%s/%s_velocyto_filtered_all_params.RDS", out.dir, ldat_name)
+    saveRDS(list_velocities, export_name)
+    cat(sprintf("Saved: %s\n", export_name))
+}
+```
+
+## For developers
+
+Sample run command:
+
+```{bash, eval=FALSE, class.source="fold-hide"}
+Rscript -e "
+rmarkdown::render(
+  'velocyto_analysis.Rmd',
+  output_file = './velocyto_analysis.html'
+)
+"
+```

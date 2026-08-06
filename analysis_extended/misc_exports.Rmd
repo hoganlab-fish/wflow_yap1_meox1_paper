@@ -1,0 +1,80 @@
+---
+title: "Misc data exports"
+subtitle: "Kobayashi et al. 2026"
+author: "Tyrone Chen"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    highlight: textmate
+    keep_md: TRUE
+    number_sections: TRUE
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_title: merged samples
+editor_options:
+  chunk_output_type: console
+params:
+  sample_index: 1
+  sample_name: "default"
+---
+
+# README
+
+Catch-all for small, non-figure data exports that don't belong in any of the other extended documents. Currently
+just one: cell composition counts/percentages per `L3_cluster_id` x `Genotype`, formatted for import into
+GraphPad Prism.
+
+## Outputs
+
+Under `../docs/figure_extended/misc/`:
+
+- `Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv`
+
+## Export
+
+Source: `export_prism.R`.
+
+```{r class.source="fold-hide", label="export_prism", eval=TRUE}
+library(dplyr)
+library(qs2)
+
+infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+outfile_path <- "../docs/figure_extended/misc/Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv"
+dir.create(dirname(outfile_path), recursive = TRUE, showWarnings = FALSE)
+
+data <- qs2::qs_read(infile_path)
+table(data@meta.data[["L3_cluster_id"]])
+
+for_prism <- data@meta.data %>%
+    mutate(Genotype = recode(Genotype,
+        "wildtype" = "WT",
+        "meox1_mutant" = "Mutant"
+    )) %>%
+    group_by(Genotype, L3_cluster_id) %>%
+    summarise(count = n(), .groups = "drop") %>%
+    group_by(Genotype) %>%
+    mutate(percent = count / sum(count) * 100) %>%
+    ungroup()
+
+for_prism
+
+write.csv(
+    for_prism, outfile_path, row.names = FALSE
+    )
+```
+
+## For developers
+
+Sample run command:
+
+```{bash, eval=FALSE, class.source="fold-hide"}
+Rscript -e "
+rmarkdown::render(
+  'misc_exports.Rmd',
+  output_file = './misc_exports.html'
+)
+"
+```
