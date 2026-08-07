@@ -12,5 +12,5 @@ analysis/site_libs
 data/*
 *.Rproj
 renv/library
-output/*
+output/data
 

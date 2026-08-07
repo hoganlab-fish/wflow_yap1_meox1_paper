@@ -1,0 +1,7 @@
+"score",".y.","p","p.adj","p.format","p.signif","method","group1","group2","sig_sign"
+"global","score",0,0,"<2e-16","****","Kruskal-Wallis",NA,NA,NA
+"pairwise","score",3.80431241919637e-116,1.5e-115,"< 2e-16","****","Wilcoxon","hmVEC","mVEC","****"
+"pairwise","score",1.38442142824741e-55,4.2e-55,"< 2e-16","****","Wilcoxon","hmVEC","preLEC","****"
+"pairwise","score",3.71164978740072e-235,1.9e-234,"< 2e-16","****","Wilcoxon","hmVEC","LEC","****"
+"pairwise","score",1.67447757705715e-12,3.3e-12,"1.7e-12","****","Wilcoxon","hmVEC","cVEC","****"
+"pairwise","score",5.16513092843961e-09,5.2e-09,"5.2e-09","****","Wilcoxon","hmVEC","iVEC","****"
