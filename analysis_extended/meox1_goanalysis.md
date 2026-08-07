@@ -1,8 +1,8 @@
 ---
 title: "GO analyses for meox1"
-subtitle: "Kobayashi et al. 2036"
+subtitle: "Kobayashi et al. 2026"
 author: "Tyrone Chen"
-date: 'August 05, 2026'
+date: 'August 07, 2026'
 output:
   html_document:
     code_folding: hide
@@ -108,10 +108,8 @@ library(clusterProfiler)
 ## 
 ## Please cite:
 ## 
-## T Wu, E Hu, S Xu, M Chen, P Guo, Z Dai, T Feng, L Zhou, W Tang, L Zhan,
-## X Fu, S Liu, X Bo, and G Yu. clusterProfiler 4.0: A universal
-## enrichment tool for interpreting omics data. The Innovation. 2021,
-## 2(3):100141
+## G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
+## 5(6):100722
 ```
 
 ```
@@ -134,8 +132,9 @@ library(enrichplot)
 ## 
 ## Please cite:
 ## 
-## G Yu. Thirteen years of clusterProfiler. The Innovation. 2024,
-## 5(6):100722
+## Guangchuang Yu, Li-Gen Wang, and Qing-Yu He. ChIPseeker: an
+## R/Bioconductor package for ChIP peak annotation, comparison and
+## visualization. Bioinformatics. 2015, 31(14):2382-2383
 ```
 
 ```{.r .fold-hide}
@@ -331,7 +330,7 @@ library(tidyverse)
 ```
 
 ```
-## ── Attaching core tidyverse packages ──────────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+## ── Attaching core tidyverse packages ─────────────────────────────────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.2.1     ✔ readr     2.2.0
 ## ✔ forcats   1.0.1     ✔ stringr   1.6.0
 ## ✔ lubridate 1.9.5     ✔ tibble    3.3.1
@@ -339,7 +338,7 @@ library(tidyverse)
 ```
 
 ```
-## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ───────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ lubridate::%within%()    masks IRanges::%within%()
 ## ✖ dplyr::collapse()        masks IRanges::collapse()
 ## ✖ dplyr::combine()         masks Biobase::combine(), BiocGenerics::combine()
@@ -363,7 +362,7 @@ library(tidyverse)
 library(UpSetR)
 
 outfile_dir <- "../output/figure_extended/go/"
-
+dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 singles_meox_path <- "../../Saki_data/analysis/D10051_meox1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"
 grouped_meox_path <- "../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
 
@@ -987,6 +986,117 @@ save_plot_custom(plt, plt_name, height=16, width=16)
 
 *PDF saved to:* `../output/figure_extended/go//top15_LECs_GO_pathways_downregulated_geneexpr_vlnplot_curated.pdf` 
 
+```{.r .fold-hide}
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_LECs_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_lecs,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
+
+```
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+```
+
+```{.r .fold-hide}
+print(plt)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+![](meox1_goanalysis_files/figure-html/grp_lec-16.png)<!-- -->
+
+```{.r .fold-hide}
+save_plot_custom(plt, plt_name, height=10, width=4)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+## Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+## Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+*PDF saved to:* `../output/figure_extended/go//top15_LECs_GO_pathways_downregulated_geneexpr_vlnplot_small.pdf` 
+
 
 ```{.r .fold-hide}
 singles_LEC_out <- run_go(singles_LEC, data_name="LEC")
@@ -1351,6 +1461,211 @@ save_plot_custom(plt, plt_name, height=12, width=16)
 ```
 
 *PDF saved to:* `../output/figure_extended/go//top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_curated.pdf` 
+
+```{.r .fold-hide}
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_lec,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
+
+```
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+```
+
+```{.r .fold-hide}
+print(plt)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+![](meox1_goanalysis_files/figure-html/sin_LEC-16.png)<!-- -->
+
+```{.r .fold-hide}
+save_plot_custom(plt, plt_name, height=10, width=4)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+*PDF saved to:* `../output/figure_extended/go//top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_small.pdf` 
+
+```{.r .fold-hide}
+custom_genes <- c(
+    "cdh6", "celsr1a", "celsr1a", "itga9", "piezo1", "notch1b", "hapln3", "tbx1"
+    )
+plt_name <- "top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_lec_down"
+plt <- VlnPlot(
+    data_lec,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
+
+```
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+```
+
+```{.r .fold-hide}
+print(plt)
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+## Removed 2 rows containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+![](meox1_goanalysis_files/figure-html/sin_LEC-17.png)<!-- -->
+
+```{.r .fold-hide}
+save_plot_custom(plt, plt_name, height=10, width=4)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+*PDF saved to:* `../output/figure_extended/go//top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_lec_down.pdf` 
 
 
 ```{.r .fold-hide}
@@ -1842,6 +2157,120 @@ save_plot_custom(plt, plt_name, height=12, width=16)
 
 *PDF saved to:* `../output/figure_extended/go//top15_VECs_GO_pathways_downregulated_geneexpr_vlnplot_curated.pdf` 
 
+```{.r .fold-hide}
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_VECs_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_vecs,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
+
+```
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+## Scale for fill is already present.
+## Adding another scale for fill, which will replace the existing scale.
+```
+
+```{.r .fold-hide}
+print(plt)
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+![](meox1_goanalysis_files/figure-html/grp_vec-16.png)<!-- -->
+
+```{.r .fold-hide}
+save_plot_custom(plt, plt_name, height=10, width=4)
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+```
+## Warning: Removed 2 rows containing missing values or values outside the scale
+## range (`geom_point()`).
+```
+
+```
+## Warning: Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+## Removed 1 row containing missing values or values outside the scale range (`geom_point()`).
+```
+
+*PDF saved to:* `../output/figure_extended/go//top15_VECs_GO_pathways_downregulated_geneexpr_vlnplot_small.pdf` 
+
 
 ```{.r .fold-hide}
 singles_hmVEC_out <- run_go(singles_hmVEC, data_name="hmVEC")
@@ -2100,7 +2529,7 @@ Shows which specific genes drive which enriched terms, useful for tracing a term
 Sample run command:
 
 
-``` bash
+```{.bash .fold-hide}
 Rscript -e "
 rmarkdown::render(
   'meox1_goanalysis.Rmd',
