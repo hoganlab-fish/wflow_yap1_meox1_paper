@@ -1,0 +1,191 @@
+---
+title: "meox1 dotplot panels (cdh5, cell-cycle/p53 panel)"
+subtitle: "Kobayashi et al. 2036"
+author: "Tyrone Chen"
+date: 'August 05, 2026'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    highlight: textmate
+    keep_md: TRUE
+    number_sections: TRUE
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_title: merged samples
+editor_options:
+  chunk_output_type: console
+params:
+  sample_index: 1
+  sample_name: "default"
+---
+
+# README
+
+Two small standalone dotplot panels, split out of the L3 Level dataset by `L3_celltype` x `Genotype`. Both are
+one-off gene-panel additions (endothelial marker `cdh5`; a cell-cycle/p53 panel) rather than part of the main GO
+pipeline, hence kept separate from `meox1_dotplot_goi.Rmd`.
+
+## Outputs
+
+Both under `../output/figure_extended/dotplots/`:
+
+- `meox1_dataset_Level_03_L3_celltype_genotype_cdh5.pdf`
+- `meox1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf`
+
+## Initial setup
+
+
+```{.r .fold-hide}
+library(ggplot2)
+library(Seurat)
+```
+
+```
+## Loading required package: SeuratObject
+```
+
+```
+## Loading required package: sp
+```
+
+```
+## 
+## Attaching package: 'SeuratObject'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, t
+```
+
+```{.r .fold-hide}
+library(qs2)
+```
+
+```
+## qs2 0.2.1
+```
+
+```{.r .fold-hide}
+outfile_dir <- "../output/figure_extended/dotplots/"
+infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
+
+rotate_x_90 <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+# standardised settings across dataset
+genotype_colours <- c(
+  "#dbe2c6", #wildtype
+  "#657c95" #mutant
+)
+expression_colours <- c("#d9d9d9", "#40004b")
+cols_cellcycle <- c( '#ffff66', '#cc85ff','#a0d0e0')
+names(cols_cellcycle) <- c("G1/G0", "S", "G2M")
+
+level_03_celltype_genotype_order <- c(
+    "LEC_wildtype",
+    "LEC_meox1_mutant",
+    "pre_muLEC_wildtype",
+    "pre_muLEC_meox1_mutant",
+    "hmVEC_wildtype",
+    "hmVEC_meox1_mutant",
+    "mVEC_wildtype",
+    "mVEC_meox1_mutant"
+)
+
+level_03 <- qs_read(infile_path)
+
+level_03_relevel <- level_03
+level_03_relevel$L3_celltype_genotype <- paste0(
+    level_03_relevel$L3_celltype, "_", level_03_relevel$Genotype
+    )
+level_03_relevel <- SetIdent(
+    level_03_relevel, value="L3_celltype_genotype"
+    )
+Idents(level_03_relevel) <- factor(
+    level_03_relevel@active.ident, rev(
+        level_03_celltype_genotype_order
+        )
+    )
+```
+
+## cdh5 panel
+
+Source: `meox1_add_cdh5_to_dotplot.R`.
+
+
+```{.r .fold-hide}
+features_cdh5 <- c(
+    "cdh5"
+    )
+
+dotplot_cdh5 <- DotPlot(
+    object = level_03_relevel,
+    features = features_cdh5,
+    cluster.idents = F,
+    cols = expression_colours
+    ) + rotate_x_90 + ylab("") + xlab("")
+
+print(dotplot_cdh5)
+```
+
+![](meox1_dotplot_panels_files/figure-html/cdh5_dotplot-1.png)<!-- -->
+
+```{.r .fold-hide}
+ggsave(
+    paste0(outfile_dir, "meox1_dataset_Level_03_L3_celltype_genotype_cdh5.pdf"),
+    dotplot_cdh5,
+    device="pdf",
+    width=6,
+    height=4
+)
+```
+
+## Cell-cycle / p53 panel
+
+Source: `meox1_add_genes_to_dotplot.R`. Adds `cdkn1a`, `tp53`, `cdkn1bb` to the existing LEC-transition /
+cell-cycle marker panel (`prox1a`, `tbx1`, `cdh6`, `pcna`, `mki67`).
+
+
+```{.r .fold-hide}
+features_cellcycle <- c(
+    "prox1a", "tbx1", "cdh6", "pcna", "mki67", "cdkn1a", "tp53", "cdkn1bb"
+    )
+
+dotplot_cellcycle <- DotPlot(
+    object = level_03_relevel,
+    features = features_cellcycle,
+    cluster.idents = F,
+    cols = expression_colours
+    ) + rotate_x_90 + ylab("") + xlab("")
+
+print(dotplot_cellcycle)
+```
+
+![](meox1_dotplot_panels_files/figure-html/cellcycle_dotplot-1.png)<!-- -->
+
+```{.r .fold-hide}
+ggsave(
+    paste0(outfile_dir, "meox1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf"),
+    dotplot_cellcycle,
+    device="pdf",
+    width=6,
+    height=4
+)
+```
+
+## For developers
+
+Sample run command:
+
+
+``` bash
+Rscript -e "
+rmarkdown::render(
+  'meox1_dotplot_panels.Rmd',
+  output_file = './meox1_dotplot_panels.html'
+)
+"
+```

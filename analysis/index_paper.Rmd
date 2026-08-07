@@ -14,6 +14,8 @@ editor_options:
 
 - [meox1 dataset, all levels](figures_meox1_dataset.html)
 
+- [extended figures](../analysis_extended/README_extended.html)
+
 - meox1 expression for Grimm et al dataset (timecourse) can be found here `code/scRNAseq/Grimm_etal_rversion4.2`
 
 - Figures for the 48hpf yap1 snATAC datasets + 4dpf Grimm et al dataset (snATAC) can be found here `code/snATACseq/figures`

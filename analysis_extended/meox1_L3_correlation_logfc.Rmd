@@ -41,7 +41,7 @@ save_plot <- function(plt, plot_name, width = 10, height = 8) {
 }
 
 infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
-outfile_dir <- "../docs/figure_extended/embo_scores/"
+outfile_dir <- "../output/figure_extended/embo_scores/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 data <- qs_read(infile_path)
 
@@ -52,7 +52,7 @@ data$Genotype <- factor(
     levels = c("WT", "meox1_mutant")
 )
 
-all_degs <- "../docs/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
+all_degs <- "../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
 all_degs <- read_csv(all_degs, show_col_types = F)
 
 lec_vec_labels <- "../../Saki_data/Revision_analysis/data/genesets/EMBO_L2_VECLEC_markers_EMBOmethod_3_5dpf_genesforlabels_only.csv"

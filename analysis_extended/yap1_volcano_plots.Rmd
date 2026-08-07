@@ -32,7 +32,7 @@ own document:
 
 ## Outputs
 
-Both under `../docs/figure_extended/volcano/`:
+Both under `../output/figure_extended/volcano/`:
 
 - `yap1_dataset_Level_03_hmVEC_volcano_pvalue_RAW.pdf`
 - `yap1_dataset_Level_03_ivec_barplot_GOterms.OLD.pdf` (original version)
@@ -51,7 +51,7 @@ library(ggplot2)
 library(qs2)
 library(Seurat)
 
-outfile_dir <- "../docs/figure_extended/volcano/"
+outfile_dir <- "../output/figure_extended/volcano/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 all_degs <- read_csv(
     "../../Saki_data/analysis/D10025_yap1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv",
@@ -192,7 +192,7 @@ plot_requested <- go_terms %>%
 print(plot_original)
 print(plot_requested)
 
-outfile_dir_ivec <- "../docs/figure_extended/volcano/"
+outfile_dir_ivec <- "../output/figure_extended/volcano/"
 
 ggsave(
     paste0(outfile_dir_ivec, "yap1_dataset_Level_03_ivec_barplot_GOterms.OLD.pdf"),

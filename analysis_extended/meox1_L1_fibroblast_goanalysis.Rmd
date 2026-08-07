@@ -85,9 +85,9 @@ library(patchwork)
 library(qs2)
 library(UpSetR)
 
-outfile_dir <- "../docs/figure_extended/go_l1_fibroblast/"
+outfile_dir <- "../output/figure_extended/go_l1_fibroblast/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
-meox_L1_fibroblasts_path <- "../docs/figure_extended/dge_confects/meox1_L1_fibroblasts_Level_01_DEG_mutVSwt_L1_celltype_fc0.00_minpct_0.01.csv"
+meox_L1_fibroblasts_path <- "../output/figure_extended/dge_confects/meox1_L1_fibroblasts_Level_01_DEG_mutVSwt_L1_celltype_fc0.00_minpct_0.01.csv"
 
 keytypes(org.Dr.eg.db)
 ```

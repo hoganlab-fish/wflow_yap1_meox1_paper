@@ -2870,7 +2870,7 @@ counts/percentages per <code>L3_cluster_id</code> x
 <code>Genotype</code>, formatted for import into GraphPad Prism.</p>
 <div id="outputs" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Outputs</h2>
-<p>Under <code>../docs/figure_extended/misc/</code>:</p>
+<p>Under <code>../output/figure_extended/misc/</code>:</p>
 <ul>
 <li><code>Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv</code></li>
 </ul>
@@ -2890,7 +2890,7 @@ counts/percentages per <code>L3_cluster_id</code> x
 <pre class="r fold-hide"><code>library(qs2)</code></pre>
 <pre><code>## qs2 0.2.1</code></pre>
 <pre class="r fold-hide"><code>infile_path &lt;- &quot;../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2&quot;
-outfile_path &lt;- &quot;../docs/figure_extended/misc/Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv&quot;
+outfile_path &lt;- &quot;../output/figure_extended/misc/Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv&quot;
 
 data &lt;- qs2::qs_read(infile_path)
 table(data@meta.data[[&quot;L3_cluster_id&quot;]])</code></pre>

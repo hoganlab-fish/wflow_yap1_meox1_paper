@@ -47,7 +47,7 @@ To minimise cognitive load we used subdirectory naming conventions which have fu
 similarity to `workflowr`'s layout:
 
 - `wflow_yap1_meox1_paper/analysis_extended/` contains the code associated with the dataset (this directory).
-- `wflow_yap1_meox1_paper/docs/figure_extended/` contains the output figures (and, where the source script mixed
+- `wflow_yap1_meox1_paper/output/figure_extended/` contains the output figures (and, where the source script mixed
   the two, their backing data tables) associated with the dataset.
 
 This is a **side channel, not part of the official `workflowr` build** (`_workflowr.yml` still only points at
@@ -90,7 +90,7 @@ Several documents depend on CSVs produced by others. Suggested order:
 | [misc_exports.html](misc_exports.html) | Misc data exports (Prism composition table) |
 
 ```{r, include=TRUE, fig.align="center", fig.cap=c("Example: meox1 EMBO transition score dotplot, split by genotype"), echo=FALSE}
-knitr::include_graphics("../docs/figure_extended/embo_scores/embo_transition_scores_split_genotype_dotplot.pdf")
+knitr::include_graphics("../output/figure_extended/embo_scores/embo_transition_scores_split_genotype_dotplot.pdf")
 ```
 
 ## Pseudotime
@@ -101,7 +101,7 @@ knitr::include_graphics("../docs/figure_extended/embo_scores/embo_transition_sco
 | [meox1_slingshot_pseudotime.html](meox1_slingshot_pseudotime.html) | meox1 slingshot pseudotime + tradeSeq divergence testing (heaviest document here) |
 
 ```{r, include=TRUE, fig.align="center", fig.cap=c("Example: meox1 slingshot pseudotime contours, hmVEC lineage 1"), echo=FALSE}
-knitr::include_graphics("../docs/figure_extended/slingshot/meox1__FeaLabel_Pseudotime_Contours_start_hmVEC_lin1.D10051.pdf")
+knitr::include_graphics("../output/figure_extended/slingshot/meox1__FeaLabel_Pseudotime_Contours_start_hmVEC_lin1.D10051.pdf")
 ```
 
 # For developers

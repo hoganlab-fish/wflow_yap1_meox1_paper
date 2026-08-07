@@ -2879,7 +2879,7 @@ the merged LEC vs VEC DEG comparison (depends on
 </ol>
 <div id="outputs" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Outputs</h2>
-<p>All under <code>../docs/figure_extended/dotplots/</code>:</p>
+<p>All under <code>../output/figure_extended/dotplots/</code>:</p>
 <ul>
 <li><code>yap1_dotplot_L01.pdf</code>,
 <code>yap1_dotplot_L02.pdf</code>,
@@ -2903,7 +2903,7 @@ library(Seurat)</code></pre>
 ##     intersect, t</code></pre>
 <pre class="r fold-hide"><code>library(qs2)</code></pre>
 <pre><code>## qs2 0.2.1</code></pre>
-<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../docs/figure_extended/dotplots/&quot;
+<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../output/figure_extended/dotplots/&quot;
 
 features &lt;- c(&quot;meox1&quot;)
 rotate_x &lt;- theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
@@ -3020,7 +3020,7 @@ library(tidyverse)</code></pre>
     return(dotplot)
 }
 
-infile_path &lt;- &quot;../docs/figure_extended/dge_confects/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;
+infile_path &lt;- &quot;../output/figure_extended/dge_confects/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;
 outfile_name &lt;- &quot;yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01_meox1&quot;
 gene_degs &lt;- read_csv(infile_path)</code></pre>
 <pre><code>## Rows: 21616 Columns: 7

@@ -2913,10 +2913,10 @@ library(qs2)</code></pre>
 ##     intersect, t</code></pre>
 <pre class="r fold-hide"><code>library(SeuratObject)
 
-outfile_dir &lt;- &quot;../docs/figure_extended/dotplots/&quot;
+outfile_dir &lt;- &quot;../output/figure_extended/dotplots/&quot;
 
 singles_meox_path &lt;- &quot;../../Saki_data/analysis/D10051_meox1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv&quot;
-grouped_meox_path &lt;- &quot;../docs/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;
+grouped_meox_path &lt;- &quot;../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;
 
 infile_path &lt;- &quot;../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2&quot;
 data &lt;- qs_read(infile_path)
@@ -2962,7 +2962,7 @@ plt &lt;- DotPlot(object = data, features = features, cluster.idents = FALSE,
         guides(color = guide_colorbar(title = &quot;Expression&quot;))
 
 save_plot_custom(plt, &quot;meox1_L3_dotplot_of_goi&quot;)</code></pre>
-<pre><code>## *PDF saved to:* `../docs/figure_extended/dotplots//meox1_L3_dotplot_of_goi.pdf`</code></pre>
+<pre><code>## *PDF saved to:* `../output/figure_extended/dotplots//meox1_L3_dotplot_of_goi.pdf`</code></pre>
 </div>
 <div id="for-developers" class="section level2" number="1.5">
 <h2><span class="header-section-number">1.5</span> For developers</h2>

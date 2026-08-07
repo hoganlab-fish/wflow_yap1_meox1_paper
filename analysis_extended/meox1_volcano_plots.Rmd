@@ -35,7 +35,7 @@ Known Hippo pathway target genes are highlighted in red with labels; `meox1` its
 
 ## Outputs
 
-Both under `../docs/figure_extended/volcano/`:
+Both under `../output/figure_extended/volcano/`:
 
 - `meox1_dataset_Level_03_hmVEC_volcano_pvalue_RAW.pdf`
 - `meox1_dataset_Level_03_mVEC_volcano_pvalue_RAW.pdf`
@@ -48,7 +48,7 @@ library(ggplot2)
 library(qs2)
 library(Seurat)
 
-outfile_dir <- "../docs/figure_extended/volcano/"
+outfile_dir <- "../output/figure_extended/volcano/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 all_degs <- read_csv(
     "../../Saki_data/analysis/D10051_meox1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv",

@@ -1,0 +1,330 @@
+---
+title: "yap1 dotplot panels (meox1 across levels, L3 DEG ratio, cell-cycle/p53 panel)"
+subtitle: "Kobayashi et al. 2036"
+author: "Tyrone Chen"
+date: 'August 05, 2026'
+output:
+  html_document:
+    code_folding: hide
+    df_print: paged
+    highlight: textmate
+    keep_md: TRUE
+    number_sections: TRUE
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_title: merged samples
+editor_options:
+  chunk_output_type: console
+params:
+  sample_index: 1
+  sample_name: "default"
+---
+
+# README
+
+Three small standalone dotplot panels on the yap1 dataset:
+
+1. `meox1` expression across all three annotation levels (L01/L02/L03) of the yap1 dataset - please review, note
+   labels and cluster counts differ from previous dotplots the manuscript may already show, and let us know if
+   anything needs to change on this end.
+2. Ratio dotplot of `meox1` percent-expressed / log2FC in the merged LEC vs VEC DEG comparison (depends on
+   `yap1_deg_confects_prep.Rmd` having been run first).
+3. Cell-cycle/p53 gene panel dotplot by `L3_celltype` x `Genotype`.
+
+## Outputs
+
+All under `../output/figure_extended/dotplots/`:
+
+- `yap1_dotplot_L01.pdf`, `yap1_dotplot_L02.pdf`, `yap1_dotplot_L03.pdf`
+- `yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01_meox1_ratio_dotplot.pdf`
+- `yap1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf`
+
+## meox1 across all annotation levels
+
+Source: `yap1_dotplot_all_levels.R`.
+
+
+```{.r .fold-hide}
+library(ggplot2)
+library(Seurat)
+```
+
+```
+## Loading required package: SeuratObject
+```
+
+```
+## Loading required package: sp
+```
+
+```
+## 
+## Attaching package: 'SeuratObject'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, t
+```
+
+```{.r .fold-hide}
+library(qs2)
+```
+
+```
+## qs2 0.2.1
+```
+
+```{.r .fold-hide}
+outfile_dir <- "../output/figure_extended/dotplots/"
+
+features <- c("meox1")
+rotate_x <- theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
+expression_colours <- c("#d9d9d9", "#40004b")
+
+make_level_dotplot <- function(infile_path, outfile_name, ident_col) {
+    level_data <- qs_read(infile_path)
+    Idents(level_data) <- level_data@meta.data[[ident_col]]
+
+    dotplot <- DotPlot(
+        object = level_data,
+        features = features,
+        cluster.idents = F,
+        cols = expression_colours
+        ) + coord_flip() + rotate_x + ylab("") + xlab("") +
+        guides(
+            size = guide_legend(
+                title = "Percent Expressed",
+                direction = "horizontal"
+            ),
+            colour = guide_colorbar(
+                title = "Average Expression",
+                direction = "horizontal",
+                barwidth = 10,
+                barheight = 1
+            )
+        ) +
+        theme(
+            legend.position = "bottom",
+            legend.box = "horizontal",
+            legend.title = element_text(vjust = 1)
+        )
+
+    print(dotplot)
+
+    ggsave(
+        paste0(outfile_dir, outfile_name),
+        dotplot,
+        device="pdf",
+        width=12,
+        height=4
+    )
+}
+
+#### L01 ####
+make_level_dotplot(
+    "../../Saki_data/paper/D10025_yap1_dataset_Level_01_annotated.qs2",
+    "yap1_dotplot_L01.pdf",
+    "L1_celltype"
+)
+```
+
+![](yap1_dotplot_panels_files/figure-html/all_levels-1.png)<!-- -->
+
+```{.r .fold-hide}
+#### L02 ####
+make_level_dotplot(
+    "../../Saki_data/paper/D10025_yap1_dataset_Level_02_annotated.qs2",
+    "yap1_dotplot_L02.pdf",
+    "L2_celltype"
+)
+```
+
+![](yap1_dotplot_panels_files/figure-html/all_levels-2.png)<!-- -->
+
+```{.r .fold-hide}
+#### L03 ####
+make_level_dotplot(
+    "../../Saki_data/paper/D10025_yap1_dataset_Level_03_annotated.qs2",
+    "yap1_dotplot_L03.pdf",
+    "L3_celltype"
+)
+```
+
+![](yap1_dotplot_panels_files/figure-html/all_levels-3.png)<!-- -->
+
+## L3 DEG ratio dotplot for meox1
+
+Source: `yap1_dotplot_L3_degs.R`. Depends on `yap1_deg_confects_prep.Rmd` having generated the merged LEC/VEC
+DEG table first.
+
+
+```{.r .fold-hide}
+library(ggpubr)
+library(patchwork)
+library(tidyverse)
+```
+
+```
+## ── Attaching core tidyverse packages ──────────────────────────────────────────────────────────────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.2.1     ✔ readr     2.2.0
+## ✔ forcats   1.0.1     ✔ stringr   1.6.0
+## ✔ lubridate 1.9.5     ✔ tibble    3.3.1
+## ✔ purrr     1.2.2     ✔ tidyr     1.3.2
+## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+```
+
+```{.r .fold-hide}
+make_ratio_dotplots <- function(deg_input,
+                                width,
+                                height,
+                                path,
+                                name){
+    dotplot <- deg_input %>%
+    mutate(.,`percent ratio` = pct.2/pct.1,
+           `log2FC` = -avg_log2FC) %>%
+    ggplot(.) +
+    geom_point(aes(x= group, y = Gene, colour = log2FC, size = `percent ratio`)) +
+    scale_colour_gradient2(low ='#332288',
+                         high ='#CC6677',
+                         na.value = "black",
+                         guide = "colourbar",
+                         midpoint = 0,
+                         aesthetics = "colour") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+    theme(panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.background = element_blank(),
+          axis.line = element_line(colour = "black"))  + xlab('') + ylab('') +
+    ggtitle('wt/mutant-/-\n% expressed and log2FC') + coord_flip()
+
+    filename <- sprintf('%s/%s_ratio_dotplot.pdf', path, name)
+    ggsave(filename,
+            dotplot,
+            device="pdf",
+            width=width,
+            height=height)
+    return(dotplot)
+}
+
+infile_path <- "../output/figure_extended/dge_confects/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
+outfile_name <- "yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01_meox1"
+gene_degs <- read_csv(infile_path)
+```
+
+```
+## Rows: 21616 Columns: 7
+## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+## Delimiter: ","
+## chr (2): Gene, group
+## dbl (5): p_val, avg_log2FC, pct.1, pct.2, p_val_adj
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```{.r .fold-hide}
+input_ratio <- gene_degs %>%
+    filter(Gene == "meox1") %>%
+    mutate(group = recode(
+        group, "LEC__preLEC" = "LECs", "cVEC__hmVEC__mVEC" = "VECs")
+        ) %>%
+    mutate(group=factor(group, levels=c("LECs", "VECs")))
+
+plt <- make_ratio_dotplots(input_ratio, width = 3, height = 5,
+                    name = outfile_name, path = outfile_dir)
+print(plt)
+```
+
+![](yap1_dotplot_panels_files/figure-html/l3_ratio_dotplot-1.png)<!-- -->
+
+## Cell-cycle / p53 panel
+
+Source: `yap1_add_genes_to_dotplot.R`. Same panel and rationale as `meox1_dotplot_panels.Rmd`'s cell-cycle
+section, applied to the yap1 dataset (note the extra `cVEC`/`iVEC` levels vs meox1's L3 celltype set).
+
+
+```{.r .fold-hide}
+features_cellcycle <- c(
+    "prox1a", "tbx1", "cdh6", "pcna", "mki67", "cdkn1a", "tp53", "cdkn1bb"
+    )
+rotate_x_90 <- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+genotype_colours <- c(
+  "#dbe2c6", #wildtype
+  "#657c95" #mutant
+)
+expression_colours <- c("#d9d9d9", "#40004b")
+cols_cellcycle <- c( '#ffff66', '#cc85ff','#a0d0e0')
+names(cols_cellcycle) <- c("G1/G0", "S", "G2M")
+
+level_03_celltype_genotype_order <- c(
+    "LEC_wildtype",
+    "LEC_yap1_mutant",
+    "preLEC_wildtype",
+    "preLEC_yap1_mutant",
+    "hmVEC_wildtype",
+    "hmVEC_yap1_mutant",
+    "mVEC_wildtype",
+    "mVEC_yap1_mutant",
+    "cVEC_wildtype",
+    "cVEC_yap1_mutant",
+    "iVEC_wildtype",
+    "iVEC_yap1_mutant"
+)
+
+level_03 <- qs_read("../../Saki_data/paper/D10025_yap1_dataset_Level_03_annotated.qs2")
+
+level_03_relevel <- level_03
+level_03_relevel$L3_celltype_genotype <- paste0(
+    level_03_relevel$L3_celltype, "_", level_03_relevel$Genotype
+    )
+level_03_relevel <- SetIdent(
+    level_03_relevel, value="L3_celltype_genotype"
+    )
+Idents(level_03_relevel) <- factor(
+    level_03_relevel@active.ident, rev(
+        level_03_celltype_genotype_order
+        )
+    )
+
+dotplot_cellcycle <- DotPlot(
+    object = level_03_relevel,
+    features = features_cellcycle,
+    cluster.idents = F,
+    cols = expression_colours
+    ) + rotate_x_90 + ylab("") + xlab("")
+
+print(dotplot_cellcycle)
+```
+
+![](yap1_dotplot_panels_files/figure-html/cellcycle_dotplot-1.png)<!-- -->
+
+```{.r .fold-hide}
+ggsave(
+    paste0(outfile_dir, "yap1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf"),
+    dotplot_cellcycle,
+    device="pdf",
+    width=6,
+    height=4
+)
+```
+
+## For developers
+
+Sample run command:
+
+
+``` bash
+Rscript -e "
+rmarkdown::render(
+  'yap1_dotplot_panels.Rmd',
+  output_file = './yap1_dotplot_panels.html'
+)
+"
+```

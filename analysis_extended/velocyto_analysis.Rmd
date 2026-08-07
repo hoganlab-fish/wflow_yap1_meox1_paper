@@ -63,7 +63,7 @@ purely because it avoids redundant re-fitting.
 
 ## Outputs
 
-All under `../docs/figure_extended/velocyto/`, one set per dataset (`D10051` = meox1, `D10025` = yap1) and per
+All under `../output/figure_extended/velocyto/`, one set per dataset (`D10051` = meox1, `D10025` = yap1) and per
 sample:
 
 - `{meox,yap}_scrna_Level_03_L3_velocyto_introns.<ID>.pdf` (+ `.legend.pdf`)
@@ -95,7 +95,7 @@ load_packages <- function(packages) {
 invisible(Sys.setenv(OPENBLAS_NUM_THREADS="1"))
 load_packages(libraries)
 
-outfile_dir <- "../docs/figure_extended/velocyto/"
+outfile_dir <- "../output/figure_extended/velocyto/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 precomputed_dir <- "../../Saki_data/Revision_analysis/queue_plots/"
 

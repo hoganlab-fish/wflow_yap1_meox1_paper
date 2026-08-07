@@ -2872,7 +2872,7 @@ cell-cycle/p53 panel) rather than part of the main GO pipeline, hence
 kept separate from <code>meox1_dotplot_goi.Rmd</code>.</p>
 <div id="outputs" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Outputs</h2>
-<p>Both under <code>../docs/figure_extended/dotplots/</code>:</p>
+<p>Both under <code>../output/figure_extended/dotplots/</code>:</p>
 <ul>
 <li><code>meox1_dataset_Level_03_L3_celltype_genotype_cdh5.pdf</code></li>
 <li><code>meox1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf</code></li>
@@ -2891,7 +2891,7 @@ library(Seurat)</code></pre>
 ##     intersect, t</code></pre>
 <pre class="r fold-hide"><code>library(qs2)</code></pre>
 <pre><code>## qs2 0.2.1</code></pre>
-<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../docs/figure_extended/dotplots/&quot;
+<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../output/figure_extended/dotplots/&quot;
 infile_path &lt;- &quot;../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2&quot;
 
 rotate_x_90 &lt;- theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))

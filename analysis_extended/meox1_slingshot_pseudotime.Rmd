@@ -43,7 +43,7 @@ every possible lineage start point, for the combined dataset (`D10051`) and each
 
 ## Outputs
 
-All under `../docs/figure_extended/slingshot/`, per `run_slingshot()` call (once for `D10051` combined, once
+All under `../output/figure_extended/slingshot/`, per `run_slingshot()` call (once for `D10051` combined, once
 each for `S20200`/`S20201`) and per `start_<celltype>_lin<N>` combination found. Naming follows the
 `meox1__<PlotType><Label|Strip>_<Description>_start_<celltype>_lin<N>.<col_name>.pdf` convention throughout, e.g.:
 
@@ -86,7 +86,7 @@ load_packages <- function(packages) {
 invisible(Sys.setenv(OPENBLAS_NUM_THREADS="1"))
 load_packages(libraries)
 
-outfile_dir <- "../docs/figure_extended/slingshot/"
+outfile_dir <- "../output/figure_extended/slingshot/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 

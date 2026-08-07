@@ -29,7 +29,7 @@ pipeline, hence kept separate from `meox1_dotplot_goi.Rmd`.
 
 ## Outputs
 
-Both under `../docs/figure_extended/dotplots/`:
+Both under `../output/figure_extended/dotplots/`:
 
 - `meox1_dataset_Level_03_L3_celltype_genotype_cdh5.pdf`
 - `meox1_dataset_Level_03_L3_celltype_genotype_cellcyclelec_cdkn1a_tp53_cdkn1bb.pdf`
@@ -41,7 +41,7 @@ library(ggplot2)
 library(Seurat)
 library(qs2)
 
-outfile_dir <- "../docs/figure_extended/dotplots/"
+outfile_dir <- "../output/figure_extended/dotplots/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
 

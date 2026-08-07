@@ -34,7 +34,7 @@ Three small standalone dotplot panels on the yap1 dataset:
 
 ## Outputs
 
-All under `../docs/figure_extended/dotplots/`:
+All under `../output/figure_extended/dotplots/`:
 
 - `yap1_dotplot_L01.pdf`, `yap1_dotplot_L02.pdf`, `yap1_dotplot_L03.pdf`
 - `yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01_meox1_ratio_dotplot.pdf`
@@ -49,7 +49,7 @@ library(ggplot2)
 library(Seurat)
 library(qs2)
 
-outfile_dir <- "../docs/figure_extended/dotplots/"
+outfile_dir <- "../output/figure_extended/dotplots/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 features <- c("meox1")
 rotate_x <- theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
@@ -158,7 +158,7 @@ make_ratio_dotplots <- function(deg_input,
     return(dotplot)
 }
 
-infile_path <- "../docs/figure_extended/dge_confects/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
+infile_path <- "../output/figure_extended/dge_confects/yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
 outfile_name <- "yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01_meox1"
 gene_degs <- read_csv(infile_path)
 

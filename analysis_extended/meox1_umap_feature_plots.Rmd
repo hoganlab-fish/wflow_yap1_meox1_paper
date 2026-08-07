@@ -31,7 +31,7 @@ Two UMAP feature-plot panels on the Level 3 meox1 dataset:
 
 ## Outputs
 
-All under `../docs/figure_extended/umap/`:
+All under `../output/figure_extended/umap/`:
 
 - `meox1_UMAP_cdh5_split_Genotype.pdf`, `meox1_UMAP_STRIPPED_cdh5_split_Genotype.pdf`
 - `meox1_UMAP_LEGEND_cdh5_split_Genotype.pdf`, `meox1_UMAP_LEGEND_ONLY_cdh5_split_Genotype.pdf`
@@ -50,7 +50,7 @@ library(Seurat)
 library(SeuratWrappers)
 library(tidyverse)
 
-outfile_dir <- "../docs/figure_extended/umap/"
+outfile_dir <- "../output/figure_extended/umap/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 expression_colours <- c("#d9d9d9", "#40004b")
 

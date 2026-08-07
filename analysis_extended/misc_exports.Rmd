@@ -29,7 +29,7 @@ GraphPad Prism.
 
 ## Outputs
 
-Under `../docs/figure_extended/misc/`:
+Under `../output/figure_extended/misc/`:
 
 - `Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv`
 
@@ -42,7 +42,7 @@ library(dplyr)
 library(qs2)
 
 infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
-outfile_path <- "../docs/figure_extended/misc/Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv"
+outfile_path <- "../output/figure_extended/misc/Meox1_Level_03_L3_Seurat_cluster_predicted_phenotype_Genotype_composition_for_prism.csv"
 dir.create(dirname(outfile_path), recursive = TRUE, showWarnings = FALSE)
 
 data <- qs2::qs_read(infile_path)

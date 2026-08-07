@@ -2880,7 +2880,7 @@ plots (<code>EMBO_transient_score</code>, <code>EMBO_LEC_score_1</code>,
 <div id="outputs" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Outputs</h2>
 <p>DEG barplots + regenerated genesets, under
-<code>../docs/figure_extended/embo_scores/</code>:</p>
+<code>../output/figure_extended/embo_scores/</code>:</p>
 <ul>
 <li><code>embo_markers_degbarplot_VECs.{pdf,png}</code>,
 <code>embo_markers_degbarplot_LECs.{pdf,png}</code></li>
@@ -2895,7 +2895,7 @@ static input, also read by
 <li><code>EMBO_L2_VECLEC_markers_EMBOmethod_3_5dpf.csv</code></li>
 </ul>
 <p>Transition-score plots, under
-<code>../docs/figure_extended/embo_scores/</code>:</p>
+<code>../output/figure_extended/embo_scores/</code>:</p>
 <ul>
 <li><code>embo_transition_scores_split_genotype_dotplot.{pdf,png}</code></li>
 <li><code>embo_transition_scores_split_genotype{,_strip}.{pdf,png}</code></li>
@@ -2927,7 +2927,7 @@ library(tidyverse)</code></pre>
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../docs/figure_extended/embo_scores/&quot;
+<pre class="r fold-hide"><code>outfile_dir &lt;- &quot;../output/figure_extended/embo_scores/&quot;
 geneset_dir &lt;- &quot;../../Saki_data/Revision_analysis/data/genesets/&quot;
 
 data &lt;- qs_read(&quot;../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2&quot;)
@@ -2947,7 +2947,7 @@ EMBO-method LEC/VEC marker panel from the EMBO Journal Level 2 object
 (<a href="https://link.springer.com/article/10.15252/embj.2022112590" class="uri">https://link.springer.com/article/10.15252/embj.2022112590</a>),
 then plots the merged-group DEG table coloured by marker direction.</p>
 <pre class="r fold-hide"><code>all_degs &lt;- read_csv(
-    &quot;../docs/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;,
+    &quot;../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv&quot;,
     show_col_types = F
     )
 

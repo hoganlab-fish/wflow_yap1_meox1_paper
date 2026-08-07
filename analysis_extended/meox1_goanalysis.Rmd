@@ -106,13 +106,13 @@ library(SeuratObject)
 library(tidyverse)
 library(UpSetR)
 
-outfile_dir <- "../docs/figure_extended/go/"
+outfile_dir <- "../output/figure_extended/go/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 singles_meox_path <- "../../Saki_data/analysis/D10051_meox1_dataset/DEGs/Level_03_DEG_mutVSwt_L3_celltype_fc0.00_minpct_0.01.csv"
-grouped_meox_path <- "../docs/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
+grouped_meox_path <- "../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv"
 
 singles_meox_hippo_path <- "../../Saki_data/analysis/D10051_meox1_dataset/DEGs/analysis/D10051_meox1_dataset/DEGs/Level_03_DEG_hippo_targets_mutVSwt_L3_celltype_fc0.00_minpct_0.00.csv"
-grouped_meox_hippo_path <- "../docs/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv"
+grouped_meox_hippo_path <- "../output/figure_extended/dge_confects/meox1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv"
 
 infile_path <- "../../Saki_data/paper/D10051_meox1_dataset_Level_03_annotated.qs2"
 data <- qs_read(infile_path)

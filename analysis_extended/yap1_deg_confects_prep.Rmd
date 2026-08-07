@@ -29,7 +29,7 @@ Mirrors `meox1_deg_confects_prep.Rmd` but with yap1's own celltype groupings (`L
 
 ## Outputs
 
-All under `../docs/figure_extended/dge_confects/`:
+All under `../output/figure_extended/dge_confects/`:
 
 - `yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_fc0.00_minpct_0.01.csv`
 - `yap1_Level_03_DEG_mutVSwt_L3_celltype_merged_VEC_merged_LEC_hippo_targets_fc0.00_minpct_0.00.csv`
@@ -54,7 +54,7 @@ library(limma)
 library(edgeR)
 library(topconfects)
 
-outfile_dir <- "../docs/figure_extended/dge_confects/"
+outfile_dir <- "../output/figure_extended/dge_confects/"
 dir.create(outfile_dir, recursive = TRUE, showWarnings = FALSE)
 hippo_targets <- c(
     "yap1",
