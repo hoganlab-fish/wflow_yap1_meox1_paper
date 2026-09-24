@@ -27,6 +27,10 @@ A [workflowr][] project.
 
 [workflowr]: https://github.com/workflowr/workflowr
 
+## Data available at
+
+[GSE255824](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE255824)
+
 ## Cite us with
 
 *To be updated on publication*
