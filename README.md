@@ -19,6 +19,14 @@
 Copyright © 2026 <a href="https://orcid.org/0009-0005-5595-3882">Michelle Meier <img al
 t="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
 
+Code in this repository is provided under a [MIT license](https://opensource.org/licenses/MIT). This documentation is provided under a [CC-BY-4.0 license](https://creativecommons.org/licenses/by/4.0/).
+
+[Visit our lab website here.](https://biomedicalsciences.unimelb.edu.au/sbs-research-groups/anatomy-and-physiology-research/stem-cell-and-developmental-biology/hogan-laboratory-vascular-developmental-genetics-and-cell-biology) Contact Benjamin Hogan at ben.hogan@petermac.org.
+
 A [workflowr][] project.
 
 [workflowr]: https://github.com/workflowr/workflowr
+
+## Cite us with
+
+*To be updated on publication*
