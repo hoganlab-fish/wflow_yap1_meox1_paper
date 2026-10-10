@@ -68,12 +68,6 @@ go_terms <- rbind(go_up, go_down)
 
 ```
 
-Load information about LEC and VEC genes (derived from EMBO paper)
-
-```{r}
-lec_vec_labels <- read_csv(here("data/genesets/EMBO_L2_VECLEC_markers_EMBOmethod_3_5dpf_genesforlabels_only.csv"))
-```
-
 
 ## Load gene sets + paper settings 
 
@@ -1053,85 +1047,6 @@ ggsave(filename,
 
 barplot
 ```
-
-## Barplot - DEGs
-
-```{r}
-theme_for_deg_plot <- plot_sizing <- theme_bw() + 
-  theme(axis.title = element_text(size = 16),
-        axis.text = element_text(size = 14, colour = "black"),
-        axis.title.x=element_blank(),
-        axis.text.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        plot.title = element_text(size = 18),
-        legend.title = element_blank(),
-        legend.position = "none", 
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.minor.y = element_blank())
-
-colours <- c(none = "grey", 
-             `LEC marker` ="#41ab5d",
-             `VEC marker` = "blue")
-```
-
-
-Inspired by figure 3F in [EMBO paper](https://link.springer.com/article/10.15252/embj.2022112590) 
-
-Rank DEGs based on log2FC and colour based on LEC/VEC identity derived from the timecourse dataset (code is here: `code/scRNAseq/Grimm_etal_rversion4.2/EMBO_L2_LEC_VEC_markers.R`)
-
-
-```{r, warning=FALSE}
-plot_list <- lapply(unique(all_degs$group), function(GROUP){
-  # MAIN PLOT
-  plot <- all_degs %>% 
-  filter(., !(grepl("si:|CABZ|zgc:|im:" ,Gene))) %>%  #like EMBO, remove unannotated genes
-  filter(., group == GROUP & p_val < 0.05) %>% # raw p-value to reduce density of plotting
-    mutate(., plot_order_variable = ifelse(avg_log2FC < 0, "down", "up")) %>% 
-  left_join(., lec_vec_labels, by="Gene") %>% 
-  mutate(., direction = factor(ifelse(is.na(direction), "none", paste0(direction, " marker")), levels = c("LEC marker", "VEC marker", "none"))) %>% 
-  arrange(., plot_order_variable, -avg_log2FC) %>%    # primary key, then secondary key
-  mutate(., Gene = factor(Gene, levels = unique(Gene))) %>% 
-  ggplot(., aes(x = Gene, y = avg_log2FC, fill= direction)) +
-  geom_bar(stat = "identity") +
-  theme_for_deg_plot+
-  scale_fill_manual(values = colours)
-  
-  #PLIE CHARTS
-  in_pie <- all_degs %>% 
-  filter(., !(grepl("si:|CABZ|zgc:|im:" ,Gene))) %>%  #like EMBO, remove unannotated genes
-  filter(., group == GROUP & p_val < 0.05) %>% # raw p-value to reduce density of plotting
-    mutate(., plot_order_variable = ifelse(avg_log2FC < 0, "down-\nregulated", "up-\nregulated")) %>% 
-  left_join(., lec_vec_labels, by="Gene") %>% 
-  mutate(., direction = factor(ifelse(is.na(direction), "none", paste0(direction, " marker")), levels = c("LEC marker", "VEC marker", "none"))) %>% 
-  arrange(., plot_order_variable, -avg_log2FC) %>%    # primary key, then secondary key
-  mutate(., Gene = factor(Gene, levels = unique(Gene))) %>% 
-  group_by(direction, plot_order_variable) %>% 
-  summarise(., count = n())
-  pie	<- ggplot(in_pie, aes(x="", 
-                              y=count, fill=direction)) + geom_bar(width = 1, stat = "identity")+ 
-  coord_polar("y", start=0)+
-  scale_fill_manual(values = colours) + 
-  facet_wrap(~plot_order_variable, scale = "free") +
-  theme_void() +
-  theme(strip.text = element_text(size = 16), 
-        legend.title = element_blank(), 
-        legend.text = element_text(size=14))
-  
-  #COMBINE AND OUT
-  plot_combined <- plot + pie + plot_annotation(title=paste0("DEG results for ", GROUP), 
-                                                theme = theme(plot.title = element_text(size = 18, face = "bold"))) + plot_layout(guides = "collect", widths = c(2,1))
-  return(plot_combined)
-  
-})
-
-```
-
-```{r, fig.align='center', fig.height=7, fig.width=12}
-wrap_elements(plot_list[[1]]) + wrap_elements(plot_list[[2]]) + plot_layout(guides = "collect", axes="collect", ncol=1)
-```
-
 
 ## GO plot for hmVEC
 
