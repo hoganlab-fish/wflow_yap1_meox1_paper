@@ -18,7 +18,6 @@ analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
-docs/figure_extended
 
 # data (not tracked)
 data/input
