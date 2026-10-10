@@ -1,17 +1,39 @@
+# R / RStudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
 .Rapp.history
+*.Rproj
+
+# macOS
 .DS_Store
+
+# renv
+renv/library
+
+# workflowr build artefacts
 analysis/figure
 analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
+docs/figure_extended
+
+# data (not tracked)
 data/input
 data/other_sets
-*.Rproj
-renv/library
 output/data
 
+# old analysis folders
+analysis/obsolete
+Revision_analysis
+20260313_fig
+
+# code files not tracked - dealing with OneDrive
+code/tmo.R
+code/scRNAseq/general_scripts/ExtendSeurat_pseudotime_functions.R
+code/scRNAseq/general_scripts/testing_slingshot_gene_function.R
+code/scRNAseq/Grimm_etal/EMBO_L2_LEC_VEC_markers.R
+analysis/index_paper.Rmd
+analysis/index_other_analysis.Rmd
