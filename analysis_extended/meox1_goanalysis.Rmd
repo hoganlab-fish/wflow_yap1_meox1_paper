@@ -449,6 +449,27 @@ plt <- VlnPlot(
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 print(plt)
 save_plot_custom(plt, plt_name, height=16, width=16)
+
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_LECs_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_lecs,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+print(plt)
+save_plot_custom(plt, plt_name, height=10, width=4)
 ```
 
 ```{r class.source="fold-hide", label="sin_LEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
@@ -562,6 +583,45 @@ plt <- VlnPlot(
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 print(plt)
 save_plot_custom(plt, plt_name, height=12, width=16)
+
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_lec,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+print(plt)
+save_plot_custom(plt, plt_name, height=10, width=4)
+
+custom_genes <- c(
+    "cdh6", "celsr1a", "celsr1a", "itga9", "piezo1", "notch1b", "hapln3", "tbx1"
+    )
+plt_name <- "top15_LEC_GO_pathways_downregulated_geneexpr_vlnplot_lec_down"
+plt <- VlnPlot(
+    data_lec,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+print(plt)
+save_plot_custom(plt, plt_name, height=10, width=4)
 ```
 
 ```{r class.source="fold-hide", label="sin_pre_muLEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
@@ -678,6 +738,27 @@ plt <- VlnPlot(
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 print(plt)
 save_plot_custom(plt, plt_name, height=12, width=16)
+
+custom_genes <- c(
+    "prox1a", "prox3", "itga9", "nfatc1", "s1pr1", "notch1b", "kdr", "ramp2"
+    )
+custom_genes <- c(
+    "prox1a", "tbx1", "nfatc1", "cdh6", "itga9", "piezo1", "celsr1a", "notch1b"
+    )
+plt_name <- "top15_VECs_GO_pathways_downregulated_geneexpr_vlnplot_small"
+plt <- VlnPlot(
+    data_vecs,
+    features = custom_genes,
+    group.by = "Genotype",
+    pt.size = 0,
+    ncol = 2,
+    flip = TRUE,
+    cols = c("#dbe2c6", "#657c95")
+) & geom_jitter(size = 0.5, stroke = 0, width = 0.15) &
+    scale_fill_manual(values = c("#dbe2c6", "#657c95")) &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+print(plt)
+save_plot_custom(plt, plt_name, height=10, width=4)
 ```
 
 ```{r class.source="fold-hide", label="sin_hmVEC", eval=TRUE, fig.height=12, fig.width=8, results="asis"}
