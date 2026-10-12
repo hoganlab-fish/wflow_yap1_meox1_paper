@@ -14,7 +14,7 @@ editor_options:
 
 - [meox1 dataset, all levels](figures_meox1_dataset.html)
 
-- [extended figures](../analysis_extended/README_extended.html)
+- [extended figures](extended/README_extended.html)
 
 - meox1 expression for Grimm et al dataset (timecourse) can be found here `code/scRNAseq/Grimm_etal_rversion4.2`
 
